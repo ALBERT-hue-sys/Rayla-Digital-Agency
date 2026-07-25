@@ -95,3 +95,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
   updateHeaderState(); // set correct state on load (e.g. page opened mid-scroll)
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+  var groupSelectors = '.card-grid, .pillars, .process-track, .vm-grid, .check-grid, .contact-grid';
+  var soloSelectors   = '.section-head, .who-text, .who-media, .about-grid, .statement, .pill-cloud, .brand-logos';
+
+  document.querySelectorAll(groupSelectors).forEach(function (group) {
+    Array.prototype.forEach.call(group.children, function (child, i) {
+      child.classList.add('fade-up');
+      child.style.setProperty('--fade-delay', Math.min(i * 0.08, 0.4) + 's');
+    });
+  });
+  document.querySelectorAll(soloSelectors).forEach(function (el) {
+    el.classList.add('fade-up');
+  });
+
+  var toReveal = document.querySelectorAll('.fade-up');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+    toReveal.forEach(function (el) { observer.observe(el); });
+  } else {
+    toReveal.forEach(function (el) { el.classList.add('is-visible'); });
+  }
+});
