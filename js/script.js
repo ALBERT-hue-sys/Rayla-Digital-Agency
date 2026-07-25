@@ -95,3 +95,86 @@ document.addEventListener('DOMContentLoaded', function () {
 
   updateHeaderState(); // set correct state on load (e.g. page opened mid-scroll)
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+  var groupSelectors = '.card-grid, .pillars, .process-track, .vm-grid, .check-grid, .contact-grid';
+  var soloSelectors   = '.section-head, .who-text, .who-media, .about-grid, .statement, .pill-cloud, .brand-logos';
+
+  document.querySelectorAll(groupSelectors).forEach(function (group) {
+    Array.prototype.forEach.call(group.children, function (child, i) {
+      child.classList.add('fade-up');
+      child.style.setProperty('--fade-delay', Math.min(i * 0.08, 0.4) + 's');
+    });
+  });
+  document.querySelectorAll(soloSelectors).forEach(function (el) {
+    el.classList.add('fade-up');
+  });
+
+  var toReveal = document.querySelectorAll('.fade-up');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+    toReveal.forEach(function (el) { observer.observe(el); });
+  } else {
+    toReveal.forEach(function (el) { el.classList.add('is-visible'); });
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  var dialog = document.getElementById('discovery-modal');
+  if (!dialog) return;
+
+  var form        = document.getElementById('discovery-form');
+  var formStep    = dialog.querySelector('[data-step="form"]');
+  var successStep = dialog.querySelector('[data-step="success"]');
+  var successName = document.getElementById('dc-success-name');
+  var openTriggers = document.querySelectorAll('[data-open-modal="discovery-modal"]');
+  var closeTriggers = dialog.querySelectorAll('[data-close-modal]');
+
+  function openModal() {
+    formStep.hidden = false;
+    successStep.hidden = true;
+    dialog.showModal();
+    document.body.classList.add('modal-open');
+    requestAnimationFrame(function () {
+      dialog.classList.add('is-visible');
+    });
+  }
+
+  function closeModal() {
+    dialog.classList.remove('is-visible');
+    document.body.classList.remove('modal-open');
+    window.setTimeout(function () {
+      dialog.close();
+    }, 250);
+  }
+
+  openTriggers.forEach(function (btn) { btn.addEventListener('click', openModal); });
+  closeTriggers.forEach(function (btn) { btn.addEventListener('click', closeModal); });
+
+  dialog.addEventListener('click', function (e) {
+    if (e.target === dialog) closeModal();
+  });
+
+  dialog.addEventListener('cancel', function (e) {
+    e.preventDefault();
+    closeModal();
+  });
+
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = form.querySelector('#dc-name').value.trim();
+      successName.textContent = name ? name.split(' ')[0] : 'there';
+      formStep.hidden = true;
+      successStep.hidden = false;
+      form.reset();
+    });
+  }
+});
