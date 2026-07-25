@@ -120,16 +120,9 @@ strong { font-weight: 600; color: var(--black); }
 .full-width { width: 100%; justify-content: center; }
 
 /* ----------------------------- Header ----------------------------- */
-/* .site-header {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(11,11,10,0.94);
-  backdrop-filter: blur(8px);
-} */
-
 .site-header {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(11,11,10,0.94);
-  backdrop-filter: blur(8px);
+  background: rgba(11,11,10,0.97);
   transition: box-shadow var(--transition), background var(--transition);
 }
 .site-header.is-scrolled {
@@ -138,21 +131,14 @@ strong { font-weight: 600; color: var(--black); }
 }
 .site-header.is-scrolled .header-inner { padding-block: 0.7rem; }
 
+/* Applied to <body> via script.js while the mobile drawer is open,
+   so the page behind it can't be scrolled on touch devices */
 body.nav-open { overflow: hidden; }
-
-/* 
-.header-inner {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-block: 1.1rem;
-} */
-
 .header-inner {
   display: flex; align-items: center; gap: 0.75rem;
   padding-block: 1.1rem;
   transition: padding-block var(--transition);
 }
-
-
 .logo { display: inline-flex; align-items: center; margin-right: auto; }
 .logo img {
   height: 46px; width: auto; display: block;
@@ -162,24 +148,30 @@ body.nav-open { overflow: hidden; }
 .footer-brand .logo img { height: 52px; }
 
 .nav-toggle { display: none; }
+.mobile-call-btn {
+  display: none; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--gold); color: var(--black); align-items: center; justify-content: center;
+  font-size: 0.95rem; transition: background var(--transition), transform var(--transition);
+}
+.mobile-call-btn:hover { background: var(--gold-soft); transform: translateY(-1px); }
 .nav-toggle-label {
-  display: none; width: 26px; height: 20px; position: relative; z-index: 110; cursor: pointer;
+  display: none; width: 44px; height: 44px; position: relative; z-index: 110; cursor: pointer;
 }
 .nav-toggle-label span,
 .nav-toggle-label span::before,
 .nav-toggle-label span::after {
-  content: ''; position: absolute; left: 0; width: 100%; height: 2px;
+  content: ''; position: absolute; left: 9px; width: 26px; height: 2px;
   background: var(--white); transition: var(--transition);
 }
-.nav-toggle-label span { top: 9px; }
+.nav-toggle-label span { top: 21px; }
 .nav-toggle-label span::before { top: -8px; }
 .nav-toggle-label span::after { top: 8px; }
 .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
 .nav-toggle:checked ~ .nav-toggle-label span::before { transform: rotate(45deg) translate(5px, 6px); }
 .nav-toggle:checked ~ .nav-toggle-label span::after { transform: rotate(-45deg) translate(5px, -6px); }
 
-.main-nav { display: flex; align-items: center; gap: 2.5rem; }
-.main-nav ul { display: flex; gap: 2rem; }
+.main-nav { display: flex; align-items: center; gap: 1.75rem; }
+.main-nav ul { display: flex; gap: 1.5rem; }
 .main-nav a:not(.btn) {
   font-family: var(--font-display); font-size: 0.88rem; font-weight: 600;
   color: #d8d6cf; transition: color var(--transition);
@@ -269,7 +261,7 @@ body.nav-open { overflow: hidden; }
 }
 .pillars { display: flex; flex-wrap: wrap; gap: 2.25rem; margin-bottom: 2rem; }
 .pillar { display: flex; align-items: center; gap: 0.7rem; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; }
-.pillar i { color: var(--gold); font-size: 1.15rem; }
+.pillar i { color: var(--gold); font-size: 1.15rem; flex-shrink: 0; }
 .pillars-footer { font-style: italic; color: var(--mid-grey); margin-bottom: 0; }
 
 /* ------------------------------ About ------------------------------ */
@@ -358,7 +350,7 @@ body.nav-open { overflow: hidden; }
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: start; }
 .contact-details { margin: 1.4rem 0; display: flex; flex-direction: column; gap: 0.9rem; }
 .contact-details li { display: flex; align-items: center; gap: 0.9rem; }
-.contact-details i { color: var(--gold); width: 20px; }
+.contact-details i { color: var(--gold); width: 20px; flex-shrink: 0; }
 .contact-details a:hover { color: var(--gold); }
 .social-icons { display: flex; gap: 1rem; margin-bottom: 2rem; }
 .social-icons a {
@@ -393,28 +385,41 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* =================================================================
    RESPONSIVE
+   Tiers: 1024 (tablet landscape / small laptop), 768 (tablet portrait,
+   used only where a section specifically needs it), 640 (large phone),
+   480 (small phone). Same four numbers are reused throughout on purpose.
    ================================================================= */
-@media (max-width: 992px) {
+
+/* ---- Tablet landscape and small laptops (also the "switch to the
+   mobile drawer nav" tier — this is the widest point at which a
+   six-link horizontal nav plus a CTA reliably fits without wrapping) ---- */
+@media (max-width: 1024px) {
+  .hero-pattern { display: none; }
+
+  .mobile-call-btn { display: flex; }
+  .nav-toggle-label { display: block; }
+  .main-nav {
+    position: fixed; top: var(--header-h, 81px); left: 0; right: 0; bottom: 0;
+    background: var(--black); flex-direction: column; align-items: stretch;
+    padding: 0 0 2rem; gap: 0; z-index: 105;
+    opacity: 0; visibility: hidden; transform: translateY(-8px);
+    transition: opacity var(--transition), transform var(--transition), visibility 0s linear var(--transition);
+    overflow-y: auto;
+  }
+  .nav-toggle:checked ~ .main-nav {
+    opacity: 1; visibility: visible; transform: translateY(0);
+    transition: opacity var(--transition), transform var(--transition), visibility 0s linear 0s;
+  }
+  .main-nav ul { flex-direction: column; gap: 0; width: 100%; }
+  .main-nav ul li { border-bottom: 1px solid rgba(255,255,255,0.12); }
+  .main-nav ul a { display: block; padding: 1.15rem 1.75rem; }
+  .nav-cta { margin: 1.5rem 1.75rem 0; justify-content: center; }
+
   .five-col { grid-template-columns: repeat(3, 1fr); }
   .four-col { grid-template-columns: repeat(2, 1fr); }
   .process-track { grid-template-columns: repeat(3, 1fr); row-gap: 2.5rem; }
   .process-track::before { display: none; }
   .service-row { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 900px) {
-  .hero-pattern { display: none; }
-
-  .nav-toggle-label { display: block; }
-  .main-nav {
-    position: fixed; top: 0; right: 0; bottom: 0; width: min(78%, 320px);
-    background: var(--black); flex-direction: column; align-items: flex-start;
-    padding: 6rem 1.75rem 2rem; gap: 2rem; z-index: 105;
-    box-shadow: -12px 0 40px rgba(0,0,0,0.35);
-    transform: translateX(100%); transition: transform var(--transition);
-  }
-  .nav-toggle:checked ~ .main-nav { transform: translateX(0); }
-  .main-nav ul { flex-direction: column; gap: 1.4rem; }
 
   .two-col { grid-template-columns: 1fr; }
   .who-media { order: -1; }
@@ -422,13 +427,26 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .check-grid { grid-template-columns: 1fr; }
 }
 
+/* ---- Tablet portrait ---- */
+@media (max-width: 768px) {
+  .footer-inner { flex-direction: column; align-items: flex-start; gap: 1.75rem; }
+}
+
+/* ---- Large phones ---- */
 @media (max-width: 640px) {
-  .five-col, .four-col { grid-template-columns: 1fr 1fr; }
+  .five-col { grid-template-columns: repeat(2, 1fr); }
   .process-track { grid-template-columns: 1fr; }
   .hero-actions { flex-direction: column; align-items: flex-start; }
   .noise-word::after { display: none; }
+  .hero-title { font-size: clamp(1.9rem, 1.3rem + 4.5vw, 2.6rem); }
+  .service-row-head { flex-wrap: wrap; }
 }
 
+/* ---- Small phones ---- */
 @media (max-width: 480px) {
   .five-col, .four-col { grid-template-columns: 1fr; }
+  .container { padding-inline: 1.15rem; }
+  .contact-form { padding: 1.5rem; }
+  .social-icons a, .footer-social a { width: 40px; height: 40px; }
+  .btn { padding: 0.85rem 1.4rem; font-size: 0.84rem; }
 }

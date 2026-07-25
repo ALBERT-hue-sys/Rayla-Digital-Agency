@@ -16,6 +16,21 @@ document.addEventListener('DOMContentLoaded', function () {
   if (!header || !navToggle) return; // defensive: don't error if markup changes later
 
   /* ---------------------------------------------------------------
+     0. Keep the mobile dropdown aligned to the header's real height
+     (handles both the normal and the scrolled/compact header states)
+     --------------------------------------------------------------- */
+  function setHeaderHeightVar() {
+    document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+  }
+  setHeaderHeightVar();
+  window.addEventListener('resize', setHeaderHeightVar);
+  if (window.ResizeObserver) {
+    new ResizeObserver(setHeaderHeightVar).observe(header);
+  } else {
+    window.addEventListener('scroll', setHeaderHeightVar, { passive: true });
+  }
+
+  /* ---------------------------------------------------------------
      1. Mobile menu behaviour
      --------------------------------------------------------------- */
   function closeMenu() {
