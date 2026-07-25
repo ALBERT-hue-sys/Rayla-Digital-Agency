@@ -125,3 +125,56 @@ document.addEventListener('DOMContentLoaded', function () {
     toReveal.forEach(function (el) { el.classList.add('is-visible'); });
   }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+  var dialog = document.getElementById('discovery-modal');
+  if (!dialog) return;
+
+  var form        = document.getElementById('discovery-form');
+  var formStep    = dialog.querySelector('[data-step="form"]');
+  var successStep = dialog.querySelector('[data-step="success"]');
+  var successName = document.getElementById('dc-success-name');
+  var openTriggers = document.querySelectorAll('[data-open-modal="discovery-modal"]');
+  var closeTriggers = dialog.querySelectorAll('[data-close-modal]');
+
+  function openModal() {
+    formStep.hidden = false;
+    successStep.hidden = true;
+    dialog.showModal();
+    document.body.classList.add('modal-open');
+    requestAnimationFrame(function () {
+      dialog.classList.add('is-visible');
+    });
+  }
+
+  function closeModal() {
+    dialog.classList.remove('is-visible');
+    document.body.classList.remove('modal-open');
+    window.setTimeout(function () {
+      dialog.close();
+    }, 250);
+  }
+
+  openTriggers.forEach(function (btn) { btn.addEventListener('click', openModal); });
+  closeTriggers.forEach(function (btn) { btn.addEventListener('click', closeModal); });
+
+  dialog.addEventListener('click', function (e) {
+    if (e.target === dialog) closeModal();
+  });
+
+  dialog.addEventListener('cancel', function (e) {
+    e.preventDefault();
+    closeModal();
+  });
+
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = form.querySelector('#dc-name').value.trim();
+      successName.textContent = name ? name.split(' ')[0] : 'there';
+      formStep.hidden = true;
+      successStep.hidden = false;
+      form.reset();
+    });
+  }
+});
