@@ -128,7 +128,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('DOMContentLoaded', function () {
   var dialog = document.getElementById('discovery-modal');
-  if (!dialog) return;
+  var backdrop = document.getElementById('discovery-modal-backdrop');
+  if (!dialog || !backdrop) return;
 
   var form        = document.getElementById('discovery-form');
   var formStep    = dialog.querySelector('[data-step="form"]');
@@ -136,45 +137,243 @@ document.addEventListener('DOMContentLoaded', function () {
   var successName = document.getElementById('dc-success-name');
   var openTriggers = document.querySelectorAll('[data-open-modal="discovery-modal"]');
   var closeTriggers = dialog.querySelectorAll('[data-close-modal]');
+  var lastFocused = null;
+
+  function focusableElements() {
+    var els = dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    return Array.prototype.filter.call(els, function (el) { return el.offsetParent !== null; });
+  }
+
+  function trapFocus(e) {
+    if (e.key !== 'Tab') return;
+    var els = focusableElements();
+    if (!els.length) return;
+    var first = els[0];
+    var last = els[els.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  }
+
+  function handleKeydown(e) {
+    if (e.key === 'Escape') closeModal();
+    else trapFocus(e);
+  }
 
   function openModal() {
     formStep.hidden = false;
     successStep.hidden = true;
-    dialog.showModal();
+    if (form) {
+      form.querySelectorAll('.has-error').forEach(function (el) { el.classList.remove('has-error'); });
+      form.querySelectorAll('.field-error').forEach(function (el) { el.textContent = ''; });
+      var formError = document.getElementById('dc-form-error');
+      if (formError) formError.hidden = true;
+    }
+    lastFocused = document.activeElement;
+    dialog.show();
     document.body.classList.add('modal-open');
+    document.addEventListener('keydown', handleKeydown);
     requestAnimationFrame(function () {
       dialog.classList.add('is-visible');
+      backdrop.classList.add('is-visible');
+      var els = focusableElements();
+      if (els.length) els[0].focus();
     });
   }
 
   function closeModal() {
     dialog.classList.remove('is-visible');
+    backdrop.classList.remove('is-visible');
     document.body.classList.remove('modal-open');
+    document.removeEventListener('keydown', handleKeydown);
     window.setTimeout(function () {
       dialog.close();
+      if (lastFocused) lastFocused.focus();
     }, 250);
   }
 
-  openTriggers.forEach(function (btn) { btn.addEventListener('click', openModal); });
-  closeTriggers.forEach(function (btn) { btn.addEventListener('click', closeModal); });
-
-  dialog.addEventListener('click', function (e) {
-    if (e.target === dialog) closeModal();
+  openTriggers.forEach(function (btn) {
+    btn.addEventListener('click', openModal);
+  });
+  closeTriggers.forEach(function (btn) {
+    btn.addEventListener('click', closeModal);
   });
 
-  dialog.addEventListener('cancel', function (e) {
-    e.preventDefault();
-    closeModal();
-  });
+  backdrop.addEventListener('click', closeModal);
 
-  if (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var name = form.querySelector('#dc-name').value.trim();
-      successName.textContent = name ? name.split(' ')[0] : 'there';
-      formStep.hidden = true;
-      successStep.hidden = false;
-      form.reset();
+// document.addEventListener('DOMContentLoaded', function () {
+//   var dialog = document.getElementById('discovery-modal');
+//   if (!dialog) return;
+
+//   var form        = document.getElementById('discovery-form');
+//   var formStep    = dialog.querySelector('[data-step="form"]');
+//   var successStep = dialog.querySelector('[data-step="success"]');
+//   var successName = document.getElementById('dc-success-name');
+//   var openTriggers = document.querySelectorAll('[data-open-modal="discovery-modal"]');
+//   var closeTriggers = dialog.querySelectorAll('[data-close-modal]');
+
+//   // function openModal() {
+//   //   formStep.hidden = false;
+//   //   successStep.hidden = true;
+//   //   dialog.showModal();
+//   //   document.body.classList.add('modal-open');
+//   //   requestAnimationFrame(function () {
+//   //     dialog.classList.add('is-visible');
+//   //   });
+//   // }
+
+//   function openModal() {
+//   formStep.hidden = false;
+//   successStep.hidden = true;
+//   if (form) {
+//     form.querySelectorAll('.has-error').forEach(function (el) { el.classList.remove('has-error'); });
+//     form.querySelectorAll('.field-error').forEach(function (el) { el.textContent = ''; });
+//     var formError = document.getElementById('dc-form-error');
+//     if (formError) formError.hidden = true;
+//   }
+//   dialog.showModal();
+//   document.body.classList.add('modal-open');
+//   requestAnimationFrame(function () {
+//     dialog.classList.add('is-visible');
+//   });
+// }
+
+//   function closeModal() {
+//     dialog.classList.remove('is-visible');
+//     document.body.classList.remove('modal-open');
+//     window.setTimeout(function () {
+//       dialog.close();
+//     }, 250);
+//   }
+
+//   openTriggers.forEach(function (btn) { btn.addEventListener('click', openModal); });
+//   closeTriggers.forEach(function (btn) { btn.addEventListener('click', closeModal); });
+
+//   dialog.addEventListener('click', function (e) {
+//     if (e.target === dialog) closeModal();
+//   });
+
+//   dialog.addEventListener('cancel', function (e) {
+//     e.preventDefault();
+//     closeModal();
+//   });
+   
+
+   var FIELD_RULES = {
+  'dc-name':    function (v) { return v.trim().length > 0; },
+  'dc-email':   function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); },
+  'dc-phone':   function (v) { return v.trim().length > 0; },
+  'dc-details': function (v) { return v.trim().length >= 20; }
+};
+var FIELD_MESSAGES = {
+  'dc-name': 'Please enter your name.',
+  'dc-email': 'Please enter a valid email address.',
+  'dc-phone': 'Please enter a phone number.',
+  'dc-details': 'Please add a little more detail (at least 20 characters).'
+};
+
+function validateField(input) {
+  var rule = FIELD_RULES[input.id];
+  if (!rule) return true;
+  var isValid = rule(input.value);
+  var errorEl = form.querySelector('[data-error-for="' + input.id + '"]');
+  input.classList.toggle('has-error', !isValid);
+  if (errorEl) errorEl.textContent = isValid ? '' : FIELD_MESSAGES[input.id];
+  return isValid;
+}
+
+if (form) {
+  Object.keys(FIELD_RULES).forEach(function (id) {
+    var input = form.querySelector('#' + id);
+    if (!input) return;
+    input.addEventListener('blur', function () { validateField(input); });
+    input.addEventListener('input', function () {
+      if (input.classList.contains('has-error')) validateField(input);
     });
-  }
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var formError = document.getElementById('dc-form-error');
+    formError.hidden = true;
+
+    var honeypot = form.querySelector('[name="botcheck"]');
+    if (honeypot && honeypot.checked) return;
+
+    var allValid = true;
+    Object.keys(FIELD_RULES).forEach(function (id) {
+      var input = form.querySelector('#' + id);
+      if (input && !validateField(input)) allValid = false;
+    });
+    if (!allValid) return;
+
+    var hCaptchaField = form.querySelector('textarea[name="h-captcha-response"]');
+    if (hCaptchaField && !hCaptchaField.value) {
+      formError.textContent = 'Please complete the captcha before submitting.';
+      formError.hidden = false;
+      return;
+    }
+
+    var nameVal = form.querySelector('#dc-name').value.trim();
+    document.getElementById('dc-subject').value = 'New website inquiry from ' + nameVal;
+
+    var submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: new FormData(form)
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (result) {
+        if (result.success) {
+          successName.textContent = nameVal ? nameVal.split(' ')[0] : 'there';
+          formStep.hidden = true;
+          successStep.hidden = false;
+          form.reset();
+        } else {
+          formError.textContent = 'Something went wrong sending your request — please try again, or call us directly.';
+          formError.hidden = false;
+        }
+      })
+      .catch(function () {
+        formError.textContent = 'Something went wrong sending your request — please try again, or call us directly.';
+        formError.hidden = false;
+      })
+      .finally(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Request Discovery Call';
+      });
+  });
+}
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  var track = document.getElementById('why-rayla-carousel');
+  if (!track) return;
+
+  var paused = false;
+  track.addEventListener('mouseenter', function () { paused = true; });
+  track.addEventListener('mouseleave', function () { paused = false; });
+  track.addEventListener('touchstart', function () { paused = true; }, { passive: true });
+  track.addEventListener('touchend', function () {
+    window.setTimeout(function () { paused = false; }, 2000);
+  }, { passive: true });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+
+  window.setInterval(function () {
+    if (paused) return;
+    var slide = track.querySelector('.carousel-slide');
+    if (!slide) return;
+    var step = slide.getBoundingClientRect().width + 24;
+    var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
+    track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + step, behavior: 'smooth' });
+  }, 3500);
 });
