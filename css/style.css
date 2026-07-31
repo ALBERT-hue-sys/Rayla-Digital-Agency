@@ -301,7 +301,7 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
 
     transition:var(--transition);
     display:flex;
-
+    height: 100%;
     flex-direction:column;
 
     border:1px solid rgba(0,0,0,.05);
@@ -336,35 +336,41 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
 
     border-radius:var(--radius-md);
 
-    background:rgba(184,146,58,.08);
+    /* background:rgba(184,146,58,.08);
     color:var(--gold);
-    font-size:26px;
+    font-size:26px; */
 
     margin-bottom:18px;
 
     transition:.35s;
 
 }
-
+.service-icon i{
+  font-size: 1.5rem;
+}
 .services-feature-card:hover .service-icon{
 
-    background:var(--gold);
+    /* background:var(--gold); */
 
     color:var(--black);
 
-    transform:rotate(-8deg);
+    transform:rotate(-9deg);
 
 }
-/* 
+
 .services-feature-card h3{
+    margin: 0 0 1.4rem;
 
     font-size:2rem;
 
-    line-height:1.2;
+    line-height:1.3;
 
     margin-bottom:20px;
 
-} */
+    min-height: 3rem;
+
+
+} 
 
 .service-tags{
 
@@ -372,7 +378,9 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
 
     flex-wrap:wrap;
 
-    gap:10px;
+    gap:.8rem;
+
+
 
 }
 
