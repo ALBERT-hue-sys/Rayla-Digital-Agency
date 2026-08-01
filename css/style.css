@@ -569,7 +569,9 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
 }
 .work-overlay {
   position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(180deg, rgba(11,11,10,0.88), rgba(11,11,10,0.82));
+  background: linear-gradient(180deg, rgba(11,11,10,0.65), rgba(11,11,10,0.55));
+
+  /* background: linear-gradient(180deg, rgba(11,11,10,0.88), rgba(11,11,10,0.82)); */
 }
 .pill-cloud { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .pill-cloud span {
