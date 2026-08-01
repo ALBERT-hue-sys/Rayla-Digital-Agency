@@ -562,11 +562,44 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
   background: var(--white);
 } */
 /* --------------------------- Industries / Brands ------------------------ */
-.work-bg {
+/* .work-bg {
   position: relative; isolation: isolate;
   background-image: url('../assests/images/ry.JPEG');
   background-size: cover; background-position: center;
+} */
+/* .work-bg {
+  position: relative;
+  background-image: url("../assests/images/banner-desktop.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+} */
+
+/* Desktop (default) */
+.work-bg {
+  position: relative;
+  isolation: isolate;
+
+  background-image: url("../assests/images/banner-desktop.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
+
+/* Large tablets / small laptops */
+@media (max-width: 1440px) {
+  .work-bg {
+    background-image: url("../assests/images/banner-tablet.webp");
+  }
+}
+
+/* Tablets and phones */
+@media (max-width: 768px) {
+  .work-bg {
+    background-image: url("../assests/images/banner-mobile.webp");
+  }
+}
+
 .work-overlay {
   position: absolute; inset: 0; z-index: -1;
   background: linear-gradient(180deg, rgba(11,11,10,0.65), rgba(11,11,10,0.55));
@@ -947,13 +980,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 }
 
-.why-rayla-content p{
-
-    color:var(--mid-grey);
-    font-size:1rem;
-    margin-bottom:2rem;
-
-}
 
 /* ---------------- RIGHT ---------------- */
 
