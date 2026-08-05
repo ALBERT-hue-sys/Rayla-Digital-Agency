@@ -383,7 +383,6 @@ body.nav-open { overflow: hidden; }
 @media (max-width:480px){
   .shatter-grid{
     max-width: 260px;
-    gap: 4px;
   }
 }
 /* .hero {
