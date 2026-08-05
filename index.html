@@ -13,7 +13,6 @@
 
 <!-- Font Awesome (icons only — no images depend on this) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -24,8 +23,6 @@
 <header class="site-header" id="top">
   <div class="container header-inner">
     <a href="#top" class="logo"><img src="assests/images/RAYLALOGO2.png" alt="Rayla Digital Agency"></a>
-    <!-- <a href="#top" class="logo"><img src="IMAGES/LOGO.JPEG" alt=""></a> -->
-
     <input type="checkbox" id="nav-toggle" class="nav-toggle">
     <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle menu">
       <span></span>
@@ -41,7 +38,6 @@
         <li><a href="#contact">Contact</a></li>
       </ul>
       <button type="button" class="btn btn-gold btn-sm nav-cta" data-open-modal="discovery-modal">Book a Consultation</button>
-      <!-- <a href="tel:0746065441" class="btn btn-gold btn-sm nav-cta">Book a Discovery Call</a> -->
     </nav>
   </div>
 </header>
@@ -56,10 +52,14 @@
      moment — and its echo in the "Why Rayla" section — carries the design. -->
 <section class="hero" id="home">
   <div class="hero-media" aria-hidden="true">
-    <img src="assests/images/rayla-hero-bg.jpg" alt="" class="hero-media-img">
+        <img src="assests/images/rayla-hero-bg.jpg" alt="" class="hero-media-img">
+
+    <!-- <img src="assests/images/rayla-hero-bg.jpg" alt="" class="hero-media-img"> -->
     <div class="hero-media-overlay"></div>
   </div>
-  
+
+  <div class="hero-layout">
+    
   <div class="container hero-inner">
     <p class="eyebrow reveal" style="--d:0">Creative Marketing Agency — Kampala, Uganda</p>
     <h1 class="hero-title reveal" style="--d:1">Marketing That People <span class="text-gold">Actually</span> Pay Attention To.</h1>
@@ -70,6 +70,9 @@
       <!-- <a href="tel:0746065441" class="btn btn-gold">Book a Discovery Call <i class="fa-solid fa-arrow-right"></i></a> -->
       <a href="#work" class="btn btn-outline-light">See Our Work</a>
     </div>
+    
+  </div>
+   
   </div>
 </section>
 
@@ -103,16 +106,23 @@
       <p>Rayla Digital Agency is a creative marketing agency based in Kampala, Uganda. Every project starts with one question: what will make this audience care? That thinking shapes everything we make — work built for real business impact, not just more content.</p>
     </div>
     <div class="who-media">
-      <!-- Slow-drifting photo collage — placeholder set until real
-           agency photos are supplied; swap the four img src values
-           for real ones later, nothing else needs to change. -->
-      <div class="photo-collage">
-        <div class="collage-item collage-item-1"><img src="assests/images/rayla-photo-workspace-overhead.jpeg" alt="" loading="lazy"></div>
-        <div class="collage-item collage-item-2"><img src="assests/images/rayla-photo-studio-setup.jpeg" alt="" loading="lazy"></div>
-        <div class="collage-item collage-item-3"><img src="assests/images/rayla-photo-meeting.jpeg" alt="" loading="lazy"></div>
-        <div class="collage-item collage-item-4"><img src="assests/images/rayla-photo-journal-flatlay.jpeg" alt="" loading="lazy"></div>
+      
+      <div class="shatter-grid">
+        <div class="shatter-piece" style="--col:0; --row:0;"></div>
+        <div class="shatter-piece" style="--col:1; --row:0;"></div>
+        <div class="shatter-piece" style="--col:2; --row:0;"></div>
+        <div class="shatter-piece" style="--col:0; --row:1;"></div>
+        <div class="shatter-piece" style="--col:1; --row:1;"></div>
+        <div class="shatter-piece" style="--col:2; --row:1;"></div>
+        <div class="shatter-piece" style="--col:0; --row:2;"></div>
+        <div class="shatter-piece" style="--col:1; --row:2;"></div>
+        <div class="shatter-piece" style="--col:2; --row:2;"></div>
+        <div class="shatter-piece" style="--col:0; --row:3;"></div>
+        <div class="shatter-piece" style="--col:1; --row:3;"></div>
+        <div class="shatter-piece" style="--col:2; --row:3;"></div>
       </div>
     </div>
+    
   </div>
   <div class="container">
     <div class="vm-grid">
@@ -127,7 +137,6 @@
         <p>To help brands grow by creating strategic, audience-driven content that delivers measurable business results.</p>
       </div>
     </div>
-  </div>
 </section>
 
 
