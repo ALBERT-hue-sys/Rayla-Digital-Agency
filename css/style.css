@@ -594,12 +594,7 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
   .service-card h3 { font-size: 0.82rem; }
   .service-card p { font-size: 0.66rem; -webkit-line-clamp: 3; }
 }
-/* @media (max-width: 640px) {
-  .what-we-do .card-grid { gap: 1rem; }
-  .service-card { padding: 1.1rem; }
-  .service-card h3 { font-size: 1.05rem; }
-  .service-card p { font-size: 0.86rem; }
-} */
+
 
 .services-feature-card{
 
@@ -646,10 +641,7 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
 
     border-radius:var(--radius-md);
 
-    /* background:rgba(184,146,58,.08);
-    color:var(--gold);
-    font-size:26px; */
-
+  
     margin-bottom:18px;
 
     transition:.35s;
