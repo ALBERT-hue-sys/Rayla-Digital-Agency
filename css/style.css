@@ -319,11 +319,16 @@ body.nav-open { overflow: hidden; }
 }
 
 /* WHO-MEDIA */
-/* .who-media{
+.who-media{
   display: flex;
   justify-content: center;
   align-items: center;
-} */
+  perspective: 1200px;
+  padding: 30px;
+  overflow: hidden;
+}
+/*  */
+
 .shatter-grid{
   --shatter-img: url("../assests/images/hero-desktop.webp");
   --cols: 3;
@@ -340,6 +345,18 @@ body.nav-open { overflow: hidden; }
   grid-template-columns: repeat(var(--cols), 1fr);
   grid-template-rows: repeat(var(--rows), 1fr);
   transform: rotate(-10deg);
+  transform: rotateX(8deg) rotateY(-24deg);
+  transform-style: preserve-3d;
+  animation: float 5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100%{
+    transform: rotateX(8deg) rotateY(-24deg) translateY(0)
+  }
+  50%{
+    transform:rotateX(8deg) rotateY(-12deg) translateY(-8px)
+  }
 }
 .shatter-piece{
   background-image: var(--shatter-img);
@@ -352,9 +369,13 @@ body.nav-open { overflow: hidden; }
   box-shadow: 0 12px 28px rgba(0, 0, 0,.18);
   /* transition: transform 0.4s ease; */
   border-radius: 20px;
-  transition: transform .35s ease,box-shadow .35s ease;
+  /* transition: transform .35s ease,box-shadow .35s ease; */
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .2);
 
 }
+
+
 
 .shatter-piece:hover{
   transform: translateY(-2px);
@@ -470,6 +491,87 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
 }
 .service-card:hover { transform: translateY(-6px); box-shadow: 0 18px 32px rgba(0,0,0,0.08); border-color: var(--gold-soft); }
 .service-card p { font-size: 0.92rem; color: var(--mid-grey); margin-bottom: 0; } */
+
+/* .service-card {
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  transition: transform var(--transition), box-shadow var(--transition);
+  min-width: 0;
+
+}
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 32px rgba(0,0,0,0.08);
+}
+.service-card h3 { margin-bottom: 0.6rem; }
+.service-card p { font-size: 0.92rem; margin-bottom: 0; } */
+
+.service-card {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  min-width: 0;
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.service-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 32px rgba(0,0,0,0.08);
+}
+.service-card h3 { margin-bottom: 0.5rem; }
+.service-card p {
+  font-size: 0.86rem;
+  margin-bottom: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.service-card:nth-child(odd) {
+  background: var(--white);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+.service-card:nth-child(odd) p { color: var(--mid-grey); }
+
+.service-card:nth-child(even) {
+  background: var(--gold);
+}
+.service-card:nth-child(even) p { color: rgba(11,11,10,0.72); }
+
+@media (max-width: 480px) {
+  .what-we-do .five-col { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1025px) {
+  .service-card {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-md);
+  }
+  .service-card p { font-size: 0.86rem; }
+}
+@media (max-width: 640px) {
+  .what-we-do .card-grid { gap: 0.75rem; }
+  .service-card { padding: 0.85rem; }
+  .service-card h3 { font-size: 0.92rem; margin-bottom: 0.3rem; }
+  .service-card p { font-size: 0.72rem; -webkit-line-clamp: 4; }
+}
+@media (max-width: 480px) {
+  .service-card { padding: 0.7rem; }
+  .service-card h3 { font-size: 0.82rem; }
+  .service-card p { font-size: 0.66rem; -webkit-line-clamp: 3; }
+}
+/* @media (max-width: 640px) {
+  .what-we-do .card-grid { gap: 1rem; }
+  .service-card { padding: 1.1rem; }
+  .service-card h3 { font-size: 1.05rem; }
+  .service-card p { font-size: 0.86rem; }
+} */
 
 .services-feature-card{
 
