@@ -297,9 +297,9 @@ body.nav-open { overflow: hidden; }
 
 @media (max-width:900px){
   .hero-layout{
-      flex-direction:column;
-      text-align:center;
-  }
+    flex-direction:column;
+    text-align:left;
+}
 }
 
 /* WHO-MEDIA */
