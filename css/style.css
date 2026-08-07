@@ -827,19 +827,6 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
     gap:32px;
 
 }
-/* .service-row { display: grid; grid-template-columns: 300px 1fr; gap: 2rem; padding: 2rem 0; border-top: var(--border-light); align-items: start; }
-.service-row:last-child { border-bottom: var(--border-light); }
-.service-row-head { display: flex; align-items: center; gap: 1rem; }
-.service-row-head h3 { margin: 0; }
-.tag-list { display: flex; flex-wrap: wrap; gap: 0.6rem; align-content: flex-start; }
-.tag-list span {
-  background: var(--light-grey); border-radius: var(--radius-full);
-  padding: 0.5rem 1rem; font-size: 0.84rem; font-weight: 500;
-}
-.platform-list span { display: inline-flex; align-items: center; gap: 0.5rem; }
-.platform-list i { color: var(--gold-dark); }
-.service-desc { font-size: 0.95rem; color: var(--mid-grey); align-self: center; margin-bottom: 0; } */
-
 /* ------------------------------ Process ------------------------------ */
 /* numbered on purpose: this is a genuine sequence, in the brief's own order */
 .process-track { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; position: relative; }
