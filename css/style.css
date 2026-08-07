@@ -296,25 +296,9 @@ body.nav-open { overflow: hidden; }
 ========================================= */
 
 @media (max-width:900px){
-
   .hero-layout{
       flex-direction:column;
       text-align:center;
-  }
-
-  .hero-image{
-      transform:none;
-      width:100%;
-      max-width:500px;
-  }
-
-  .hero-image::before,
-  .hero-image::after{
-      display:none;
-  }
-
-  .hero-image img{
-      height:380px;
   }
 }
 
@@ -383,8 +367,10 @@ body.nav-open { overflow: hidden; }
   /* filter: drop-shadow(0 8px 14px rgba(184, 146, 58, 0.25)); */
 }
 @media (prefers-reduced-motion: reduce){
+  .shatter-grid { animation: none;}
   .shatter-piece { transition: none;}
   .shatter-piece:hover{transform: none;}
+  
 }
 
 @media (max-width: 1200px){
@@ -587,12 +573,12 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
   .what-we-do .card-grid { gap: 0.75rem; }
   .service-card { padding: 0.85rem; }
   .service-card h3 { font-size: 0.92rem; margin-bottom: 0.3rem; }
-  .service-card p { font-size: 0.72rem; -webkit-line-clamp: 4; }
+  .service-card p { font-size: 0.72rem; }
 }
 @media (max-width: 480px) {
   .service-card { padding: 0.7rem; }
   .service-card h3 { font-size: 0.82rem; }
-  .service-card p { font-size: 0.66rem; -webkit-line-clamp: 3; }
+  .service-card p { font-size: 0.66rem; }
 }
 
 .services-feature-card {
@@ -664,9 +650,7 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
   background: rgba(184,146,58,.08);
   color: var(--gold);
 }
-/* ---------------------------- Why Rayla ----------------------------- */
-.statement { max-width: 760px; font-size: clamp(1.75rem, 1.3rem + 1.9vw, 2.5rem); margin-bottom: 2.75rem; }
-/* small echo of the hero motif, right at the word it describes */
+/* ---------------------------- Why Rayla ----------------------------- /* small echo of the hero motif, right at the word it describes */
 .noise-word { position: relative; }
 .noise-word::after {
   content: ''; position: absolute; left: 100%; top: 45%; margin-left: 12px;
@@ -678,9 +662,7 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
               4px -10px 0 -1.2px var(--gold-soft);
   opacity: 0.75;
 }
-.pillars { display: flex; flex-wrap: wrap; gap: 2.25rem; margin-bottom: 2rem; }
-.pillar { display: flex; align-items: center; gap: 0.7rem; font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; }
-.pillar i { color: var(--gold); font-size: 1.15rem; flex-shrink: 0; }
+
 .values-footer { font-style: italic; color: var(--mid-grey); margin-bottom: 0; }
 .carousel-track-wrap { overflow: hidden; padding: var(--space-xl) 0; }
 .carousel-track {
@@ -707,8 +689,6 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
 @media (max-width: 640px) { .carousel-slide { width: 82vw; } }
 
 /* ------------------------------ About ------------------------------ */
-.about-grid { max-width: 740px; margin-bottom: 2.75rem; }
-.about-lead { font-size: 1.08rem; }
 .vm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; }
 /* .vm-card {
   background: var(--light-grey); border-top: 3px solid var(--gold);
@@ -729,27 +709,11 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
 }
 .vm-card i { font-size: 1.5rem; color: var(--gold-dark); margin-bottom: 0.75rem; display: block; }
 .vm-card p { margin-bottom: 0; }
-.photo-collage { position: relative; width: 100%; aspect-ratio: 4 / 5; }
-.collage-item {
-  position: absolute; border-radius: var(--radius-md); overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.14); border: 6px solid var(--white);
-}
-.collage-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.collage-item-1 { top: 0; left: 0; width: 62%; height: 56%; z-index: 2; animation: drift-a 9s ease-in-out infinite; }
-.collage-item-2 { top: 6%; right: 0; width: 48%; height: 44%; z-index: 3; animation: drift-b 11s ease-in-out infinite; }
-.collage-item-3 { bottom: 0; left: 8%; width: 46%; height: 42%; z-index: 3; animation: drift-c 10s ease-in-out infinite; }
-.collage-item-4 { bottom: 2%; right: 4%; width: 40%; height: 38%; z-index: 4; animation: drift-b 12.5s ease-in-out infinite reverse; }
-@keyframes drift-a { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-@keyframes drift-b { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
-@keyframes drift-c { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-@media (prefers-reduced-motion: reduce) { .collage-item { animation: none; } }
+
 
 /* ------------------------------ Values ------------------------------ */
 /* deliberately unnumbered: these five aren't a sequence, so an icon
    carries each one instead of an arbitrary 01-05 */
-.value-card { background: var(--white); border-radius: var(--radius-md); padding: 1.75rem; border: var(--border-light); }
-.value-icon { font-size: 1.7rem; color: var(--gold-dark); margin-bottom: 1rem; display: block; }
-.value-card p { font-size: 0.92rem; color: var(--mid-grey); margin-bottom: 0; }
 
 /* --------------------------- Services detail -------------------------- */
 .services-grid{
@@ -1024,31 +988,19 @@ dialog.modal.is-visible { opacity: 1; transform: scale(1) translateY(0); }
 }
 .fade-up.is-visible { opacity: 1; transform: translateY(0); }
 
-.value-card, .vm-card, .team-card {
+.vm-card, .team-card {
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
-.value-card:hover, .vm-card:hover, .team-card:hover {
+.vm-card:hover, .team-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 18px 32px rgba(0,0,0,0.08);
   border-color: var(--gold-soft);
 }
 
-.icon-badge { transition: transform var(--transition), background var(--transition), color var(--transition); }
-/* .service-card:hover .icon-badge { background: var(--gold); color: var(--black); transform: scale(1.08) rotate(-4deg); } */
-
-.value-icon { transition: transform var(--transition), color var(--transition); display: inline-block; }
-.value-card:hover .value-icon { color: var(--gold); transform: scale(1.1); }
-
-.pillar { transition: transform var(--transition); }
-.pillar i { transition: transform var(--transition); display: inline-block; }
-.pillar:hover { transform: translateX(4px); }
-.pillar:hover i { transform: scale(1.15); }
 
 .step-num { transition: transform var(--transition), box-shadow var(--transition); }
 .process-step:hover .step-num { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(184,146,58,0.18); }
 
-.img-placeholder { transition: transform var(--transition), border-color var(--transition); }
-.img-placeholder:hover { transform: scale(1.015); border-color: var(--gold); }
 
 /* .brand-logo-placeholder { transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition); } */
 /* .brand-logo-placeholder:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 12px 24px rgba(0,0,0,0.06); } */
@@ -1076,11 +1028,10 @@ dialog.modal.is-visible { opacity: 1; transform: scale(1) translateY(0); }
 @media (prefers-reduced-motion: reduce) {
   .fade-up { opacity: 1; transform: none; transition: none; }
   .noise-word::after { animation: none; }
-  .value-card:hover, .vm-card:hover, .team-card:hover,
-  .img-placeholder:hover,
+  .vm-card:hover, .team-card:hover,
   .team-card:hover .team-photo img, .pillar:hover, .pillar:hover i,
   /* .team-card:hover .avatar, .pillar:hover, .pillar:hover i, */
-  .service-card:hover .icon-badge, .value-card:hover .value-icon,
+  .service-card:hover .icon-badge,
   .process-step:hover .step-num, .btn:active {
     transform: none;
   }
@@ -1125,7 +1076,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .four-col { grid-template-columns: repeat(2, 1fr); }
   .process-track { grid-template-columns: repeat(3, 1fr); row-gap: 2.5rem; }
   .process-track::before { display: none; }
-  .service-row { grid-template-columns: 1fr; }
 
   .two-col { grid-template-columns: 1fr; }
   .who-media { order: -1; }
@@ -1153,7 +1103,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .hero-actions { flex-direction: column; align-items: flex-start; }
   .noise-word::after { display: none; }
   .hero-title { font-size: clamp(1.9rem, 1.3rem + 4.5vw, 2.6rem); }
-  .service-row-head { flex-wrap: wrap; }
 
   .services-grid{
 
