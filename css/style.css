@@ -595,141 +595,75 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
   .service-card p { font-size: 0.66rem; -webkit-line-clamp: 3; }
 }
 
-
-.services-feature-card{
-
-    background:var(--white);
-
-    border-radius:var(--radius-lg);
-
-    padding:var(--space-lg);
-
-    transition:var(--transition);
-    display:flex;
-    height: 100%;
-    flex-direction:column;
-
-    border:1px solid rgba(0,0,0,.05);
-
-    box-shadow:0 10px 35px rgba(0,0,0,.05);
-
-   
-
+.services-feature-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  transition: var(--transition);
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 10px 35px rgba(0,0,0,.05);
+}
+.services-feature-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--gold);
+  box-shadow: 0 22px 55px rgba(0,0,0,.08);
 }
 
-.services-feature-card:hover{
-
-    transform:translateY(-8px);
-
-    border-color:var(--gold);
-
-    box-shadow:0 22px 55px rgba(0,0,0,.08);
-
+.service-icon {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: rgba(184,146,58,.08);
+  color: var(--gold);
+  margin-bottom: 14px;
+  transition: .35s;
+}
+.service-icon svg,
+.service-icon i {
+  width: 22px;
+  height: 22px;
+  font-size: 1.1rem;
+}
+.services-feature-card:hover .service-icon {
+  background: var(--gold);
+  color: var(--black);
+  transform: rotate(-9deg);
 }
 
-.service-icon{
-
-    width:58px;
-
-    height:58px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    border-radius:var(--radius-md);
-
-  
-    margin-bottom:18px;
-
-    transition:.35s;
-
-}
-.service-icon i{
-  font-size: 1.5rem;
-}
-.services-feature-card:hover .service-icon{
-
-    /* background:var(--gold); */
-
-    color:var(--black);
-
-    transform:rotate(-9deg);
-
+.services-feature-card h3 {
+  font-size: 1.25rem;
+  line-height: 1.3;
+  margin-bottom: 0.85rem;
+  min-height: 2.1rem;
 }
 
-.services-feature-card h3{
-    margin: 0 0 1.4rem;
-
-    font-size:2rem;
-
-    line-height:1.3;
-
-    margin-bottom:20px;
-
-    min-height: 3rem;
-
-
-} 
-
-.service-tags{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:.8rem;
-
-
-
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
 }
-
-.service-tags span{
-
-    display:flex;
-
-    flex-wrap: wrap;
-
-    align-items:center;
-
-    gap:8px;
-
-    padding:8px 14px;
-
-   
-
-    background:var(--light-grey);
-
-    color:var(--mid-grey);
-
-
-
-    border-radius:999px;
-
-    font-size:.82rem;
-
-    
-
-    transition:.25s;
-
+.service-tags span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: var(--light-grey);
+  color: var(--mid-grey);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  transition: .25s;
 }
-
-.service-tags span i{
-
-    color:var(--gold);
-
+.service-tags span i { color: var(--gold); }
+.services-feature-card:hover .service-tags span {
+  background: rgba(184,146,58,.08);
+  color: var(--gold);
 }
-
-.services-feature-card:hover .service-tags span{
-
-    background:rgba(184,146,58,.08);
-
-    color:var(--gold);
-
-}
-
 /* ---------------------------- Why Rayla ----------------------------- */
 .statement { max-width: 760px; font-size: clamp(1.75rem, 1.3rem + 1.9vw, 2.5rem); margin-bottom: 2.75rem; }
 /* small echo of the hero motif, right at the word it describes */
@@ -790,6 +724,8 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
   padding: 2rem;
 
   box-shadow: 0 10px 24px rgba(0,0,0,.05);
+
+  border-radius:var(--radius-lg) ;
 }
 .vm-card i { font-size: 1.5rem; color: var(--gold-dark); margin-bottom: 0.75rem; display: block; }
 .vm-card p { margin-bottom: 0; }
@@ -824,7 +760,7 @@ Still not able to restore your session? Sometimes a tab is causing the issue. Vi
 
     justify-content:center;
 
-    gap:32px;
+    gap:24px;
 
 }
 /* ------------------------------ Process ------------------------------ */
