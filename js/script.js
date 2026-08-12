@@ -354,8 +354,14 @@ if (form) {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+  var wrap = document.querySelector('.carousel-track-wrap');
   var track = document.getElementById('why-rayla-carousel');
-  if (!track) return;
+  var dotsWrap = document.getElementById('why-rayla-dots');
+  if (!track || !wrap) return;
+
+  var slides = Array.prototype.slice.call(track.querySelectorAll('.carousel-slide'));
+  var prevBtn = wrap.querySelector('.carousel-arrow-prev');
+  var nextBtn = wrap.querySelector('.carousel-arrow-next');
 
   var paused = false;
   track.addEventListener('mouseenter', function () { paused = true; });
@@ -365,14 +371,70 @@ document.addEventListener('DOMContentLoaded', function () {
     window.setTimeout(function () { paused = false; }, 2000);
   }, { passive: true });
 
+  function stepWidth() {
+    var slide = track.querySelector('.carousel-slide');
+    if (!slide) return 0;
+    var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    return slide.getBoundingClientRect().width + gap;
+  }
+
+  var resumeTimer;
+  function pauseThenResume() {
+    paused = true;
+    window.clearTimeout(resumeTimer);
+    resumeTimer = window.setTimeout(function () { paused = false; }, 2500);
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function () {
+      track.scrollBy({ left: stepWidth(), behavior: 'smooth' });
+      pauseThenResume();
+    });
+  }
+  if (prevBtn) {
+    prevBtn.addEventListener('click', function () {
+      track.scrollBy({ left: -stepWidth(), behavior: 'smooth' });
+      pauseThenResume();
+    });
+  }
+
+  var dots = [];
+  if (dotsWrap && slides.length) {
+    slides.forEach(function (_, i) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'carousel-dot';
+      dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+      dot.addEventListener('click', function () {
+        track.scrollTo({ left: stepWidth() * i, behavior: 'smooth' });
+        pauseThenResume();
+      });
+      dotsWrap.appendChild(dot);
+      dots.push(dot);
+    });
+
+    if ('IntersectionObserver' in window) {
+      var dotObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+            var index = slides.indexOf(entry.target);
+            dots.forEach(function (d, i) { d.classList.toggle('is-active', i === index); });
+          }
+        });
+      }, { root: track, threshold: [0.6] });
+      slides.forEach(function (s) { dotObserver.observe(s); });
+    } else {
+      dots[0].classList.add('is-active');
+    }
+  }
+
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion) return;
 
   window.setInterval(function () {
     if (paused) return;
-    var slide = track.querySelector('.carousel-slide');
-    if (!slide) return;
-    var step = slide.getBoundingClientRect().width + 24;
+    var step = stepWidth();
+    if (!step) return;
     var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
     track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + step, behavior: 'smooth' });
   }, 3500);
