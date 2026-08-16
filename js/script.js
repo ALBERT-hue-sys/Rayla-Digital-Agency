@@ -307,16 +307,12 @@ document.addEventListener('DOMContentLoaded', function () {
   var nextBtn = wrap.querySelector('.carousel-arrow-next');
 
   var paused = false;
-  function setPaused(state) {
-    paused = state;
-    track.classList.toggle('is-autoplaying', !state);
-  }
-
-  track.addEventListener('mouseenter', function () { setPaused(true); });
-  track.addEventListener('mouseleave', function () { setPaused(false); });
-  track.addEventListener('touchstart', function () { setPaused(true); }, { passive: true });
+  var direction = 1;
+  track.addEventListener('mouseenter', function () { paused = true; });
+  track.addEventListener('mouseleave', function () { paused = false; });
+  track.addEventListener('touchstart', function () { paused = true; }, { passive: true });
   track.addEventListener('touchend', function () {
-    window.setTimeout(function () { setPaused(false); }, 2000);
+    window.setTimeout(function () { paused = false; }, 2000);
   }, { passive: true });
 
   function stepWidth() {
@@ -328,9 +324,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var resumeTimer;
   function pauseThenResume() {
-    setPaused(true);
+    paused = true;
     window.clearTimeout(resumeTimer);
-    resumeTimer = window.setTimeout(function () { setPaused(false); }, 2500);
+    resumeTimer = window.setTimeout(function () { paused = false; }, 2500);
   }
 
   if (nextBtn) {
@@ -379,19 +375,14 @@ document.addEventListener('DOMContentLoaded', function () {
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion) return;
 
-  var direction = 1;
-  var SPEED = 1; // px per frame — raise for faster drift, lower for slower
-
-  track.classList.add('is-autoplaying');
-
-  function driftStep() {
-    if (!paused) {
-      var max = track.scrollWidth - track.clientWidth;
-      if (track.scrollLeft >= max - 1) direction = -1;
-      if (track.scrollLeft <= 1) direction = 1;
-      track.scrollLeft += SPEED * direction;
-    }
-    requestAnimationFrame(driftStep);
-  }
-  requestAnimationFrame(driftStep);
+  window.setInterval(function () {
+  if (paused) return;
+  var slideEl = track.querySelector('.carousel-slide');
+  if (!slideEl) return;
+  var step = slideEl.getBoundingClientRect().width + 24;
+  var max = track.scrollWidth - track.clientWidth;
+  if (track.scrollLeft >= max - 10) direction = -1;
+  if (track.scrollLeft <= 10) direction = 1;
+  track.scrollTo({ left: track.scrollLeft + step * direction, behavior: 'smooth' });
+}, 3500);
 });
