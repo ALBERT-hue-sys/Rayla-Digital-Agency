@@ -625,6 +625,7 @@ body.modal-open { overflow: hidden; }
   display: flex; gap: var(--space-md); overflow-x: auto; scroll-snap-type: x mandatory;
   padding: 0 1.5rem; scrollbar-width: none; -ms-overflow-style: none;
 }
+.carousel-track.is-autoplaying { scroll-snap-type: none; }
 .carousel-track-wrap {
   padding: var(--space-lg) 0;
 }
