@@ -203,63 +203,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   backdrop.addEventListener('click', closeModal);
 
-// document.addEventListener('DOMContentLoaded', function () {
-//   var dialog = document.getElementById('discovery-modal');
-//   if (!dialog) return;
-
-//   var form        = document.getElementById('discovery-form');
-//   var formStep    = dialog.querySelector('[data-step="form"]');
-//   var successStep = dialog.querySelector('[data-step="success"]');
-//   var successName = document.getElementById('dc-success-name');
-//   var openTriggers = document.querySelectorAll('[data-open-modal="discovery-modal"]');
-//   var closeTriggers = dialog.querySelectorAll('[data-close-modal]');
-
-//   // function openModal() {
-//   //   formStep.hidden = false;
-//   //   successStep.hidden = true;
-//   //   dialog.showModal();
-//   //   document.body.classList.add('modal-open');
-//   //   requestAnimationFrame(function () {
-//   //     dialog.classList.add('is-visible');
-//   //   });
-//   // }
-
-//   function openModal() {
-//   formStep.hidden = false;
-//   successStep.hidden = true;
-//   if (form) {
-//     form.querySelectorAll('.has-error').forEach(function (el) { el.classList.remove('has-error'); });
-//     form.querySelectorAll('.field-error').forEach(function (el) { el.textContent = ''; });
-//     var formError = document.getElementById('dc-form-error');
-//     if (formError) formError.hidden = true;
-//   }
-//   dialog.showModal();
-//   document.body.classList.add('modal-open');
-//   requestAnimationFrame(function () {
-//     dialog.classList.add('is-visible');
-//   });
-// }
-
-//   function closeModal() {
-//     dialog.classList.remove('is-visible');
-//     document.body.classList.remove('modal-open');
-//     window.setTimeout(function () {
-//       dialog.close();
-//     }, 250);
-//   }
-
-//   openTriggers.forEach(function (btn) { btn.addEventListener('click', openModal); });
-//   closeTriggers.forEach(function (btn) { btn.addEventListener('click', closeModal); });
-
-//   dialog.addEventListener('click', function (e) {
-//     if (e.target === dialog) closeModal();
-//   });
-
-//   dialog.addEventListener('cancel', function (e) {
-//     e.preventDefault();
-//     closeModal();
-//   });
-   
 
    var FIELD_RULES = {
   'dc-name':    function (v) { return v.trim().length > 0; },
@@ -364,6 +307,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var nextBtn = wrap.querySelector('.carousel-arrow-next');
 
   var paused = false;
+  var direction = 1;
   track.addEventListener('mouseenter', function () { paused = true; });
   track.addEventListener('mouseleave', function () { paused = false; });
   track.addEventListener('touchstart', function () { paused = true; }, { passive: true });
@@ -432,10 +376,13 @@ document.addEventListener('DOMContentLoaded', function () {
   if (reduceMotion) return;
 
   window.setInterval(function () {
-    if (paused) return;
-    var step = stepWidth();
-    if (!step) return;
-    var atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 10;
-    track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + step, behavior: 'smooth' });
-  }, 3500);
+  if (paused) return;
+  var slideEl = track.querySelector('.carousel-slide');
+  if (!slideEl) return;
+  var step = slideEl.getBoundingClientRect().width + 24;
+  var max = track.scrollWidth - track.clientWidth;
+  if (track.scrollLeft >= max - 10) direction = -1;
+  if (track.scrollLeft <= 10) direction = 1;
+  track.scrollTo({ left: track.scrollLeft + step * direction, behavior: 'smooth' });
+}, 3500);
 });
