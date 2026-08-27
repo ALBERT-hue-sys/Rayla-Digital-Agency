@@ -778,18 +778,15 @@ body.modal-open { overflow: hidden; }
 .logo-track { display: flex; width: max-content; gap: var(--space-xl); animation: logo-scroll 28s linear infinite; }
 .logo-marquee:hover .logo-track { animation-play-state: paused; }
 .logo-item {
-  flex: 0 0 auto; min-width: 220px; height: 90px;
-  background: var(--gold-soft);
-  border: 2px dotted var(--black);
-  border-radius: var(--radius-md);
-  display: flex; align-items: center; justify-content: center; padding: var(--space-sm);
+  flex: 0 0 auto; height: 200px;
+  display: flex; align-items: center; justify-content: center;
 }
-.logo-item span { font-family: var(--font-display); font-weight: 700; color: var(--black); font-size: 0.9rem; text-align: center; }
-/* .logo-item {
-  flex: 0 0 auto; min-width: 220px; height: 90px; border: 1.5px dashed #c9c5b8; border-radius: var(--radius-md);
-  display: flex; align-items: center; justify-content: center; padding: var(--space-sm); background: var(--white);
+.logo-item img {
+  height: 100%;
+  width: auto;
+  max-width: 320px;
+  object-fit: contain;
 }
-.logo-item span { font-family: var(--font-display); font-weight: 700; color: var(--mid-grey); font-size: 0.9rem; text-align: center; } */
 @keyframes logo-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .logo-track { animation: none; } }
 /* .brand-logos { display: flex; flex-wrap: wrap; gap: 1.5rem; }
