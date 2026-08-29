@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       }, { root: track, threshold: [0.6] });
       slides.forEach(function (s) { dotObserver.observe(s); });
-    } else {
+    } else {z
       dots[0].classList.add('is-active');
     }
   }
