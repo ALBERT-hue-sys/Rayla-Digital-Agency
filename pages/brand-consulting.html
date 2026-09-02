@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brand Consulting | Rayla Digital Agency</title>
+<title>Brand Consulting in Kampala, Uganda | Rayla Digital Agency</title>
 <meta name="description" content="Brand positioning, business strategy and marketing consultation for founders and teams, from Rayla Digital Agency.">
 <link rel="canonical" href="https://www.rayladigitalagency.com/pages/brand-consulting.html">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Rayla Digital Agency">
-<meta property="og:title" content="Brand Consulting | Rayla Digital Agency">
+<meta property="og:title" content="Brand Consulting in Kampala, Uganda | Rayla Digital Agency">
 <meta property="og:description" content="Brand positioning, business strategy and marketing consultation for founders and teams, from Rayla Digital Agency.">
 <meta property="og:url" content="https://www.rayladigitalagency.com/pages/brand-consulting.html">
 <meta property="og:image" content="https://www.rayladigitalagency.com/assests/images/og-cover.png">
@@ -20,7 +20,7 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Brand Consulting | Rayla Digital Agency">
+<meta name="twitter:title" content="Brand Consulting in Kampala, Uganda | Rayla Digital Agency">
 <meta name="twitter:description" content="Brand positioning, business strategy and marketing consultation for founders and teams, from Rayla Digital Agency.">
 <meta name="twitter:image" content="https://www.rayladigitalagency.com/assests/images/og-cover.png">
 
@@ -46,8 +46,10 @@
   "description": "Brand positioning, business strategy and marketing consultation for founders and teams, from Rayla Digital Agency.",
   "url": "https://www.rayladigitalagency.com/pages/brand-consulting.html",
   "areaServed": { "@type": "Country", "name": "Uganda" },
+  "serviceType": "Brand Consulting",
   "provider": {
     "@type": "AdvertisingAgency",
+    "@id": "https://www.rayladigitalagency.com/#organization",
     "name": "Rayla Digital Agency",
     "url": "https://www.rayladigitalagency.com/"
   }
@@ -381,63 +383,114 @@
 
 <!-- ============================= DISCOVERY CALL MODAL ============================= -->
   <div class="modal-backdrop" id="discovery-modal-backdrop"></div>
-<dialog class="modal" id="discovery-modal" aria-modal="true" aria-labelledby="discovery-modal-title">
+<dialog class="modal modal-split" id="discovery-modal" aria-modal="true" aria-labelledby="discovery-modal-title">
   <button type="button" class="modal-close" data-close-modal aria-label="Close">
     <i class="fa-solid fa-xmark"></i>
   </button>
 
-  <div class="modal-step" data-step="form">
-    <p class="eyebrow">Consultation</p>
-    <h2 id="discovery-modal-title">Let's talk about your brand.</h2>
-    <p class="modal-intro">A consultation is a free, no-obligation conversation to understand your business, your goals, and whether we're the right fit to help. Tell us a bit about you and we'll be in touch to find a time that works.</p>
+  <!-- Two panels, not one column: the dark side answers "who am I writing to"
+       (the same phone, email and city the contact section gives) while the gold
+       side is nothing but the fields. Splitting them means the form itself never
+       has to carry explanatory copy between its inputs. -->
+  <div class="modal-step modal-step-split" data-step="form">
+
+    <aside class="modal-aside">
+      <p class="modal-pill"><i class="fa-solid fa-comment-dots"></i>Free consultation</p>
+      <h2 id="discovery-modal-title">Let's talk about your brand.</h2>
+      <p class="modal-intro">A free, no-obligation conversation about your business, your goals, and whether we are the right fit. Tell us a little about you and we will find a time that works.</p>
+      <ul class="modal-contact">
+        <li><span class="modal-contact-icon"><i class="fa-solid fa-phone"></i></span><a href="tel:+256764065441">+256 764 065 441</a></li>
+        <li><span class="modal-contact-icon"><i class="fa-solid fa-envelope"></i></span><a href="mailto:rayladigitalagency@gmail.com">rayladigitalagency@gmail.com</a></li>
+        <li><span class="modal-contact-icon"><i class="fa-solid fa-location-dot"></i></span><span>Kampala, Uganda</span></li>
+      </ul>
+    </aside>
 
     <form class="modal-form" id="discovery-form" novalidate>
-  <!-- Replace with your real Web3Forms access key once you've
-       signed up at web3forms.com — nothing will send until this
-       is a real key. -->
-  <input type="hidden" name="access_key" value="26ca4a72-a43f-49b0-ba21-72f5a32b774d">
-  <!-- Filled in by script.js right before sending, so the agency's
-       inbox shows "New website inquiry from <name>" -->
-  <input type="hidden" name="subject" id="dc-subject" value="New website inquiry">
+      <!-- Web3Forms account key. Nothing sends without it. -->
+      <input type="hidden" name="access_key" value="26ca4a72-a43f-49b0-ba21-72f5a32b774d">
+      <!-- Filled in by script.js right before sending, so the agency's
+           inbox shows "New website inquiry from <name>" -->
+      <input type="hidden" name="subject" id="dc-subject" value="New website inquiry">
 
-  <!-- Honeypot: real visitors never see or fill this in; bots
-       that auto-fill every field on a page usually do. -->
-  <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
+      <!-- Honeypot: real visitors never see or fill this in; bots
+           that auto-fill every field on a page usually do. -->
+      <input type="checkbox" name="botcheck" class="hidden-field" tabindex="-1" autocomplete="off">
 
-  <!-- hCaptcha — free on every Web3Forms plan, zero extra signup.
-       Enable it as the form's captcha provider in the Web3Forms
-       dashboard once the access key above is live. -->
-    <div class="form-row">
-  <label for="dc-name">Full Name *</label>
-    <input type="text" id="dc-name" name="name" autocomplete="name">
-    <span class="field-error" data-error-for="dc-name"></span>
-  </div>
-  <div class="form-row">
-    <label for="dc-email">Email Address *</label>
-    <input type="email" id="dc-email" name="email" autocomplete="email">
-    <span class="field-error" data-error-for="dc-email"></span>
-  </div>
-  <div class="form-row">
-    <label for="dc-phone">Phone Number *</label>
-    <input type="tel" id="dc-phone" name="phone" autocomplete="tel">
-    <span class="field-error" data-error-for="dc-phone"></span>
-  </div>
-  <div class="form-row">
-    <label for="dc-company">Company <span class="optional-tag">(optional)</span></label>
-    <input type="text" id="dc-company" name="company" autocomplete="organization">
-  </div>
-  <div class="form-row">
-    <label for="dc-details">Tell us about your project or business needs *</label>
-    <textarea id="dc-details" name="details" rows="4"></textarea>
-    <span class="field-error" data-error-for="dc-details"></span>
-  </div>
+      <div class="form-row">
+        <label for="dc-name">Full name *</label>
+        <input type="text" id="dc-name" name="name" autocomplete="name" placeholder="Your name">
+        <span class="field-error" data-error-for="dc-name"></span>
+      </div>
+      <div class="form-row">
+        <label for="dc-email">Email address *</label>
+        <input type="email" id="dc-email" name="email" autocomplete="email" placeholder="you@company.com">
+        <span class="field-error" data-error-for="dc-email"></span>
+      </div>
+      <div class="form-row-pair">
+        <div class="form-row">
+          <label for="dc-phone">Phone number *</label>
+          <input type="tel" id="dc-phone" name="phone" autocomplete="tel" placeholder="+256 700 000 000">
+          <span class="field-error" data-error-for="dc-phone"></span>
+        </div>
+        <div class="form-row">
+          <label for="dc-company">Company <span class="optional-tag">(optional)</span></label>
+          <input type="text" id="dc-company" name="company" autocomplete="organization" placeholder="Company name">
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="dc-service">What do you need help with?</label>
+        <div class="select-wrap">
+          <select id="dc-service" name="service">
+            <option value="Not sure yet">Not sure yet — let's talk it through</option>
+            <option>Digital content production</option>
+            <option>Social media management</option>
+            <option>Content strategy</option>
+            <option>Graphic design</option>
+            <option>Brand consulting</option>
+            <option>Digital marketing</option>
+          </select>
+          <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="dc-details">Tell us about your project *</label>
+        <textarea id="dc-details" name="details" rows="4" placeholder="What are you working on, and what would a good outcome look like?"></textarea>
+        <span class="field-error" data-error-for="dc-details"></span>
+      </div>
 
-<div class="h-captcha" data-captcha="true"></div>
+      <!-- Verification. Two problems drove this shape. hCaptcha's normal
+           checkbox widget anchors its image challenge to wherever the widget
+           sits, so at the foot of a tall form the challenge opened half off the
+           bottom-right of the screen. And the widget's own chrome is a fixed
+           303px light-grey box that never belonged on the gold. Invisible mode
+           fixes both: hCaptcha draws the challenge as its own centred overlay,
+           and the prompt below is ours, so it matches the panel. The token still
+           lands in the same h-captcha-response field Web3Forms verifies. -->
+      <div class="form-verify" id="dc-verify" data-state="idle">
+        <button type="button" class="verify-check" id="dc-verify-btn" aria-describedby="dc-verify-note">
+          <span class="verify-box"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+          <span class="verify-text" id="dc-verify-label">I'm not a robot</span>
+          <span class="verify-mark"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
+        </button>
+        <p class="verify-note" id="dc-verify-note">One quick check before this sends.</p>
+        <div class="h-captcha"
+             data-captcha="true"
+             data-size="invisible"
+             data-callback="raylaCaptchaVerified"
+             data-expired-callback="raylaCaptchaExpired"
+             data-chalexpired-callback="raylaCaptchaExpired"
+             data-error-callback="raylaCaptchaError"
+             data-open-callback="raylaCaptchaOpened"
+             data-close-callback="raylaCaptchaClosed"></div>
+      </div>
 
-<p class="form-error" id="dc-form-error" hidden></p>
+      <p class="form-error" id="dc-form-error" hidden></p>
 
-<button type="submit" class="btn btn-gold full-width">Book a Consultation</button>
-</form>
+      <button type="submit" class="btn btn-submit full-width">
+        <span class="btn-submit-icon"><i class="fa-solid fa-paper-plane"></i></span>
+        <span class="btn-submit-label">Book my consultation</span>
+      </button>
+    </form>
   </div>
 
   <div class="modal-step" data-step="success" hidden>

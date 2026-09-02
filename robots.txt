@@ -1,0 +1,9 @@
+# Rayla Digital Agency — https://www.rayladigitalagency.com/
+# Everything on this site is meant to be found. The only rule here is the
+# sitemap pointer, which is how a crawler that arrives without one finds the
+# full page list.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://www.rayladigitalagency.com/sitemap.xml

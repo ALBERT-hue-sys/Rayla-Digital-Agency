@@ -1212,57 +1212,252 @@ body.modal-open { overflow: hidden; }
   transition: opacity var(--transition), visibility 0s linear 0s;
 }
 
+/* --------------------------- Discovery modal ----------------------------- */
+/* Two panels inside one dark card: the left says who you are writing to, the
+   gold right panel is nothing but fields. The dialog itself is the black frame,
+   and the gold form is inset inside it so the frame shows on every edge.
+
+   The base rule deliberately carries NO transform. The entrance is a keyframe
+   animation instead, because a transform other than `none` on an ancestor makes
+   that ancestor the containing block for any position:fixed descendant - and
+   hCaptcha renders its image challenge as a fixed overlay inside the widget.
+   With a transform sitting on the dialog the challenge was being positioned and
+   clipped against the modal instead of the viewport. Once the animation is done
+   the computed transform is none again, so the challenge lands over the page
+   the way hCaptcha intends. Do not move the transform back onto .is-visible. */
 dialog.modal {
   position: fixed; inset: 0; margin: auto; z-index: 200;
   border: none; padding: 0; border-radius: var(--radius-lg);
-  width: min(92vw, 560px); max-height: min(88vh, 720px); overflow-y: auto;
-  background: var(--white); color: var(--dark-grey);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
-  opacity: 0; transform: scale(0.96) translateY(8px);
-  transition: opacity var(--transition), transform var(--transition);
+  width: min(94vw, 940px); max-height: min(92vh, 880px); overflow-y: auto;
+  background: var(--black); color: var(--text-on-dark);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+  opacity: 0;
+  transition: opacity var(--transition);
 }
-dialog.modal.is-visible { opacity: 1; transform: scale(1) translateY(0); }
+dialog.modal.is-visible { opacity: 1; animation: modal-in 0.28s cubic-bezier(.16,.84,.44,1); }
+@keyframes modal-in {
+  from { transform: scale(0.96) translateY(10px); }
+  to   { transform: scale(1) translateY(0); }
+}
+
+/* While the captcha challenge is open the modal dims, so the challenge reads as
+   one layer sitting on top of the form rather than a second window competing
+   with it. This is a pseudo-element rather than a filter on the dialog for the
+   containing-block reason spelled out above. */
+dialog.modal::after {
+  content: ""; position: absolute; inset: 0; z-index: 5;
+  border-radius: inherit; background: rgba(11,11,10,0.6);
+  opacity: 0; pointer-events: none;
+  transition: opacity var(--transition);
+}
+body.captcha-open dialog.modal::after { opacity: 1; }
+body.captcha-open .modal-backdrop { background: rgba(11,11,10,0.88); }
 
 .modal-step { padding: 2.5rem; }
-.modal-intro { color: var(--mid-grey); }
-.modal-close {
-  position: absolute; top: 1.25rem; right: 1.25rem; z-index: 2;
-  width: 36px; height: 36px; border-radius: 50%; background: var(--light-grey);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--dark-grey); transition: background var(--transition), color var(--transition);
+.modal-step-split {
+  display: grid; grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+  padding: 0;
 }
-.modal-close:hover { background: var(--gold); color: var(--black); }
+/* [hidden] is only display:none in the user-agent sheet, and a class selector
+   outranks it — without this the form step stays on screen after a successful
+   send, underneath the thank-you. */
+.modal-step[hidden] { display: none; }
 
-.modal-form { display: flex; flex-direction: column; gap: 1.1rem; margin-top: 1.5rem; }
-.form-row { display: flex; flex-direction: column; gap: 0.4rem; }
-.form-row label { font-size: 0.85rem; font-weight: 600; color: var(--dark-grey); }
-.form-row .optional-tag { font-weight: 400; color: var(--mid-grey); }
-.form-row input, .form-row textarea {
-  background: var(--light-grey); border: 1px solid #e2dfd3;
-  border-radius: var(--radius-sm); padding: 0.85rem 1rem; color: var(--dark-grey);
-  font-family: var(--font-body); resize: vertical;
-  transition: border-color var(--transition), background var(--transition);
+/* Close control has to read on both grounds - it sits over the gold panel on
+   the split layout and over the black aside once that stacks. A black disc with
+   a hairline does both. */
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem; z-index: 6;
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--black); color: var(--white);
+  border: 1px solid rgba(255,255,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition), color var(--transition);
 }
-.form-row input:focus, .form-row textarea:focus { outline: none; border-color: var(--gold); background: var(--white); }
-.form-row input.has-error, .form-row textarea.has-error { border-color: #c0392b; background: #fdf3f2; }
-.field-error {
-  display: block; min-height: 1.1em; font-size: 0.8rem; color: #c0392b;
+.modal-close:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+/* ---- Left: the dark aside ---- */
+.modal-aside {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: var(--space-xl) var(--space-lg);
 }
+.modal-pill {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border: 1px solid var(--gold); border-radius: var(--radius-full);
+  padding: 0.4rem 0.95rem; margin-bottom: var(--space-md);
+  font-size: 0.78rem; color: var(--gold-soft);
+}
+.modal-aside h2 {
+  color: var(--white); font-size: clamp(1.8rem, 1.3rem + 1.6vw, 2.4rem);
+  line-height: 1.12; margin-bottom: var(--space-sm);
+}
+.modal-intro { color: var(--text-on-dark); font-size: 0.94rem; max-width: 34ch; }
+.modal-contact {
+  display: flex; flex-direction: column; gap: var(--space-sm);
+  margin-top: var(--space-lg); font-size: 0.9rem;
+}
+.modal-contact li { display: flex; align-items: center; gap: 0.85rem; }
+.modal-contact a:hover { color: var(--gold-soft); }
+.modal-contact-icon {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold-soft); font-size: 0.85rem;
+}
+
+/* ---- Right: the gold form panel ---- */
+.modal-form {
+  display: flex; flex-direction: column; gap: 0.85rem;
+  background: var(--gold); border-radius: var(--radius-lg);
+  margin: 0.85rem 0.85rem 0.85rem 0;
+  padding: var(--space-lg) 1.6rem;
+}
+.form-row { display: flex; flex-direction: column; gap: 0.35rem; }
+/* Phone and company are short enough to share a line on the wide layout, which
+   keeps the panel from running past the aside's height. */
+.form-row-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+.form-row label { font-size: 0.78rem; font-weight: 600; color: var(--black); }
+.form-row .optional-tag { font-weight: 400; color: rgba(11,11,10,0.6); }
+.form-row input, .form-row textarea, .select-wrap select {
+  width: 100%;
+  background: var(--gold-soft); border: 1px solid rgba(11,11,10,0.14);
+  border-radius: var(--radius-md); padding: 0.8rem 1rem; color: var(--black);
+  font-family: var(--font-body); font-size: 0.92rem; resize: vertical;
+  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+}
+.form-row input::placeholder, .form-row textarea::placeholder { color: rgba(11,11,10,0.62); }
+.form-row input:focus, .form-row textarea:focus, .select-wrap select:focus {
+  outline: none; background: var(--white); border-color: var(--black);
+  box-shadow: 0 0 0 3px rgba(11,11,10,0.14);
+}
+.form-row input.has-error, .form-row textarea.has-error {
+  border-color: #7a1c12; background: var(--white);
+}
+/* Native select arrows differ per platform and none of them match the panel, so
+   the control is stripped and the chevron drawn on top of it. */
+.select-wrap { position: relative; display: flex; }
+.select-wrap select { appearance: none; -webkit-appearance: none; padding-right: 2.5rem; cursor: pointer; }
+.select-wrap i {
+  position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+  pointer-events: none; font-size: 0.75rem; color: rgba(11,11,10,0.6);
+}
+.field-error { display: block; min-height: 1.05em; font-size: 0.78rem; color: #5c130c; font-weight: 500; }
 .form-error {
-  background: #fdf3f2; border: 1px solid #f0c3bd; color: #a83226;
-  border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 0.88rem;
+  background: var(--white); border-left: 3px solid #a83226; color: #7a1c12;
+  border-radius: var(--radius-sm); padding: 0.7rem 0.9rem; font-size: 0.85rem;
 }
 
 .hidden-field { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 
-.h-captcha { margin-top: 0.25rem; }
+/* ---- Verification ---- */
+/* The control is ours, not hCaptcha's. In invisible mode the widget draws
+   nothing at all, so the prompt is built here and can match the panel instead
+   of dropping a 303px light-grey box onto the gold. */
+.form-verify {
+  background: var(--white); border: 1px solid rgba(11,11,10,0.1);
+  border-radius: var(--radius-md); padding: 0.8rem 0.9rem 0.85rem;
+  transition: border-color var(--transition), background var(--transition);
+}
+.verify-check {
+  display: flex; align-items: center; gap: 0.75rem; width: 100%;
+  padding: 0; text-align: left; color: var(--dark-grey);
+  font-family: var(--font-body); font-size: 0.88rem; font-weight: 500;
+}
+.verify-check:focus-visible { outline: 2px solid var(--black); outline-offset: 4px; border-radius: 8px; }
+.verify-box {
+  flex: 0 0 auto; width: 26px; height: 26px; border-radius: 6px;
+  border: 2px solid #cfcabb; background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  color: transparent; font-size: 0.7rem;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+.verify-check:hover .verify-box { border-color: var(--gold); }
+.verify-text { flex: 1 1 auto; }
+.verify-mark { flex: 0 0 auto; color: #bdb9ac; font-size: 1rem; }
+.verify-note {
+  margin: 0.35rem 0 0; font-size: 0.74rem; line-height: 1.5; color: var(--mid-grey);
+  padding-left: calc(26px + 0.75rem);
+}
 
+/* Working: the box becomes the spinner rather than adding a second thing to
+   look at while the challenge loads. */
+.form-verify[data-state="working"] .verify-box {
+  border-radius: 50%; border-color: var(--gold); border-right-color: transparent;
+  animation: verify-spin 0.7s linear infinite;
+}
+@keyframes verify-spin { to { transform: rotate(360deg); } }
+
+.form-verify[data-state="done"] { border-color: var(--gold); background: #fffdf6; }
+.form-verify[data-state="done"] .verify-box { background: #14663a; border-color: #14663a; color: var(--white); }
+.form-verify[data-state="done"] .verify-check { cursor: default; }
+.form-verify[data-state="done"] .verify-mark { color: #14663a; }
+
+.form-verify[data-state="error"] { border-color: #a83226; background: #fdf3f2; }
+.form-verify[data-state="error"] .verify-box { border-color: #a83226; }
+.form-verify[data-state="error"] .verify-note { color: #7a1c12; }
+
+/* The invisible widget still needs a container in the flow — hCaptcha mounts
+   its challenge overlay inside it. Never give this, or anything above it,
+   overflow/transform/filter: each one would trap a fixed-position child. */
+.form-verify .h-captcha:empty { display: none; }
+
+/* ---- Submit ---- */
+.btn-submit {
+  background: var(--black); color: var(--white);
+  padding: 0.5rem 1.6rem 0.5rem 0.5rem; gap: 0.85rem; margin-top: 0.15rem;
+}
+.btn-submit:hover { background: var(--near-black); transform: translateY(-2px); box-shadow: 0 12px 26px rgba(11,11,10,0.28); }
+.btn-submit:disabled { opacity: 0.65; cursor: default; transform: none; box-shadow: none; }
+.btn-submit-icon {
+  width: 38px; height: 38px; border-radius: 50%; flex: 0 0 auto;
+  background: var(--gold); color: var(--black);
+  display: flex; align-items: center; justify-content: center; font-size: 0.85rem;
+}
+
+/* ---- Success step ---- */
+/* Once the enquiry is away the form is gone and only the thank-you is left, so
+   the dialog stops being a wide two-panel sheet and becomes a small card. It is
+   already fixed with inset:0 and margin:auto, so shrinking it is what puts the
+   message in the middle of the viewport rather than at the top of a tall panel.
+   The pop is a separate keyframe from the modal's entrance so it actually
+   replays when the class is added. */
+dialog.modal.is-success {
+  width: min(92vw, 430px); max-height: min(90vh, 520px);
+  animation: success-pop 0.3s cubic-bezier(.16,.84,.44,1);
+}
+@keyframes success-pop {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-step[data-step="success"] { text-align: center; padding: var(--space-2xl) var(--space-lg); }
+.modal-step[data-step="success"] h2 { color: var(--white); }
+.modal-step[data-step="success"] p { color: var(--text-on-dark); max-width: 46ch; margin-inline: auto; }
 .modal-success-icon { font-size: 2.75rem; color: var(--gold); margin-bottom: 1rem; }
-.btn-outline-dark { border: 1.5px solid var(--dark-grey); color: var(--dark-grey); margin-top: 1.5rem; }
-.btn-outline-dark:hover { border-color: var(--gold); color: var(--gold-dark); }
+.btn-outline-dark { border: 1.5px solid rgba(255,255,255,0.45); color: var(--white); margin-top: 1.5rem; }
+.btn-outline-dark:hover { border-color: var(--gold); color: var(--gold); }
 
+@media (max-width: 860px) {
+  /* Stacked: the aside becomes a short header above the panel, and the gold
+     gets an even inset on all four sides instead of bleeding to the left. */
+  .modal-step-split { grid-template-columns: 1fr; }
+  .modal-aside { padding: var(--space-lg) var(--space-md) var(--space-sm); }
+  .modal-aside h2 { font-size: 1.7rem; }
+  .modal-intro { max-width: none; }
+  .modal-contact { margin-top: var(--space-md); gap: 0.7rem; }
+  .modal-form { margin: 0.75rem; padding: var(--space-md) 1.15rem; }
+}
 @media (max-width: 480px) {
   .modal-step { padding: 1.75rem; }
+  .modal-close { top: 0.7rem; right: 0.7rem; width: 34px; height: 34px; }
+  .form-row-pair { grid-template-columns: 1fr; }
+  .modal-contact-icon { width: 34px; height: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog.modal.is-visible,
+  dialog.modal.is-success { animation: none; }
+  .form-verify[data-state="working"] .verify-box { animation: none; }
 }
 
 /* -------------------------------- Footer --------------------------------- */

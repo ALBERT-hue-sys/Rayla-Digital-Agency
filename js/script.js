@@ -164,6 +164,123 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+/* =================================================================
+   RAYLA DIGITAL AGENCY — Captcha bridge
+   hCaptcha runs in *invisible* mode here. The visible checkbox widget
+   anchors its image challenge to wherever the widget sits, which at the
+   foot of a tall form opened the challenge half off the bottom-right of
+   the screen; invisible mode draws the challenge as hCaptcha's own
+   centred overlay instead, and the prompt the visitor sees is ours, so
+   it matches the form panel rather than fighting it.
+
+   Web3Forms only fills in the sitekey and then hands the container to
+   hCaptcha's auto-render, which looks its callbacks up by *name* from
+   the data-* attributes. So these have to be real globals, and they have
+   to exist before hCaptcha's script runs — which is why this sits at the
+   top level rather than inside a DOMContentLoaded block. script.js is a
+   plain script at the end of <body>, so the markup is already parsed and
+   the Web3Forms script that follows it has not run yet.
+
+   Everything degrades quietly: if hCaptcha never loads, the form still
+   validates and still sends.
+   ================================================================= */
+(function () {
+  var verify = document.getElementById('dc-verify');
+  var btn    = document.getElementById('dc-verify-btn');
+  var label  = document.getElementById('dc-verify-label');
+  var note   = document.getElementById('dc-verify-note');
+  if (!verify || !btn) return;
+
+  var FAIL_NOTE = 'We could not load the security check. Email rayladigitalagency@gmail.com and we will pick it up from there.';
+  var timer = null;
+
+  // The note carries every state change, so it is what a screen reader should
+  // announce. Set here rather than in the markup because the same block is
+  // duplicated across seven pages.
+  if (note) note.setAttribute('aria-live', 'polite');
+
+  function setState(state, text, hint) {
+    verify.setAttribute('data-state', state);
+    if (label && text) label.textContent = text;
+    if (note && hint) note.textContent = hint;
+    btn.setAttribute('aria-disabled', state === 'done' ? 'true' : 'false');
+  }
+  function clearTimer() { if (timer) { window.clearTimeout(timer); timer = null; } }
+
+  // Returns true if a challenge is actually under way, so the caller knows
+  // whether to wait for a token or carry on without one.
+  window.raylaCaptchaExecute = function () {
+    if (verify.getAttribute('data-state') === 'done') return false;
+    if (!window.hcaptcha || typeof window.hcaptcha.execute !== 'function') return false;
+    setState('working', 'Checking…', 'Opening the security check…');
+    clearTimer();
+    // If the challenge never opens — blocked, offline, third party down — the
+    // visitor would be left watching a spinner. Time it out and give them a way
+    // to reach us anyway.
+    timer = window.setTimeout(function () {
+      if (verify.getAttribute('data-state') === 'working') setState('error', 'Check unavailable', FAIL_NOTE);
+    }, 20000);
+    try {
+      window.hcaptcha.execute();
+      return true;
+    } catch (err) {
+      clearTimer();
+      setState('error', 'Check unavailable', FAIL_NOTE);
+      return false;
+    }
+  };
+
+  btn.addEventListener('click', function () {
+    if (verify.getAttribute('data-state') === 'done') return;
+    window.raylaCaptchaExecute();
+  });
+
+  window.raylaCaptchaVerified = function () {
+    clearTimer();
+    document.body.classList.remove('captcha-open');
+    setState('done', 'Verified — thanks', 'You are good to go.');
+    // Set by the submit handler when the visitor pressed send before ticking
+    // the box: the send resumes the moment the token lands.
+    if (typeof window.raylaCaptchaOnToken === 'function') window.raylaCaptchaOnToken();
+  };
+  window.raylaCaptchaExpired = function () {
+    clearTimer();
+    setState('idle', 'I\'m not a robot', 'That check expired — tap to confirm again.');
+  };
+  window.raylaCaptchaError = function () {
+    clearTimer();
+    setState('error', 'Check unavailable', FAIL_NOTE);
+  };
+
+  // hCaptcha draws the challenge as a fixed overlay over the page. Flagging it
+  // on <body> is what dims the modal underneath (.captcha-open in style.css) so
+  // the challenge reads as one layer on top of the form, and it lets the
+  // modal's focus trap stand down while focus is inside hCaptcha's iframe.
+  window.raylaCaptchaOpened = function () {
+    clearTimer();
+    document.body.classList.add('captcha-open');
+    if (note) note.textContent = 'Finish the check to continue.';
+  };
+  window.raylaCaptchaClosed = function () {
+    document.body.classList.remove('captcha-open');
+    if (verify.getAttribute('data-state') === 'working') {
+      setState('idle', 'I\'m not a robot', 'One quick check before this sends.');
+    }
+  };
+
+  // form.reset() does not clear the widget — the old token would stay in the
+  // DOM and be rejected as already-used on the next send.
+  window.raylaCaptchaReset = function () {
+    clearTimer();
+    document.body.classList.remove('captcha-open');
+    window.raylaCaptchaOnToken = null;
+    setState('idle', 'I\'m not a robot', 'One quick check before this sends.');
+    if (window.hcaptcha && typeof window.hcaptcha.reset === 'function') {
+      try { window.hcaptcha.reset(); } catch (err) { /* widget not rendered yet */ }
+    }
+  };
+}());
+
 document.addEventListener('DOMContentLoaded', function () {
   var dialog = document.getElementById('discovery-modal');
   var backdrop = document.getElementById('discovery-modal-backdrop');
@@ -184,6 +301,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function trapFocus(e) {
     if (e.key !== 'Tab') return;
+    // hCaptcha's challenge is an iframe inside the dialog; pulling focus back
+    // to the first field mid-challenge would make it unusable.
+    if (document.body.classList.contains('captcha-open')) return;
     var els = focusableElements();
     if (!els.length) return;
     var first = els[0];
@@ -196,19 +316,21 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function handleKeydown(e) {
-    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Escape' && !document.body.classList.contains('captcha-open')) closeModal();
     else trapFocus(e);
   }
 
   function openModal() {
     formStep.hidden = false;
     successStep.hidden = true;
+    dialog.classList.remove('is-success');
     if (form) {
       form.querySelectorAll('.has-error').forEach(function (el) { el.classList.remove('has-error'); });
       form.querySelectorAll('.field-error').forEach(function (el) { el.textContent = ''; });
       var formError = document.getElementById('dc-form-error');
       if (formError) formError.hidden = true;
     }
+    if (window.raylaCaptchaReset) window.raylaCaptchaReset();
     lastFocused = document.activeElement;
     dialog.show();
     document.body.classList.add('modal-open');
@@ -222,6 +344,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function closeModal() {
+    document.body.classList.remove('captcha-open');
     dialog.classList.remove('is-visible');
     backdrop.classList.remove('is-visible');
     document.body.classList.remove('modal-open');
@@ -275,11 +398,66 @@ if (form) {
     });
   });
 
+  var formError   = document.getElementById('dc-form-error');
+  var submitBtn   = form.querySelector('button[type="submit"]');
+  var submitLabel = (submitBtn && submitBtn.querySelector('.btn-submit-label')) || submitBtn;
+  var submitText  = submitLabel ? submitLabel.textContent : 'Send';
+
+  function fail(message) {
+    if (!formError) return;
+    formError.textContent = message;
+    formError.hidden = false;
+  }
+
+  function showSuccess(nameVal) {
+    successName.textContent = nameVal ? nameVal.split(' ')[0] : 'there';
+    formStep.hidden = true;
+    successStep.hidden = false;
+    // The form is gone, so the dialog shrinks to a small card. It is centred by
+    // margin:auto on a fixed inset:0 box, so a smaller box lands in the middle
+    // of the viewport instead of leaving the message stranded at the top of a
+    // tall panel.
+    dialog.classList.add('is-success');
+    dialog.scrollTop = 0;
+    form.reset();
+    if (window.raylaCaptchaReset) window.raylaCaptchaReset();
+    var closeBtn = successStep.querySelector('[data-close-modal]');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  // Split out of the submit handler so the captcha callback can resume a send
+  // that was paused waiting for a token.
+  function sendForm() {
+    var nameVal = form.querySelector('#dc-name').value.trim();
+    document.getElementById('dc-subject').value = 'New website inquiry from ' + nameVal;
+
+    submitBtn.disabled = true;
+    // Only the label span is swapped, so the icon survives and the original
+    // wording comes back afterwards rather than being replaced by a guess.
+    submitLabel.textContent = 'Sending…';
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: new FormData(form)
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (result) {
+        if (result.success) showSuccess(nameVal);
+        else fail('Something went wrong sending your request — please try again, or call us directly.');
+      })
+      .catch(function () {
+        fail('Something went wrong sending your request — please try again, or call us directly.');
+      })
+      .finally(function () {
+        submitBtn.disabled = false;
+        submitLabel.textContent = submitText;
+      });
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-
-    var formError = document.getElementById('dc-form-error');
-    formError.hidden = true;
+    if (formError) formError.hidden = true;
 
     var honeypot = form.querySelector('[name="botcheck"]');
     if (honeypot && honeypot.checked) return;
@@ -291,45 +469,22 @@ if (form) {
     });
     if (!allValid) return;
 
+    // The widget is only a gate when it actually rendered. If hCaptcha failed to
+    // load there is nothing to complete, and blocking the send would lose an
+    // enquiry over a third party being down.
     var hCaptchaField = form.querySelector('textarea[name="h-captcha-response"]');
     if (hCaptchaField && !hCaptchaField.value) {
-      formError.textContent = 'Please complete the captcha before submitting.';
-      formError.hidden = false;
-      return;
+      // Not verified yet. Rather than bouncing the visitor back to tick a box,
+      // run the check now and send the moment the token arrives.
+      window.raylaCaptchaOnToken = function () {
+        window.raylaCaptchaOnToken = null;
+        sendForm();
+      };
+      if (window.raylaCaptchaExecute && window.raylaCaptchaExecute()) return;
+      window.raylaCaptchaOnToken = null;
     }
 
-    var nameVal = form.querySelector('#dc-name').value.trim();
-    document.getElementById('dc-subject').value = 'New website inquiry from ' + nameVal;
-
-    var submitBtn = form.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending…';
-
-    fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: new FormData(form)
-    })
-      .then(function (res) { return res.json(); })
-      .then(function (result) {
-        if (result.success) {
-          successName.textContent = nameVal ? nameVal.split(' ')[0] : 'there';
-          formStep.hidden = true;
-          successStep.hidden = false;
-          form.reset();
-        } else {
-          formError.textContent = 'Something went wrong sending your request — please try again, or call us directly.';
-          formError.hidden = false;
-        }
-      })
-      .catch(function () {
-        formError.textContent = 'Something went wrong sending your request — please try again, or call us directly.';
-        formError.hidden = false;
-      })
-      .finally(function () {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Request Discovery Call';
-      });
+    sendForm();
   });
 }
 });
