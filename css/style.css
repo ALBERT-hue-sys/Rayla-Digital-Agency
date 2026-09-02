@@ -1565,6 +1565,19 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     left: auto; width: auto; max-width: none; border-radius: 0;
     background: var(--near-black); border-top: 0; box-shadow: none;
   }
+  /* The desktop open-state rule below (.has-mega:hover > .mega-panel) is 0-3-0
+     and outranks the 0-1-0 reset above - a media query carries no specificity
+     of its own. It matters because a touch device applies :hover on tap and
+     keeps it, so the desktop's translateX(-50%) was being re-applied inside the
+     drawer and sliding the panel half its own width off the left edge: the
+     category labels lost their first word and the links underneath could not be
+     tapped. Restate the reset at equal specificity so the drawer wins. */
+  .has-mega:hover > .mega-panel,
+  .has-mega:focus-within > .mega-panel,
+  .has-mega.is-open > .mega-panel {
+    transform: none; transition: none;
+    left: auto; right: auto; width: auto; max-width: none;
+  }
   .mega-panel .container { padding-inline: 0; }
   .mega-toggle:checked ~ .mega-panel { display: block; }
   /* Fully expanded, the three categories put 21 links between "Services" and
