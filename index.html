@@ -24,10 +24,18 @@
 <meta name="twitter:description" content="Rayla Digital Agency helps brands in Uganda and East Africa build content, strategy and digital presence that gets noticed.">
 <meta name="twitter:image" content="https://www.rayladigitalagency.com/assests/images/og-cover.png">
 
-<!-- Favicon (pending — see note below) -->
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
+<!-- Favicons. Deliberately relative, not root-absolute: an href of
+     "/favicon.ico" resolves against the filesystem root when the page is opened
+     straight off disk with file://, which is how this site gets previewed, so
+     the icon silently never loaded. Relative paths work both ways.
+     The .svg is what modern browsers actually use - it carries its own
+     prefers-color-scheme rule and inverts to white, so the black disc does not
+     disappear into a dark tab bar. The .ico is the fallback for everything
+     else, and holds 16/32/48 in the one file. -->
+<link rel="icon" href="favicon.ico" sizes="32x32">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#0b0b0a">
 
 <script type="application/ld+json">
@@ -51,6 +59,48 @@
 }
 </script>
 
+<!-- FAQPage schema mirrors the #faq section below. Keep the two in sync: if a
+     question changes there it has to change here, or search engines surface
+     an answer the page no longer gives. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What do you handle in-house?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Content production, social media management, content strategy, graphic design, brand consulting and digital marketing all sit with our own team. We bring in specialists for niche production work \u2014 and we tell you when we do." }
+    },
+    {
+      "@type": "Question",
+      "name": "How long before we see results?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Paid campaigns produce usable data within days. Organic reach and search compound over months. We set that expectation at the start rather than after the first invoice." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you work with brands outside Uganda?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. We are based in Kampala and run remote engagements across East Africa and further afield. Production shoots are the only part that needs us in the room." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can we hire you for one project instead of a retainer?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Launches, single campaigns and production shoots all work as standalone projects. A retainer makes sense once you are publishing continuously and want the strategy to carry between campaigns." }
+    },
+    {
+      "@type": "Question",
+      "name": "Who owns the content you produce?",
+      "acceptedAnswer": { "@type": "Answer", "text": "You do. Final assets, raw files and any accounts we set up are handed over and stay yours, whether or not we keep working together." }
+    },
+    {
+      "@type": "Question",
+      "name": "What does a project cost?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Scope sets the price \u2014 volume of content, number of channels, and how much strategy the work needs up front. We quote after one conversation, not before it." }
+    }
+  ]
+}
+</script>
+
 <!-- Google Fonts: Montserrat (display) + Poppins (body) — set by the client's brand brief -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,9 +115,25 @@
 <a href="#main" class="skip-link">Skip to content</a>
 
 <!-- ============================= HEADER / NAV ============================= -->
-<header class="site-header" id="top">
+<!-- .over-hero: the homepage bar has no ground of its own - the hero photo
+     runs up underneath it, so the only edge on the page is the one the image
+     makes. script.js swaps in .is-scrolled (solid black) once you leave the
+     hero, which is what keeps the links readable over the sections below. -->
+<header class="site-header over-hero" id="top">
   <div class="container header-inner">
     <a href="#top" class="logo"><img src="assests/images/RAYLALOGO2.png" alt="Rayla Digital Agency"></a>
+
+    <!-- TODO: placeholder number. The repo currently carries two different
+         forms - this one and the JSON-LD at the top of the file (+256746065441,
+         middle digits transposed). Confirm the real number and reconcile all
+         three call sites: here, .nav-phone below, and the JSON-LD. -->
+    <!-- Tap-to-call for small screens only. It sits outside .main-nav on
+         purpose: the drawer is closed by default, and a phone number the
+         visitor has to open a menu to find is a phone number nobody calls.
+         Styling already existed (.mobile-call-btn) - this is the markup it
+         was written for. -->
+    <a href="tel:+256764065441" class="mobile-call-btn" aria-label="Call Rayla Digital Agency"><i class="fa-solid fa-phone"></i></a>
+
     <input type="checkbox" id="nav-toggle" class="nav-toggle">
     <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle menu">
       <span></span>
@@ -77,11 +143,66 @@
       <ul>
         <li><a href="#home">Home</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="#services">Services</a></li>
+        <!-- Services opens a mega-menu: the keyword lists that used to sit
+             inside the service cards live here now, so the detail is
+             navigable instead of decorative. Opening is pure CSS (hover +
+             :focus-within on desktop, the #mega-toggle checkbox on mobile),
+             matching the #nav-toggle pattern - JS only resets it. -->
+        <li class="has-mega">
+          <input type="checkbox" id="mega-toggle" class="mega-toggle">
+          <a href="#services" class="mega-trigger">Services</a>
+          <label for="mega-toggle" class="mega-toggle-label" aria-label="Toggle services menu">
+            <i class="fa-solid fa-chevron-down"></i>
+          </label>
+          <div class="mega-panel">
+            <div class="container mega-grid">
+          <div class="mega-col">
+            <p class="mega-col-head"><span class="mega-col-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></span> Content &amp; Production</p>
+            <ul>
+              <li><a href="pages/digital-content-production.html#product-videos"><i class="fa-solid fa-chevron-right"></i> Product Videos</a></li>
+              <li><a href="pages/digital-content-production.html#photography"><i class="fa-solid fa-chevron-right"></i> Photography</a></li>
+              <li><a href="pages/digital-content-production.html#commercials"><i class="fa-solid fa-chevron-right"></i> Commercials</a></li>
+              <li><a href="pages/digital-content-production.html#brand-films"><i class="fa-solid fa-chevron-right"></i> Brand Films</a></li>
+              <li><a href="pages/content-strategy.html#content-planning"><i class="fa-solid fa-chevron-right"></i> Content Planning</a></li>
+              <li><a href="pages/content-strategy.html#campaign-strategy"><i class="fa-solid fa-chevron-right"></i> Campaign Strategy</a></li>
+              <li><a href="pages/content-strategy.html#audience-research"><i class="fa-solid fa-chevron-right"></i> Audience Research</a></li>
+            </ul>
+          </div>
+          <div class="mega-col">
+            <p class="mega-col-head"><span class="mega-col-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 7 6 2"/><path d="M18.992 12H2.041"/><path d="M21.145 18.38A3.34 3.34 0 0 1 20 16.5a3.3 3.3 0 0 1-1.145 1.88c-.575.46-.855 1.02-.855 1.595A2 2 0 0 0 20 22a2 2 0 0 0 2-2.025c0-.58-.285-1.13-.855-1.595"/><path d="m8.5 4.5 2.148-2.148a1.205 1.205 0 0 1 1.704 0l7.296 7.296a1.205 1.205 0 0 1 0 1.704l-7.592 7.592a3.615 3.615 0 0 1-5.112 0l-3.888-3.888a3.615 3.615 0 0 1 0-5.112L5.67 7.33"/></svg></span> Brand &amp; Design</p>
+            <ul>
+              <li><a href="pages/graphic-design.html#corporate-branding"><i class="fa-solid fa-chevron-right"></i> Corporate Branding</a></li>
+              <li><a href="pages/graphic-design.html#marketing-materials"><i class="fa-solid fa-chevron-right"></i> Marketing Materials</a></li>
+              <li><a href="pages/graphic-design.html#social-graphics"><i class="fa-solid fa-chevron-right"></i> Social Media Graphics</a></li>
+              <li><a href="pages/graphic-design.html#event-branding"><i class="fa-solid fa-chevron-right"></i> Event Branding</a></li>
+              <li><a href="pages/brand-consulting.html#brand-positioning"><i class="fa-solid fa-chevron-right"></i> Brand Positioning</a></li>
+              <li><a href="pages/brand-consulting.html#business-strategy"><i class="fa-solid fa-chevron-right"></i> Business Strategy</a></li>
+              <li><a href="pages/brand-consulting.html#marketing-consultation"><i class="fa-solid fa-chevron-right"></i> Marketing Consultation</a></li>
+            </ul>
+          </div>
+          <div class="mega-col">
+            <p class="mega-col-head"><span class="mega-col-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16v5"/><path d="M16 14.639V21"/><path d="M20 10.656V21"/><path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"/><path d="M4 18.463V21"/><path d="M8 14.656V21"/></svg></span> Growth &amp; Marketing</p>
+            <ul>
+              <li><a href="pages/digital-marketing.html#seo"><i class="fa-solid fa-chevron-right"></i> SEO</a></li>
+              <li><a href="pages/digital-marketing.html#google-ads"><i class="fa-solid fa-chevron-right"></i> Google Ads</a></li>
+              <li><a href="pages/digital-marketing.html#meta-ads"><i class="fa-solid fa-chevron-right"></i> Meta Ads</a></li>
+              <li><a href="pages/digital-marketing.html#email-marketing"><i class="fa-solid fa-chevron-right"></i> Email Marketing</a></li>
+              <li><a href="pages/digital-marketing.html#analytics"><i class="fa-solid fa-chevron-right"></i> Analytics</a></li>
+              <li><a href="pages/social-media-management.html#platforms"><i class="fa-solid fa-chevron-right"></i> Social Media Management</a></li>
+              <li><a href="pages/social-media-management.html#brand-management"><i class="fa-solid fa-chevron-right"></i> Brand Management</a></li>
+            </ul>
+          </div>
+            </div>
+          </div>
+        </li>
         <li><a href="#process">Process</a></li>
         <li><a href="#team">Team</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
+      <!-- Desktop counterpart of .mobile-call-btn above - the two never show
+           at the same time, so there is exactly one call affordance per
+           breakpoint rather than two competing ones. -->
+      <a href="tel:+256764065441" class="nav-phone"><i class="fa-solid fa-phone"></i><span>+256 764 065 441</span></a>
       <button type="button" class="btn btn-gold btn-sm nav-cta" data-open-modal="discovery-modal">Book a Consultation</button>
     </nav>
   </div>
@@ -90,30 +211,29 @@
 <main id="main">
 
 <!-- ============================= HERO ============================= -->
-<!-- Signature element: the dot field moves from a precise grid (left, near
-     the brand's own words) into total scatter (right, fading at the edge) —
-     a literal picture of the agency's thesis: "content without strategy is
-     noise." Everything else on the page stays deliberately quiet so this
-     moment — and its echo in the "Why Rayla" section — carries the design. -->
+<!-- Signature element: a split screen. The copy holds a black column to
+     itself while the photo runs full-bleed off the right edge — the agency's
+     subject (social content) shown rather than described. The seam is
+     deliberately absent: .hero-media-overlay is a left-to-right gradient, so
+     the photo emerges out of the black instead of butting against it. That
+     gradient is also what guarantees headline contrast, which is why the
+     image itself is left almost untouched rather than darkened. -->
 <section class="hero" id="home">
+  <!-- Photo: Shutter Speed on Unsplash. Decorative — the h1 carries the
+       meaning — so the whole layer is aria-hidden and the alt is empty. -->
   <div class="hero-media" aria-hidden="true">
-        <img src="assests/images/rayla-hero-bg.jpg" alt="" class="hero-media-img">
-
-    <!-- <img src="assests/images/rayla-hero-bg.jpg" alt="" class="hero-media-img"> -->
+    <img src="assests/images/rayla-hero-social-icons.webp" alt="" class="hero-media-img">
     <div class="hero-media-overlay"></div>
   </div>
 
   <div class="hero-layout">
     
-  <div class="container hero-inner">
+  <div class="hero-inner">
     <p class="eyebrow reveal" style="--d:0">Creative Marketing Agency — Kampala, Uganda</p>
     <h1 class="hero-title reveal" style="--d:1"><span class="text-gold">Marketing</span> That People Actually Pay <span class="text-gold">Attention</span> To.</h1>
-         <p class="hero-sub reveal" style="--d:2"> <span class="highlight"> Rayla Digital Agency helps brands create content, build stronger digital presence, and connect with the audiences that matter most. We combine strategy, creativity and execution to help businesses grow through content people actually care about.</span> </p>
-    <!-- <p class="hero-sub reveal" style="--d:2">Rayla Digital Agency helps brands create content, build stronger digital presence, and connect with the audiences that matter most. We combine strategy, creativity and execution to help businesses grow through content people actually care about.</p> -->
-     <!-- <p class="hero-sub reveal" style="--d:2">Rayla Digital Agency combines strategy, creativity, and execution to build brands a digital presence people genuinely connect with.</p> -->
+    <p class="hero-sub reveal" style="--d:2">Rayla Digital Agency helps brands create content, build stronger digital presence, and connect with the audiences that matter most. We combine strategy, creativity and execution to help businesses grow through content people actually care about.</p>
     <div class="hero-actions reveal" style="--d:3">
       <button type="button" class="btn btn-gold" data-open-modal="discovery-modal">Book a Consultation <i class="fa-solid fa-arrow-right"></i></button>
-      <!-- <a href="tel:0746065441" class="btn btn-gold">Book a Discovery Call <i class="fa-solid fa-arrow-right"></i></a> -->
       <a href="#work" class="btn btn-outline-light">See Our Work</a>
     </div>
     
@@ -122,7 +242,7 @@
   </div>
 </section>
 
-<section class="client-logos section section-grey" id="brands">
+<section class="client-logos section" id="brands">
   <div class="container">
     <div class="section-head">
       <p class="eyebrow">Brands We've Worked With</p>
@@ -142,25 +262,6 @@
     </div>
   </div>
 </section>
-<!-- 
-<section class="client-logos section section-grey" id="brands">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">Brands We've Worked With</p>
-      <h2>Trusted by teams building something real.</h2>
-    </div>
-  </div>
-  <div class="logo-marquee">
-    <div class="logo-track">
-      <div class="logo-item"><span>Denri Africa Uganda</span></div>
-      <div class="logo-item"><span>Krystal Ice Limited</span></div>
-      <div class="logo-item"><span>Future of Education in Africa Conference</span></div>
-      <div class="logo-item" aria-hidden="true"><span>Denri Africa Uganda</span></div>
-      <div class="logo-item" aria-hidden="true"><span>Krystal Ice Limited</span></div>
-      <div class="logo-item" aria-hidden="true"><span>Future of Education in Africa Conference</span></div>
-    </div>
-  </div>
-</section> -->
 
 <!-- ============================= WHO WE ARE ============================= -->
 <!-- ============================= ABOUT (merged Who We Are + About Us) ============================= -->
@@ -213,37 +314,71 @@
 
 
 <!-- ============================= WHAT WE DO ============================= -->
-<section class="what-we-do section section-grey">
-  
+<section class="what-we-do section section-tint">
+
   <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">Areas of Expertise</p>
-      <h2>Everything a modern brand needs to be seen.</h2>
+    <div class="expertise-head">
+      <div class="section-head">
+        <p class="eyebrow">Areas of Expertise</p>
+        <h2>Everything a modern brand needs to be seen.</h2>
+        <p class="section-lead">Six disciplines, one team. Most brands start with one of them and add the rest as they grow &mdash; you are not signing up for all of it on day one.</p>
+      </div>
+
+      <!-- The arrows live beside the heading rather than over the cards. On the
+           values carousel below they sit on top of photographs, which is where
+           an overlaid arrow belongs; here the same position lands them on body
+           copy and hides the first words of the opening card. Moving them up
+           also gives the empty right half of the head something to do. The
+           track names this container the way it names its dots - see data-nav
+           in js/script.js. -->
+      <div class="carousel-nav" id="expertise-nav">
+        <button type="button" class="carousel-arrow carousel-arrow-light carousel-arrow-prev" aria-label="Previous areas of expertise">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button type="button" class="carousel-arrow carousel-arrow-light carousel-arrow-next" aria-label="Next areas of expertise">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
     </div>
-    <div class="card-grid five-col">
+  </div>
+
+  <!-- Six cards at the reference's card width come to well over 2300px, so the
+       row scrolls rather than shrinking the cards to fit. Same component as the
+       values carousel below (.carousel-track-wrap / .carousel-track), with its
+       arrows lifted into the section head above; it carries no data-autoplay,
+       so unlike that one it only moves when the reader moves it. Below 640px
+       the track becomes a plain stacked column. -->
+  <div class="carousel-track-wrap">
+    <div class="carousel-track expertise-track" id="expertise-carousel" data-nav="expertise-nav">
       <div class="service-card">
+        <div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
         <h3>Content Production</h3>
-        <p tabindex="0">From concept to final cut — short and long-form content built for today's platforms.</p>
+        <p>From concept to final cut — short and long-form content built for today's platforms.</p>
       </div>
       <div class="service-card">
+        <div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg></div>
         <h3>Event Management</h3>
-        <p tabindex="0">Planning and delivering corporate events, conferences, launches and brand experiences from concept to execution</p>
+        <p>Planning and delivering corporate events, conferences, launches and brand experiences from concept to execution.</p>
       </div>
       <div class="service-card">
+        <div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg></div>
         <h3>Social Media Management</h3>
-        <p tabindex="0">We manage platforms strategically to help brands grow consistently while building meaningful communities.</p>
+        <p>We manage platforms strategically to help brands grow consistently while building meaningful communities.</p>
       </div>
       <div class="service-card">
+        <div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.586 5.414-5.172 5.172"/><path d="m18.586 13.414-5.172 5.172"/><path d="M6 12h12"/><circle cx="12" cy="20" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="20" cy="12" r="2"/><circle cx="4" cy="12" r="2"/></svg></div>
         <h3>Content Strategy</h3>
-        <p tabindex="0">Never content for content's sake — every piece is guided by audience behaviour, business goals, and platform trends.</p>
+        <p>Never content for content's sake — every piece is guided by audience behaviour, business goals, and platform trends.</p>
       </div>
       <div class="service-card">
+        <div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></div>
         <h3>Brand Storytelling</h3>
-        <p tabindex="0">Communicating your value through compelling visuals and words.</p>
+        <p>Communicating your value through compelling visuals and words.</p>
       </div>
       <div class="service-card">
+        <div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
         <h3>Campaign Management</h3>
-        <p tabindex="0">Planning and executing campaigns that increase awareness, engagement and conversions.</p>
+        <p>Planning and executing campaigns that increase awareness, engagement and conversions.</p>
       </div>
     </div>
   </div>
@@ -260,7 +395,7 @@
   </div>
 
   <div class="carousel-track-wrap">
-    <div class="carousel-track" id="why-rayla-carousel">
+    <div class="carousel-track" id="why-rayla-carousel" data-autoplay data-dots="why-rayla-dots">
       <div class="carousel-slide">
         <img src="assests/images/Creativity.webp" alt="Rayla Digital Agency content planning and photo journal flatlay" loading="lazy">
         <div class="carousel-caption">
@@ -313,20 +448,15 @@
 
 
 
-<section class="section" id="services">
-   
+<section class="section section-tint" id="services">
+
     <div class="container">
       <div class="section-head">
         <p class="eyebrow">Our Services</p>
-        
         <h2>How we help you grow.</h2>
+        <p class="section-lead">We help businesses build memorable brands, create engaging content, and grow their digital presence through strategy, creativity, and marketing.</p>
       </div>
-        <!-- <p>
-            We help businesses build memorable brands, create engaging content,
-            and grow their digital presence through strategy, creativity, and
-            marketing.
-        </p> -->
-    
+
 
     <div class="services-grid">
 
@@ -338,14 +468,10 @@
                 <!-- <i class="fa-solid fa-video"></i> -->
             </div>
               <h3>Digital Content Production</h3>
-                <div class="service-tags">
-                <span>Product Videos</span>
-                <span>Photography</span>
-                <span>Commercials</span>
-                <span>Social Media Videos</span>
-                <span>Behind-the-scenes</span>
-                <span>Brand Films</span>
-              </div>
+              <p class="service-desc">Product videos, photography and brand films made to stop the scroll &mdash; shot, edited and delivered ready for every platform you publish on.</p>
+              <a class="service-link" href="pages/digital-content-production.html">Content Production Services
+                <i class="fa-solid fa-paper-plane"></i>
+              </a>
         </article>
 
         <!-- Card 2 -->
@@ -355,19 +481,10 @@
                 <!-- <i class="fa-solid fa-hashtag"></i> -->
             </div>
               <h3>Social Media Management</h3>
-              <div class="service-tags">
-                  <span><i class="fa-brands fa-instagram"></i> Instagram</span>
-
-                  <span><i class="fa-brands fa-facebook"></i> Facebook</span>
-
-                  <span><i class="fa-brands fa-tiktok"></i> TikTok</span>
-
-                  <span><i class="fa-brands fa-linkedin"></i> LinkedIn</span>
-
-                  <span><i class="fa-brands fa-x-twitter"></i> X</span>
-
-                  <span><i class="fa-solid fa-shield-halved"></i> Brand Management</span>
-              </div>
+              <p class="service-desc">Day-to-day ownership of your channels: planning, publishing, community replies, and the reporting that shows what is actually working.</p>
+              <a class="service-link" href="pages/social-media-management.html">Social Media Services
+                <i class="fa-solid fa-paper-plane"></i>
+              </a>
         </article>
 
         <!-- Card 3 -->
@@ -378,17 +495,10 @@
                 <!-- <i class="fa-solid fa-compass"></i> -->
             </div>
               <h3>Content Strategy</h3>
-                <div class="service-tags">
-
-                    <span>Content Planning</span>
-
-                    <span>Campaign Strategy</span>
-
-                    <span>Audience Research</span>
-
-                    <span>Platform Positioning</span>
-
-                </div>
+              <p class="service-desc">The plan that comes before the camera. Audience research, campaign architecture and a calendar your content actually follows.</p>
+              <a class="service-link" href="pages/content-strategy.html">Content Strategy Services
+                <i class="fa-solid fa-paper-plane"></i>
+              </a>
         </article>
 
         <!-- Card 4 -->
@@ -400,18 +510,10 @@
             </div>
               <h3>Graphic Design</h3>
 
-                <div class="service-tags">
-
-                    <span>Marketing Materials</span>
-
-                    <span>Social Media Graphics</span>
-
-
-                    <span>Corporate Branding</span>
-
-                    <span>Event Branding</span>
-
-                </div>
+              <p class="service-desc">Brand identity, marketing collateral and event branding designed to hold together across every surface your business appears on.</p>
+              <a class="service-link" href="pages/graphic-design.html">Graphic Design Services
+                <i class="fa-solid fa-paper-plane"></i>
+              </a>
         </article>
 
         <!-- Card 5 -->
@@ -422,17 +524,10 @@
                 <!-- <i class="fa-solid fa-comments"></i> -->
             </div>
               <h3>Brand Consulting</h3>
-              <div class="service-tags">
-
-                  <span>Brand Positioning</span>
-
-                  <span>Business Strategy</span>
-
-                  <span>Marketing Consultation</span>
-
-                  <span>Communication</span>
-
-              </div>
+              <p class="service-desc">Positioning, messaging and business strategy sessions that get clear on what you stand for before you spend anything saying it.</p>
+              <a class="service-link" href="pages/brand-consulting.html">Brand Consulting Services
+                <i class="fa-solid fa-paper-plane"></i>
+              </a>
         </article>
 
         <!-- Card 6 -->
@@ -444,21 +539,10 @@
             </div>
               <h3>Digital Marketing</h3>
 
-                <div class="service-tags">
-
-                    <span>SEO</span>
-
-                    <span>Email Marketing</span>
-
-                    <span>Google Ads</span>
-
-                    <span>Meta Ads</span>
-
-                    <span>Analytics</span>
-
-                    <span>Campaign Optimization</span>
-
-                </div>
+              <p class="service-desc">SEO, Google and Meta ads, email and analytics &mdash; paid and organic growth managed against numbers you can actually check.</p>
+              <a class="service-link" href="pages/digital-marketing.html">Digital Marketing Services
+                <i class="fa-solid fa-paper-plane"></i>
+              </a>
         </article>
     </div>
     </div>
@@ -469,7 +553,7 @@
 <!-- ============================= PROCESS ============================= -->
 <!-- Numbered on purpose — this is a genuine sequence, in the brief's own order -->
 <div class="work work-bg">
-<section class="process section " id="process">
+<section class="process section" id="process">
   <div class="container">
     <div class="section-head">
       <p class="eyebrow eyebrow-gold">Our Process</p>
@@ -484,12 +568,12 @@
       <div class="process-step">
         <span class="step-num">02</span>
         <h3>Strategise</h3>
-        <p class=" eyebrow-gold">Developing a tailored content and marketing approach.</p>
+        <p class="eyebrow-gold">Developing a tailored content and marketing approach.</p>
       </div>
       <div class="process-step">
         <span class="step-num">03</span>
         <h3>Create</h3>
-        <p class=" eyebrow-gold">Producing high-quality content that reflects your brand.</p>
+        <p class="eyebrow-gold">Producing high-quality content that reflects your brand.</p>
       </div>
       <div class="process-step">
         <span class="step-num">04</span>
@@ -507,7 +591,7 @@
 
 
 <!-- ============================= INDUSTRIES ============================= -->
-<section class=" section" id="work">
+<section class="section" id="work">
   <div class="work-overlay" aria-hidden="true"></div>
   <div class="container">
     <div class="section-head">
@@ -530,7 +614,7 @@
 </section>
 </div>
 <!-- ============================= WHY CLIENTS CHOOSE US ============================= -->
- <section class="why-rayla section" >
+<section class="why-rayla section">
 
    
 
@@ -619,7 +703,7 @@
 </section>
 
 <!-- ============================= TEAM ============================= -->
-<section class="team section section-grey" id="team">
+<section class="team section section-tint" id="team">
 
   <div class="container">
     <div class="section-head">
@@ -667,6 +751,61 @@
 </section>
 
 
+<!-- ============================= FAQ ============================= -->
+<!-- Two columns rather than the site's usual single .section-head: the left
+     side has to carry weight or the heading reads as an orphan beside a wall
+     of rows. This is the one place a lead paragraph is used - it earns its
+     keep by giving the column a body and a route to Contact.
+
+     The accordion is <details>/<summary>, reusing .svc-faq / .svc-faq-item
+     from the service pages verbatim. Same reason it was chosen there: it
+     still opens with JS switched off.
+
+     TODO: copy below is a first draft - replace the questions and answers
+     with your own wording. The markup and styling are final. -->
+<section class="faq section" id="faq">
+  <div class="container faq-grid">
+
+    <div class="faq-intro">
+      <div class="section-head">
+        <p class="eyebrow">Questions</p>
+        <h2>Answers before you ask.</h2>
+      </div>
+      <p class="faq-lead">The things brands want to know before the first call. If yours isn't here, ask us directly.</p>
+      <a href="#contact" class="btn btn-outline-dark">Talk to us</a>
+    </div>
+
+    <div class="svc-faq">
+      <details class="svc-faq-item">
+        <summary>What do you handle in-house?</summary>
+        <p>Content production, social media management, content strategy, graphic design, brand consulting and digital marketing all sit with our own team. We bring in specialists for niche production work &mdash; and we tell you when we do.</p>
+      </details>
+      <details class="svc-faq-item">
+        <summary>How long before we see results?</summary>
+        <p>Paid campaigns produce usable data within days. Organic reach and search compound over months. We set that expectation at the start rather than after the first invoice.</p>
+      </details>
+      <details class="svc-faq-item">
+        <summary>Do you work with brands outside Uganda?</summary>
+        <p>Yes. We are based in Kampala and run remote engagements across East Africa and further afield. Production shoots are the only part that needs us in the room.</p>
+      </details>
+      <details class="svc-faq-item">
+        <summary>Can we hire you for one project instead of a retainer?</summary>
+        <p>Yes. Launches, single campaigns and production shoots all work as standalone projects. A retainer makes sense once you are publishing continuously and want the strategy to carry between campaigns.</p>
+      </details>
+      <details class="svc-faq-item">
+        <summary>Who owns the content you produce?</summary>
+        <p>You do. Final assets, raw files and any accounts we set up are handed over and stay yours, whether or not we keep working together.</p>
+      </details>
+      <details class="svc-faq-item">
+        <summary>What does a project cost?</summary>
+        <p>Scope sets the price &mdash; volume of content, number of channels, and how much strategy the work needs up front. We quote after one conversation, not before it.</p>
+      </details>
+    </div>
+
+  </div>
+</section>
+
+
 <!-- ============================= CONTACT ============================= -->
 <section class="contact section section-dark" id="contact">
   <div class="container contact-grid">
@@ -690,7 +829,6 @@
   
       </div>
 
-      <!-- <a href="tel:0746065441" class="btn btn-gold">Book a Discovery Call</a> -->
        <button type="button" class="btn btn-gold" data-open-modal="discovery-modal">Book a Consultation</button>
     </div>
 
@@ -715,6 +853,7 @@
       <a href="#about">About</a>
       <a href="#services">Services</a>
       <a href="#team">Team</a>
+      <a href="#faq">FAQ</a>
       <a href="#contact">Contact</a>
     </nav>
     <div class="footer-social">
@@ -782,9 +921,6 @@
     <span class="field-error" data-error-for="dc-details"></span>
   </div>
 
-  <!-- hCaptcha — free on every Web3Forms plan, zero extra signup.
-     Enable it as the form's captcha provider in the Web3Forms
-     dashboard once the access key above is live. -->
 <div class="h-captcha" data-captcha="true"></div>
 
 <p class="form-error" id="dc-form-error" hidden></p>

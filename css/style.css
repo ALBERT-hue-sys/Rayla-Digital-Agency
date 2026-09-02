@@ -11,7 +11,7 @@
 
 /* ---------------------------- Reset ---------------------------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+html { scroll-behavior: smooth; scroll-padding-top: var(--header-h, 93px); }
 img { max-width: 100%; display: block; }
 a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
@@ -32,6 +32,13 @@ svg { display: block; }
   --gold: #b8923a;
   --gold-soft: #d9bb78;
   --gold-dark: #8a6a24;
+  /* Ground for the two card sections. It is light enough that --gold text drops
+     to 2.6:1 on it, so anything that has to be read on this colour uses
+     --gold-dark (4.5:1) instead - see .section-tint below. */
+  --pale-gold: #f6f5c9;
+
+  /* Muted copy on dark grounds - was hardcoded in the header and hero */
+  --text-on-dark: #d8d6cf;
 
   --font-display: 'Montserrat', sans-serif;
   --font-body: 'Poppins', sans-serif;
@@ -54,7 +61,19 @@ svg { display: block; }
   --space-xl:  3rem;
   --space-2xl: 4rem;
 
+  /* Resting height of the bar: .logo img (58px) + .header-inner padding-block
+     (1.1rem x 2). The hero's pull-up is measured against this rather than the
+     live --header-h from script.js, because --header-h drops when the bar
+     compacts on scroll and the hero would jump with it. Update this if either
+     of those two values changes. */
+  --header-h-base: 93px;
+
   --container-w: 1200px;
+  /* The page's left edge. Anything that has to line up with .container reads
+     this rather than repeating the number - the expertise row is full-bleed and
+     rebuilds the gutter itself, so a second hardcoded 1.5rem would drift the
+     first time this one changed. */
+  --gutter: 1.5rem;
   --transition: 0.25s ease;
   --border-light: 1px solid #e7e4da;
 }
@@ -105,15 +124,28 @@ strong { font-weight: 600; color: var(--black); }
   width: 100%;
   max-width: var(--container-w);
   margin-inline: auto;
-  padding-inline: 1.5rem;
+  padding-inline: var(--gutter);
 }
 /* .section { padding-block: clamp(4rem, 3rem + 4vw, 6.5rem); } */
 .section { padding-block: clamp(3.5rem, 3rem + 3.5vw, 5.5rem); }
 .section-grey { background: var(--light-grey); }
 .section-dark { background: var(--black); color: #cfcdc5; }
 .section-dark h2, .section-dark h3 { color: var(--white); }
+/* The pale gold is bright enough to swallow the plain --gold accent, so the
+   tint carries its own accent colour rather than leaving each section to
+   remember. --gold-dark is the same hue a step down, and clears AA on it.
+   .svc-band - the service pages' "What's Included" ground - rides along here
+   rather than declaring its own copy, so the two never drift apart. */
+.section-tint,
+.svc-band { background: var(--pale-gold); }
+.section-tint .eyebrow,
+.svc-band .eyebrow,
+.section-tint .service-link { color: var(--gold-dark); }
 
 .section-head { max-width: 620px; margin-bottom: 2.75rem; }
+/* A sentence between the h2 and the content below it. Used where a bare
+   heading would leave a wall of cards unexplained; see the note on .faq-lead. */
+.section-lead { color: var(--mid-grey); max-width: 52ch; margin-bottom: 0; }
 /* .section-head.brands-head { margin-top: 3.25rem; margin-bottom: 1.75rem; } */
 
 .skip-link {
@@ -146,7 +178,24 @@ strong { font-weight: 600; color: var(--black); }
   background: rgba(11,11,10,0.97);
   transition: box-shadow var(--transition), background var(--transition);
 }
-.site-header.is-scrolled {
+/* Homepage only (.over-hero, set in index.html). The bar carries no ground of
+   its own so the hero photo reads as one uninterrupted image from the very top
+   of the window - the horizontal seam under the old solid bar was the most
+   visible edge on the page. The faint top-down wash is not a background, it is
+   the amount of shade the gold links need to stay legible where the photo runs
+   light behind them; it fades to nothing well before the headline. */
+.site-header.over-hero {
+  background: linear-gradient(
+    to bottom,
+    rgba(11,11,10,0.55) 0%,
+    rgba(11,11,10,0.28) 55%,
+    rgba(11,11,10,0) 100%
+  );
+}
+/* Once past the hero there is nothing left to show through, so the bar takes
+   its solid ground back - .is-scrolled has to out-rank .over-hero above. */
+.site-header.is-scrolled,
+.site-header.over-hero.is-scrolled {
   background: rgba(11,11,10,0.98);
   box-shadow: 0 8px 28px rgba(0,0,0,0.3);
 }
@@ -156,6 +205,7 @@ strong { font-weight: 600; color: var(--black); }
    so the page behind it can't be scrolled on touch devices */
 
 body.nav-open { overflow: hidden; }
+body.nav-open .site-header.over-hero { background: rgba(11,11,10,0.98); }
 body.modal-open { overflow: hidden; }
 .header-inner {
   display: flex; align-items: center; gap: 0.75rem;
@@ -163,12 +213,16 @@ body.modal-open { overflow: hidden; }
   transition: padding-block var(--transition);
 }
 
-.logo { display: inline-flex; align-items: center; margin-right: auto; }
+.logo { display: inline-flex; align-items: center; }
+/* The logo holds one size at every scroll position. The header itself still
+   compacts (.is-scrolled trims .header-inner's padding) - a mark that resizes
+   underneath you while you read is the part that reads as unsettled. */
 .logo img {
-  height: 46px; width: auto; display: block;
-  transition: height var(--transition);
+  /* The mark is a stacked lockup (wordmark over "DIGITAL"), so it needs more
+     height than a single-line wordmark to reach the same legibility - at 46px
+     the outlined letterforms were closing up. */
+  height: 58px; width: auto; display: block;
 }
-.site-header.is-scrolled .logo img { height: 34px; }
 .footer-brand .logo img { height: 52px; }
 
 .nav-toggle { display: none; }
@@ -178,6 +232,25 @@ body.modal-open { overflow: hidden; }
   font-size: 0.95rem; transition: background var(--transition), transform var(--transition);
 }
 .mobile-call-btn:hover { background: var(--gold-soft); transform: translateY(-1px); }
+
+/* Desktop half of the pair above. Set on the nav's own type ramp (Montserrat
+   700 / 0.82rem / 0.07em) so it reads as part of the nav rather than a badge
+   stuck onto it; the icon carries the gold, the digits stay quiet so they
+   don't compete with the CTA sitting next to them. Hidden at <=1024px, where
+   .mobile-call-btn takes over. */
+.nav-phone {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  margin-left: 2.1rem;
+  /* Set as digits, not as a nav label: full size, no tracking, white. A phone
+     number people are meant to read at a glance should not be shrunk to the
+     size of the links around it. */
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  letter-spacing: 0.01em; white-space: nowrap;
+  color: var(--white);
+  transition: color var(--transition);
+}
+.nav-phone i { color: var(--gold); font-size: 0.95rem; }
+.nav-phone:hover { color: var(--gold); }
 .nav-toggle-label {
   display: none; width: 44px; height: 44px; position: relative; z-index: 110; cursor: pointer;
 }
@@ -194,34 +267,163 @@ body.modal-open { overflow: hidden; }
 .nav-toggle:checked ~ .nav-toggle-label span::before { transform: rotate(45deg) translate(5px, 6px); }
 .nav-toggle:checked ~ .nav-toggle-label span::after { transform: rotate(-45deg) translate(5px, -6px); }
 
-.main-nav { display: flex; align-items: center; gap: 1.75rem; }
-.main-nav ul { display: flex; gap: 1.5rem; }
-.main-nav a:not(.btn) {
-  font-family: var(--font-display); font-size: 0.88rem; font-weight: 600;
-  color: #d8d6cf; transition: color var(--transition);
+/* flex:1 lets the nav claim all the room left of the logo; margin-left:auto on
+   the list then pushes links, phone and CTA into one right-hand cluster, so the
+   bar reads logo ......... links | phone | CTA. The spacing inside that cluster
+   is set per-item below rather than by one shared gap: the links sit close
+   enough to read as a set, the phone stands clear of them, and the CTA tucks
+   back in beside the number as its pair. */
+.main-nav { display: flex; align-items: center; gap: 0; flex: 1; }
+.main-nav > ul { display: flex; gap: 1.55rem; margin-left: auto; margin-right: 0; }
+.main-nav > ul > li > a:not(.btn) {
+  font-family: var(--font-display); font-size: 0.82rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--gold); transition: color var(--transition);
 }
-.main-nav a:not(.btn):hover { color: var(--gold); }
-.nav-cta { margin-left: 0.25rem; }
+.main-nav > ul > li > a:not(.btn):hover { color: var(--gold-soft); }
+/* Scoped to the nav so the shared underline rule leaves .footer-nav alone */
+.main-nav > ul > li > a:not(.btn):hover::after { background: var(--gold-soft); }
+/* A pill, not a rounded rectangle - it is the only fully-round shape in the
+   bar, which is what makes it read as the one thing to press. */
+.nav-cta {
+  margin-left: 1.1rem;
+  padding: 0.95rem 1.9rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  white-space: nowrap;
+}
+
+/* ------------------------ Services mega-menu ---------------------- */
+/* Opening is deliberately CSS-only: hover for pointers, :focus-within
+   for keyboards, and the #mega-toggle checkbox for the mobile drawer -
+   the same checkbox-hack approach as #nav-toggle. script.js only
+   resets the checkbox, so the menu still works with JS switched off.
+   The panel is light against the dark bar on purpose: it reads as a
+   sheet of the page pulled down over the header, not part of it. */
+.has-mega { display: flex; align-items: center; gap: 0.35rem; }
+.mega-toggle { display: none; }
+.mega-toggle-label {
+  display: inline-flex; align-items: center; color: var(--gold);
+  font-size: 0.62rem; cursor: pointer;
+  transition: transform var(--transition), color var(--transition);
+  pointer-events: none; /* desktop opens on hover - the label is decoration here */
+}
+.has-mega:hover .mega-toggle-label,
+.has-mega:focus-within .mega-toggle-label,
+.has-mega.is-open .mega-toggle-label { color: var(--gold-soft); transform: rotate(180deg); }
+
+/* Absolute against .site-header (sticky, so it is the containing block). Being
+   measured from the header rather than the li is what keeps top:100% landing
+   exactly on the bar's bottom edge in both the normal and .is-scrolled states,
+   with no gap for the pointer to fall through on the way down.
+   The panel is only as wide as its three columns need: max-content, centred
+   under the bar. It used to be left:0/right:0, which stretched a menu of short
+   links across the full 1200px+ and left most of it empty white. */
+.mega-panel {
+  position: absolute; top: 100%; left: 50%; right: auto; z-index: 99;
+  width: max-content;
+  max-width: min(900px, calc(100vw - 3rem));
+  background: var(--white);
+  border-top: 1px solid var(--gold-soft);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  box-shadow: 0 22px 55px rgba(0,0,0,0.18);
+  opacity: 0; visibility: hidden; transform: translateX(-50%) translateY(-8px);
+  transition: opacity var(--transition), transform var(--transition), visibility 0s linear var(--transition);
+}
+/* The panel's inner wrapper carries .container for its padding, but the 1200px
+   cap would fight the shrink-to-fit above. Keep the padding, drop the width. */
+.mega-panel .container {
+  max-width: none; width: auto;
+  padding-inline: var(--space-lg);
+}
+/* .is-open is set by script.js on click so the panel stays put once
+   tapped - hover alone closed it the moment the pointer left. */
+.has-mega:hover > .mega-panel,
+.has-mega:focus-within > .mega-panel,
+.has-mega.is-open > .mega-panel {
+  opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+  transition: opacity var(--transition), transform var(--transition), visibility 0s linear 0s;
+}
+.mega-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg) var(--space-xl);
+  padding-block: var(--space-lg);
+}
+.mega-col-head {
+  display: flex; align-items: center; gap: 0.6rem;
+  font-family: var(--font-display); font-weight: 700; font-size: 0.82rem;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--gold); margin-bottom: var(--space-sm);
+}
+.mega-col-icon {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-md);
+  background: rgba(184,146,58,0.08); color: var(--gold);
+}
+.mega-col ul { display: grid; gap: 0.15rem; }
+.mega-col a {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-body); font-size: 0.86rem; font-weight: 400;
+  color: var(--dark-grey); padding: 0.3rem 0;
+  transition: color var(--transition);
+}
+.mega-col a i { color: var(--gold); font-size: 0.62rem; transition: transform var(--transition); }
+.mega-col a:hover { color: var(--gold); }
+.mega-col a:hover i { transform: translateX(3px); }
 
 /* ------------------------------ Hero ------------------------------ */
 
-.hero {
+/* The shell is shared with the service pages (.svc-hero-split, further down)
+   so the split hero is one system rather than two copies that drift apart. The
+   layer classes below - .hero-media, .hero-layout, .hero-inner - were already
+   page-agnostic and are used verbatim on both. */
+.hero,
+.svc-hero.svc-hero-split {
   position: relative;
   overflow: hidden;
 
   background: var(--black);
   color: var(--white);
 
-  padding-block: clamp(5rem, 8vw, 8.5rem);
+  padding-block: clamp(2.75rem, 4.5vw, 4.75rem);
+
+  /* The header is transparent on the pages that use this hero, so it starts at
+     the very top
+     of the window and runs up behind it - that is what removes the horizontal
+     line the solid bar used to draw across the photo. The pull-up has to be
+     paid back as padding or the copy would centre against the bar instead of
+     against the space under it. --header-h is measured in script.js; the
+     fallback keeps the geometry right if the script never runs. */
+  margin-top: calc(-1 * var(--header-h-base));
+  padding-top: calc(var(--header-h-base) + clamp(2.75rem, 4.5vw, 4.75rem));
+
+  /* The photo panel needs vertical room or it collapses to the height of the
+     copy and stops reading as a panel at all. */
+  min-height: clamp(520px, 70vh, 760px);
+  display: flex;
+  align-items: center;
 }
+/* Homepage only. The front door is allowed to fill the window; a service page
+   is not - see .svc-hero-split for why. */
+.hero { min-height: 100vh; }
 
 /* =========================================
    Background Layer
 ========================================= */
 
+/* Right half of the viewport, not the full section: the copy keeps its own
+   black column. Bled to the viewport edge rather than the 1200px container
+   so the photo runs off the page the way it does in print. */
 .hero-media {
   position: absolute;
-  inset: 0;
+  inset: 0 0 0 auto;
+  /* Wider than the half it used to be. The extra width is not more picture, it
+     is runway: the leftmost stretch of the panel is where the image dissolves,
+     so it has to start well before the seam rather than at it. */
+  width: 58%;
   overflow: hidden;
 }
 
@@ -229,15 +431,49 @@ body.modal-open { overflow: hidden; }
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* cover throws away a lot of this picture - the panel is much taller than it
+     is wide, so a landscape shot is cropped hard on the horizontal - and which
+     part it keeps is a per-photo decision. A page names its own focal point by
+     setting --hero-focus on .hero-media; centred suits both current images. */
+  object-position: var(--hero-focus, 50% 50%);
 
-  filter: grayscale(55%) brightness(0.55) saturate(70%) blur(1.5px);
-  transform: scale(1.06);
+  /* Almost untouched. The old grayscale/brightness/blur stack existed to bury
+     this behind text; here the image is the point, and contrast is handled by
+     the gradient below instead of by wrecking the photo. */
+  filter: saturate(0.9);
+
+  /* The image fades out to its left rather than being painted over. A scrim
+     darkens the photo towards black but the photo is still there underneath,
+     which is what read as an edge; masking removes the pixels instead, so the
+     picture genuinely dissolves into the black column. Browsers without mask
+     support fall back to the overlay below, which still reads as a fade. */
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0%,
+    rgba(0,0,0,0.16) 20%,
+    rgba(0,0,0,0.58) 42%,
+    #000 68%);
+  mask-image: linear-gradient(to right,
+    transparent 0%,
+    rgba(0,0,0,0.16) 20%,
+    rgba(0,0,0,0.58) 42%,
+    #000 68%);
 }
 
+/* Second half of the dissolve, and now the lighter half: the mask above does
+   most of the work, so this only has to guarantee the headline sits on solid
+   black and take the last of the shine off the photo's left edge. Holding it
+   opaque as far right as it used to go would undo the mask. */
 .hero-media-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(11,11,10,.8);
+  background: linear-gradient(
+    to right,
+    var(--black) 0%,
+    rgba(11,11,10,0.86) 15%,
+    rgba(11,11,10,0.40) 40%,
+    rgba(11,11,10,0.12) 75%,
+    rgba(11,11,10,0.06) 100%
+  );
 }
 
 /* =========================================
@@ -248,6 +484,9 @@ body.modal-open { overflow: hidden; }
   position: relative;
   z-index: 1;
 
+  /* .hero is a flex container now (for vertical centring against the taller
+     photo panel), so this has to claim the full width or it shrinks to fit. */
+  width: 100%;
   max-width: 1200px;
   margin-inline: auto;
 
@@ -255,7 +494,11 @@ body.modal-open { overflow: hidden; }
   align-items: center;
   gap: clamp(2rem,5vw,5rem);
 
-  padding-inline: 30px;
+  /* The shared gutter token, not 30px, so the hero copy sits on exactly the
+     same left edge as every .container section further down the page - the
+     literal 1.5rem this used to carry drifted 6px from the container once the
+     480px breakpoint narrowed it. */
+  padding-inline: var(--gutter);
 }
 
 /* =========================================
@@ -274,9 +517,21 @@ body.modal-open { overflow: hidden; }
   background: var(--gold);
   flex-shrink: 0;
 }
+/* This used to also carry .container, whose margin-inline:auto centred the copy
+   inside the flex row - that was the large empty gutter on the left. It is a
+   plain block now; .hero-layout above is the container. */
 .hero-inner{
   flex:1;
-  max-width:600px;
+  width:100%;
+  margin-inline:0;
+
+  /* Keeps the copy strictly on its own side of the split. .hero-media is
+     measured against the viewport, but this sits inside a centred 1200px
+     container, so the two are on different coordinate systems. 544px is the
+     widest the block can be before it reaches the seam on a 1200px+ window
+     (600 - 24 padding - 32 breathing room); the 50vw term covers everything
+     narrower. Widen either number and the headline runs into the photo. */
+  max-width:min(544px, calc(50vw - 3.5rem));
 
   position:relative;
   z-index:2;
@@ -285,14 +540,24 @@ body.modal-open { overflow: hidden; }
 .hero-title{
   font-size:clamp(2.3rem,1.5rem + 3.2vw,4.1rem);
   color:var(--white);
-  margin-bottom:1.4rem;
+  margin-bottom:1.15rem;
+
+  /* Evens the line lengths out instead of leaving one long line above a
+     stub - the column is narrow enough that the default rag is uneven. */
+  text-wrap:balance;
+  /* Display type at 4rem sets tight by default; a little air between words
+     keeps the line from reading as one block. */
+  word-spacing:0.07em;
 }
 
 .hero-sub{
   font-size:1.05rem;
   color:#cfcdc6;
-  max-width:620px;
-  margin-bottom:2.25rem;
+  /* .hero-inner is the narrower constraint now, so a fixed cap here would only
+     be misleading. */
+  max-width:none;
+  margin-bottom:1.75rem;
+  text-wrap:pretty;
 }
 
 .hero-actions{
@@ -305,11 +570,43 @@ body.modal-open { overflow: hidden; }
    Responsive
 ========================================= */
 
-@media (max-width:900px){
+/* Moved onto the documented 1024 tier (it used to sit on a stray 900) so the
+   hero flips at the same width as the nav drawer.
+
+   Below this the art direction changes rather than shrinks: a half-width panel
+   would crush the copy, so the photo goes back to full-bleed behind the text
+   under a flat scrim. It becomes atmosphere instead of a competing column. */
+@media (max-width:1024px){
+  .hero,
+  .svc-hero.svc-hero-split{
+    min-height:0;
+    display:block;
+    /* Same pull-up as desktop, but the copy is no longer vertically centred, so
+       the padding has to clear the bar explicitly. */
+    margin-top: calc(-1 * var(--header-h-base));
+    padding-top: calc(var(--header-h-base) + clamp(2.75rem, 4.5vw, 4.75rem));
+  }
   .hero-layout{
     flex-direction:column;
     text-align:left;
-}
+  }
+  .hero-inner{
+    max-width:600px;
+  }
+  .hero-media{
+    inset:0;
+    width:auto;
+  }
+  .hero-media-img{
+    filter:saturate(0.75);
+    /* Full-bleed behind the copy here, so there is no seam to dissolve - the
+       flat scrim below carries legibility instead. */
+    -webkit-mask-image:none;
+    mask-image:none;
+  }
+  .hero-media-overlay{
+    background:rgba(11,11,10,.86);
+  }
 }
 
 /* WHO-MEDIA */
@@ -338,7 +635,6 @@ body.modal-open { overflow: hidden; }
   gap: 3px;
   grid-template-columns: repeat(var(--cols), 1fr);
   grid-template-rows: repeat(var(--rows), 1fr);
-  transform: rotate(-10deg);
   transform: rotateX(8deg) rotateY(-24deg);
   transform-style: preserve-3d;
   animation: float 5s ease-in-out infinite;
@@ -357,16 +653,9 @@ body.modal-open { overflow: hidden; }
   /* background-size: calc(var(--cols) * 100%) calc(var(--rows) * 100%); */
   background-size: 300% 400%;
   background-position: calc(var(--col) * 50%) calc(var(--row) * 33.333%);
-  /* background-position: calc(var(--col) / (var(--cols) - 1) * 100%) calc(var(--row) / (var(--rows) - 1) * 100%); */
-  /* clip-path: polygon(50% 4%, 96% 50%,50% 96%, 4% 50% ); */
-  /* filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.18)); */
-  box-shadow: 0 12px 28px rgba(0, 0, 0,.18);
-  /* transition: transform 0.4s ease; */
   border-radius: 20px;
-  /* transition: transform .35s ease,box-shadow .35s ease; */
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   box-shadow: 0 12px 30px rgba(0, 0, 0, .2);
-
 }
 
 
@@ -403,40 +692,6 @@ body.modal-open { overflow: hidden; }
     gap: 1px;
   }
 }
-/* .hero {
-  position: relative; overflow: hidden;
-  background: var(--black); color: var(--white);
-  padding-block: clamp(5rem, 8vw, 8.5rem);
-}
-
-.hero-pattern {
-  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: min(100%, 1200px); height: 100%;
-  pointer-events: none;
-  mask-image: linear-gradient(to right, transparent 0%, transparent 26%, black 52%, black 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 26%, black 52%, black 100%);
-}
-.hero-pattern circle { fill: var(--gold); } 
-
-.hero-media {
-  position: absolute; inset: 0;
-  overflow: hidden;
-}
-.hero-media-img {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: grayscale(55%) brightness(0.55) saturate(70%) blur(1.5px);
-  transform: scale(1.06);
-}
-.hero-media-overlay {
-  position: absolute; inset: 0;
-  background: rgba(11, 11, 10, 0.8);
-}
-
-.hero-inner { position: relative; z-index: 1; max-width: 760px; }
-.hero-title { font-size: clamp(2.3rem, 1.5rem + 3.2vw, 4.1rem); color: var(--white); margin-bottom: 1.4rem; }
-.hero-sub { font-size: 1.05rem; color: #cfcdc6; max-width: 620px; margin-bottom: 2.25rem; }
-.hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; } */
-
 /* Orchestrated load-in: eyebrow -> headline -> subhead -> actions */
 @keyframes reveal {
   from { opacity: 0; transform: translateY(18px); }
@@ -467,70 +722,75 @@ body.modal-open { overflow: hidden; }
 
 /* --------------------------- Card grids ---------------------------- */
 .card-grid { display: grid; gap: 1.75rem; }
-.five-col { grid-template-columns: repeat(6, 1fr); }
 .four-col { grid-template-columns: repeat(4, 1fr); }
+/* Areas of Expertise. These used to be square tiles in a six-across grid, small
+   enough that the body copy had to scroll inside the card; they are now full
+   cards in a carousel, sized to match the Our Services cards below.
+   The dashed edge is what tells the two sections apart: same size, but this row
+   is an outline and that row is a solid card, so the page does not read as the
+   same grid twice. */
 .service-card {
-  aspect-ratio: 1 / 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   min-width: 0;
+  background: var(--white);
+  border: 1px dashed var(--gold-soft);
   border-radius: var(--radius-lg);
-  padding: var(--space-md);
-  transition: transform var(--transition), box-shadow var(--transition);
+  padding: var(--space-lg);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 .service-card:hover {
   transform: translateY(-6px);
+  border-color: var(--gold);
   box-shadow: 0 18px 32px rgba(0,0,0,0.08);
 }
-.service-card h3 { flex-shrink: 0; margin-bottom: 0.5rem; }
+.service-card h3 { flex-shrink: 0; margin-bottom: 0.6rem; }
 .service-card p {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  font-size: 0.86rem;
+  font-size: 0.92rem;
+  color: var(--mid-grey);
   margin-bottom: 0;
-  padding-right: 4px;
-}
-.service-card:nth-child(odd) {
-  background: var(--white);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
-.service-card:nth-child(odd) p { color: var(--mid-grey); }
-
-.service-card:nth-child(even) {
-  background: var(--gold);
 }
 
-
-
-.service-card:nth-child(even) p { color: rgba(11,11,10,0.72); }
-
-@media (max-width: 480px) {
-  .what-we-do .five-col { grid-template-columns: repeat(2, 1fr); }
+/* ---- the carousel these sit in ---- */
+/* Heading on the left, carousel controls on the right. The section-head measure
+   is 620px, so on a 1200px container the right half sat empty - the controls
+   fill it and, more to the point, stop overlapping the cards. */
+.expertise-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: 2.75rem; /* the margin .section-head gives up below */
 }
-@media (min-width: 1025px) {
-  .service-card {
-    aspect-ratio: 1 / 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: var(--space-md);
-  }
-  .service-card p { font-size: 0.86rem; }
+.expertise-head .section-head { margin-bottom: 0; }
+.carousel-nav { display: flex; gap: 0.6rem; margin-left: auto; flex: 0 0 auto; }
+/* .carousel-arrow is absolutely positioned for the overlay case; in the head it
+   is a plain pair of buttons in normal flow. */
+.carousel-nav .carousel-arrow { position: static; transform: none; }
+
+/* Six cards at the reference's 384px come to well over 2300px, so the row
+   scrolls instead of shrinking the cards to fit. The arrows are the visible
+   affordance; dragging and swiping work on the same track. */
+.expertise-track .service-card {
+  flex: 0 0 min(384px, 82vw);
+  min-height: 330px;
+  scroll-snap-align: start;
 }
 @media (max-width: 640px) {
-  .what-we-do .card-grid { gap: 0.75rem; }
-  .service-card { padding: 0.85rem; }
-  .service-card h3 { font-size: 0.92rem; margin-bottom: 0.3rem; }
-  .service-card p { font-size: 0.72rem; }
-}
-@media (max-width: 480px) {
-  .service-card { padding: 0.7rem; }
-  .service-card h3 { font-size: 0.82rem; }
-  .service-card p { font-size: 0.66rem; }
+  /* Below this the cards stack rather than scroll: at one-and-a-bit cards per
+     screen a horizontal row is more work than a column. The shared rule further
+     down already hides the arrows here. */
+  .expertise-track {
+    flex-direction: column;
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
+  .expertise-track .service-card {
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: 0;
+  }
 }
 
 .services-feature-card {
@@ -581,27 +841,28 @@ body.modal-open { overflow: hidden; }
   min-height: 2.1rem;
 }
 
-.service-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-}
-.service-tags span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
-  background: var(--light-grey);
+.service-desc {
   color: var(--mid-grey);
-  border-radius: 999px;
-  font-size: 0.78rem;
-  transition: .25s;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin-bottom: var(--space-sm);
 }
-.service-tags span i { color: var(--gold); }
-.services-feature-card:hover .service-tags span {
-  background: rgba(184,146,58,.08);
+/* margin-top:auto pins every link to the card foot, so they line up
+   across a row even when the descriptions run to different lengths. */
+.service-link {
+  margin-top: auto;
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em;
   color: var(--gold);
+  border-bottom: 1px solid var(--gold-soft);
+  padding-bottom: 3px;
+  transition: color var(--transition), border-color var(--transition);
 }
+.service-link i { font-size: 0.72rem; transition: transform var(--transition); }
+.service-link:hover { color: var(--gold-dark); border-color: var(--gold-dark); }
+.service-link:hover i { transform: translate(3px, -3px); }
 /* ---------------------------- Why Rayla ----------------------------- /* small echo of the hero motif, right at the word it describes */
 .noise-word { position: relative; }
 .noise-word::after {
@@ -619,26 +880,16 @@ body.modal-open { overflow: hidden; }
 .our-values .section-head {
   margin-bottom: 1rem;
 }
-.carousel-track-wrap { position: relative; overflow: hidden; padding: var(--space-xl) 0; }
-/* .carousel-track-wrap { overflow: hidden; padding: var(--space-xl) 0; } */
+.carousel-track-wrap { position: relative; overflow: hidden; padding: var(--space-lg) 0; }
 .carousel-track {
   display: flex; gap: var(--space-md); overflow-x: auto; scroll-snap-type: x mandatory;
   padding: 0 1.5rem; scrollbar-width: none; -ms-overflow-style: none;
-}
-
-.carousel-track-wrap {
-  padding: var(--space-lg) 0;
 }
 .carousel-track::-webkit-scrollbar { display: none; }
 .carousel-slide {
   position: relative; flex: 0 0 auto; width: min(68vw, 340px); aspect-ratio: 4 / 5;
   border-radius: var(--radius-lg); overflow: hidden; scroll-snap-align: center;
 }
-@media (max-width: 640px) { .carousel-slide { width: 78vw; } }
-/* .carousel-slide {
-  position: relative; flex: 0 0 auto; width: min(78vw, 420px); aspect-ratio: 3 / 4;
-  border-radius: var(--radius-lg); overflow: hidden; scroll-snap-align: center;
-} */
 .carousel-arrow {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 44px; height: 44px; border-radius: 50%;
@@ -648,9 +899,34 @@ body.modal-open { overflow: hidden; }
   transition: background var(--transition), border-color var(--transition), color var(--transition);
 }
 .carousel-arrow:hover { background: var(--gold); border-color: var(--gold); color: var(--black); }
+/* The rule above is built for the dark values carousel - white on translucent
+   white. On the pale gold ground that is invisible, so the expertise row gets a
+   light-ground pair. It has to sit after .carousel-arrow, not before: same
+   specificity, so source order is the only thing deciding which wins. */
+.carousel-arrow-light {
+  background: var(--white);
+  border-color: var(--gold-soft);
+  color: var(--gold-dark);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+}
+.carousel-arrow-light:hover { background: var(--gold); border-color: var(--gold); color: var(--black); }
+/* The row is full-bleed so cards can run off the right edge - that overflow is
+   the cue that there are more than three. Its left edge, though, has to line up
+   with the heading above it, or the section reads as two misaligned columns.
+   Same expression as .container: half the leftover width, plus the gutter.
+   scroll-padding-inline has to match: with mandatory snapping and
+   scroll-snap-align:start, the browser otherwise scrolls the padding away on
+   load and the first card ends up flush against the viewport edge. */
+.expertise-track {
+  padding-inline: calc(max(0px, (100% - var(--container-w)) / 2) + var(--gutter));
+  scroll-padding-inline: calc(max(0px, (100% - var(--container-w)) / 2) + var(--gutter));
+}
 .carousel-arrow-prev { left: 1.25rem; }
 .carousel-arrow-next { right: 1.25rem; }
-@media (max-width: 640px) { .carousel-arrow { display: none; } }
+@media (max-width: 640px) {
+  .carousel-arrow { display: none; }
+  .carousel-nav { display: none; } /* otherwise an empty flex item keeps its gap */
+}
 
 .carousel-dots { display: flex; justify-content: center; gap: 0.6rem; margin-top: 1.5rem; }
 .carousel-dot {
@@ -676,27 +952,16 @@ body.modal-open { overflow: hidden; }
 
 /* ------------------------------ About ------------------------------ */
 .vm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; }
-/* .vm-card {
-  background: var(--light-grey); border-top: 3px solid var(--gold);
-  border-radius: var(--radius-md); padding: 2rem;
-} */
- .vm-card {
+.vm-card {
   background: var(--white);
-
   border: 1px solid var(--gold);
-
-  border-radius: 1px;
-
+  border-radius: var(--radius-lg);
   padding: 2rem;
-
   box-shadow: 0 10px 24px rgba(0,0,0,.05);
-
-  border-radius:var(--radius-lg) ;
 }
 .vm-card i { font-size: 1.5rem; color: var(--gold-dark); flex-shrink: 0; }
 .vm-card-head { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.75rem; }
 .vm-card-head h3 { margin-bottom: 0; }
-/* .vm-card i { font-size: 1.5rem; color: var(--gold-dark); margin-bottom: 0.75rem; display: block; } */
 .vm-card p { margin-bottom: 0; }
 
 
@@ -705,7 +970,15 @@ body.modal-open { overflow: hidden; }
 
     display:grid;
 
-    grid-template-columns:repeat(3,384px);
+    /* minmax(0,384px), not a fixed 384px: three fixed tracks plus gaps come to
+       1200px inside a 1152px content box, and two come to 792px inside 708px at
+       tablet - which is where the overflow became a visible sideways scroll.
+       Letting the tracks shrink holds them at the reference's 384px wherever
+       there is room and lets them give way where there is not.
+       The count stays explicit per breakpoint rather than auto-fit: auto-fit
+       sizes its repetitions from the track's maximum when that is definite, so
+       it kept choosing two columns on a screen wide enough for three. */
+    grid-template-columns:repeat(3,minmax(0,384px));
 
     justify-content:center;
 
@@ -770,32 +1043,105 @@ body.modal-open { overflow: hidden; }
 }
 .work-bg .pill-cloud span:hover { border-color: var(--gold); color: var(--gold-soft); background: rgba(255,255,255,0.14); }
 
+/* This strip ignores the pointer completely - it used to pause on hover, which
+   made the motion stutter for anyone whose cursor happened to rest here on the
+   way down the page. */
+.client-logos.section {
+  padding-block: clamp(2.25rem, 2rem + 1.5vw, 3.25rem);
+}
+/* Centred, and set well below the page's section scale. This heading labels a
+   row of logos rather than opening a section, so at the usual h2 size it
+   outweighed everything it was introducing. */
+.client-logos .section-head {
+  max-width: none;
+  margin-inline: auto;
+  margin-bottom: var(--space-md);
+  text-align: center;
+}
+.client-logos .section-head h2 {
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.55rem);
+  margin-bottom: 0;
+}
+
 .logo-marquee {
+  /* Breathing room around the strip, not a height for it: the logo slots now
+     carry most of the band's ~380px, so this only has to keep the marks off
+     the heading above and the section edge below. */
+  padding-block: var(--space-md);
   overflow: hidden;
   -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
 }
-.logo-track { display: flex; width: max-content; gap: var(--space-xl); animation: logo-scroll 28s linear infinite; }
-.logo-marquee:hover .logo-track { animation-play-state: paused; }
+/* --set-w is the width of one set of four logos, and it is the single number
+   this component turns on: the track is two sets wide, and one cycle shifts it
+   by exactly one set, which is what puts logo 5 where logo 1 was and makes the
+   seam invisible. It has to be stated rather than measured - width:max-content
+   does not resolve against vw flex-bases (Firefox collapses the track to its
+   images' intrinsic width), and a -50% shift of a collapsed track scrolls the
+   wrong distance. Each breakpoint below restates it alongside its slot width. */
+.logo-track {
+  --set-w: 104vw; /* 4 slots x 26vw */
+  display: flex;
+  width: calc(var(--set-w) * 2);
+  animation: logo-scroll 28s linear infinite;
+}
+
+/* Every logo gets an identical slot measured in vw, not a width of its own.
+   That is what makes the loop seamless, and the reason is arithmetic rather
+   than taste: the track is two identical sets and the animation shifts it by
+   exactly one set (-50%), so the strip only stays full if one set is at least
+   as wide as what you can see. The marquee sits outside .container, so "what
+   you can see" is the whole viewport. Four slots of 26vw come to 104vw - a
+   little wider than the window at every size, and it stays that way as the
+   window is resized, which sizing the slots to the logos never could. The
+   logos are 200-300px wide at 200px tall, so one set used to be ~1175px: on
+   any window wider than that the second set ran out before the first came
+   back round, and a blank band crossed the strip once per cycle.
+
+   The gutter is padding, not margin, so it is inside the 26vw the flex-basis
+   promises (border-box) and the arithmetic above holds exactly. */
 .logo-item {
-  flex: 0 0 auto; height: 200px;
+  flex: 0 0 26vw;
+  /* Only the height moves when these marks are resized. The slot width is
+     load-bearing - the seamless-loop arithmetic above turns on it - and the
+     logos are 400-612px wide intrinsically against a 300px-ish slot, so height
+     is the binding constraint at every breakpoint anyway. */
+  height: clamp(108px, 9.5vw, 150px);
+  padding-inline: clamp(var(--space-xs), 2vw, var(--space-lg));
   display: flex; align-items: center; justify-content: center;
 }
+/* Fit inside the slot on whichever axis runs out first - the four marks range
+   from square to 3:2, so a shared height alone would leave the wide ones
+   overhanging their neighbours on narrow screens. */
 .logo-item img {
-  height: 100%;
+  max-height: 100%;
+  max-width: 100%;
+  height: auto;
   width: auto;
-  max-width: 320px;
   object-fit: contain;
 }
-@keyframes logo-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes logo-scroll { from { transform: translateX(0); } to { transform: translateX(calc(-1 * var(--set-w))); } }
 @media (prefers-reduced-motion: reduce) { .logo-track { animation: none; } }
-/* .brand-logos { display: flex; flex-wrap: wrap; gap: 1.5rem; }
-.brand-logo-placeholder {
-  flex: 1 1 220px; border: 1.5px dashed #c9c5b8; border-radius: var(--radius-md);
-  min-height: 90px; display: flex; align-items: center; justify-content: center;
-  padding: 1rem; text-align: center; background: var(--white);
+
+/* Fewer, larger slots as the window narrows: four marks across a phone would
+   be thumbnails. Each tier keeps 4 x basis >= 100vw, so the seamlessness
+   condition above holds at every width. The cycle distance scales with the
+   viewport now, so the duration comes down with it - otherwise the strip
+   would crawl on a phone, where one cycle is a third of the distance.
+   These live here rather than in the shared breakpoint blocks further down so
+   the component reads in one place; the widths match the file's usual ladder. */
+@media (max-width: 1024px) {
+  .logo-item { flex-basis: 34vw; }
+  .logo-track { --set-w: 136vw; animation-duration: 22s; }
 }
-.brand-logo-placeholder span { font-family: var(--font-display); font-weight: 700; color: var(--mid-grey); font-size: 0.88rem; } */
+@media (max-width: 768px) {
+  .logo-item { flex-basis: 40vw; }
+  .logo-track { --set-w: 160vw; animation-duration: 18s; }
+}
+@media (max-width: 480px) {
+  .logo-item { flex-basis: 50vw; }
+  .logo-track { --set-w: 200vw; animation-duration: 15s; }
+}
 
 /* ------------------------------- Why Us -------------------------------- */
 .check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem 2.5rem; }
@@ -811,12 +1157,6 @@ body.modal-open { overflow: hidden; }
   text-align: center; border: 1px solid var(--gold-soft);
   box-shadow: 0 4px 16px rgba(0,0,0,0.04);
 }
-
-/* .team-card {
-  background: var(--white); border-radius: var(--radius-md); overflow: hidden;
-  text-align: center; border: var(--gold-soft);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-} */
 .team-photo { width: 100%; aspect-ratio: 4 / 5; overflow: hidden; background: var(--light-grey); }
 .team-photo img {
   width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%;
@@ -947,16 +1287,6 @@ dialog.modal.is-visible { opacity: 1; transform: scale(1) translateY(0); }
   transform: translateY(-6px);
   box-shadow: 0 18px 32px rgba(0,0,0,0.08);
 }
-/* 
-.vm-card, .team-card {
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
-}
-.vm-card:hover, .team-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 32px rgba(0,0,0,0.08);
-  border-color: var(--gold-soft);
-} */
-
 
 .step-num { transition: transform var(--transition), box-shadow var(--transition); }
 .process-step:hover .step-num { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(184,146,58,0.18); }
@@ -966,15 +1296,162 @@ dialog.modal.is-visible { opacity: 1; transform: scale(1) translateY(0); }
 .pill-cloud span:hover { border-color: var(--gold); color: var(--gold-dark); }
 .tag-list span:hover { background: var(--gold-soft); }
 
-.main-nav a:not(.btn), .footer-nav a { position: relative; }
-.main-nav a:not(.btn)::after, .footer-nav a::after {
+.main-nav > ul > li > a:not(.btn), .footer-nav a { position: relative; }
+.main-nav > ul > li > a:not(.btn)::after, .footer-nav a::after {
   content: ''; position: absolute; left: 0; bottom: -4px; height: 1px; width: 100%;
   background: var(--gold); transform: scaleX(0); transform-origin: left;
   transition: transform var(--transition);
 }
-.main-nav a:not(.btn):hover::after, .footer-nav a:hover::after { transform: scaleX(1); }
+.main-nav > ul > li > a:not(.btn):hover::after, .footer-nav a:hover::after { transform: scaleX(1); }
 
 .btn:active { transform: scale(0.97); }
+
+/* ---------------------- Service detail pages ---------------------- */
+/* Shared by the six pages in pages/. They run hero -> overview ->
+   what's included -> FAQ -> CTA. The FAQ is <details>/<summary> rather
+   than scripted accordions so it still opens with JS switched off. */
+/* The black ground and the type ramp every service hero is built on. All six
+   pages now add .svc-hero-split (below) and their own photo on top of it. */
+.svc-hero {
+  background: var(--black); color: var(--white);
+  padding-block: clamp(3.5rem, 3rem + 4vw, 6rem);
+}
+
+/* ---- Split service hero ----
+   The homepage's signature split, borrowed wholesale: the shell, the mask, the
+   dissolve and the 1024 art-direction flip all come from the .hero rules at the
+   top of this file, so a page opts in with one class plus its own photo.
+
+   The one thing that is deliberately not shared is the height. The homepage is
+   the front door and is allowed to fill the window; a service page has been
+   clicked into with a question already in mind, so the hero stops short of the
+   fold and lets the Overview show its first line. */
+.svc-hero.svc-hero-split {
+  min-height: clamp(480px, 78vh, 720px);
+}
+/* The h1 sits in .hero-inner now, which is the narrower cap, so the 16ch above
+   never applies - but the display-type treatment that makes the homepage
+   headline read as one block does have to be repeated here. */
+.svc-hero-split h1 {
+  max-width: none;
+  text-wrap: balance;
+  word-spacing: 0.07em;
+  margin-bottom: 1.15rem;
+}
+.svc-hero-split p { max-width: none; }
+/* Same clamp as .hero-title so a service page hero and the homepage
+   hero sit on one type ramp. */
+.svc-hero h1 {
+  color: var(--white);
+  font-size: clamp(2.3rem, 1.5rem + 3.2vw, 4.1rem);
+  max-width: 16ch; margin-bottom: var(--space-sm);
+}
+.svc-hero p { color: var(--text-on-dark); max-width: 58ch; margin-bottom: var(--space-lg); }
+
+/* Breadcrumb doubles as the way back to the homepage services grid. */
+.svc-crumb { font-size: 0.8rem; color: var(--mid-grey); margin-bottom: var(--space-sm); }
+.svc-crumb a { color: var(--gold-soft); }
+.svc-crumb a:hover { color: var(--gold); }
+
+.svc-overview { max-width: 68ch; }
+.svc-overview p + p { margin-top: var(--space-sm); }
+
+/* .svc-band's ground is declared with .section-tint up in the Layout block -
+   it is the same pale gold the homepage uses, not a colour of its own. */
+
+.svc-include-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md);
+}
+/* scroll-margin, not just the global scroll-padding, because these are
+   the anchor targets the header mega-menu links land on. */
+/* .svc-benefit rides along: same card, different job. The two differ only in
+   type scale below, and in the anchor behaviour above - a benefit is never a
+   link target, so it takes none of the scroll-margin/:target handling. */
+.svc-include,
+.svc-benefit {
+  scroll-margin-top: 100px;
+  /* White, not off-white: these sit on the pale gold band, and off-white is
+     too close to it to read as a card. Same call as .service-card makes on
+     the homepage's tinted sections. */
+  background: var(--white);
+  border: var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  transition: border-color var(--transition), transform var(--transition);
+}
+.svc-include:target, .svc-include:hover {
+  border-color: var(--gold-soft); transform: translateY(-4px);
+}
+.svc-include h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+.svc-include p { color: var(--mid-grey); font-size: 0.88rem; }
+
+/* ---- Why it matters ----
+   The argument for the service, then four business outcomes beside it. The
+   two-column shell is the homepage's .why-rayla-layout, shared by selector up
+   in the Why Rayla block so the two cannot drift apart. */
+.svc-why-content { max-width: 520px; }
+/* Not the homepage's 12ch: that clamp is tuned to one short headline. These
+   run longer, so they get a wider measure and balance the last line instead. */
+.svc-why-content h2 { max-width: 18ch; text-wrap: balance; margin-bottom: 1.25rem; }
+.svc-why-content .btn { margin-top: var(--space-2xs); }
+
+.svc-benefit-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-md);
+}
+.svc-benefit h3 { font-size: 1rem; margin-bottom: 0.4rem; }
+.svc-benefit p { color: var(--mid-grey); font-size: 0.86rem; margin-bottom: 0; }
+
+/* ---- How we work ----
+   The homepage's numbered track, inverted onto a light ground. Off-white
+   rather than white: this band sits between the pale gold cards above and the
+   white FAQ below, and needs an edge of its own to read as a band at all. */
+.svc-process { background: var(--off-white); }
+/* The base connector is rgba(255,255,255,.14) - built for the homepage's photo
+   band. Left alone it is a white line on an almost-white ground, which reads as
+   no line, and the five numbers float unjoined. */
+.svc-process .process-track::before { background: #e7e4da; }
+.svc-process .process-step h3 { color: var(--dark-grey); }
+.svc-process .process-step p { color: var(--mid-grey); }
+
+.svc-faq { max-width: 780px; }
+.svc-faq-item { border-bottom: var(--border-light); }
+.svc-faq-item summary {
+  cursor: pointer; list-style: none;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm);
+  font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  color: var(--black); padding: var(--space-sm) 0;
+}
+.svc-faq-item summary::-webkit-details-marker { display: none; }
+.svc-faq-item summary::after {
+  content: '+'; color: var(--gold); font-size: 1.4rem; line-height: 1; flex-shrink: 0;
+}
+.svc-faq-item[open] summary::after { content: '\2212'; }
+.svc-faq-item p { color: var(--mid-grey); padding-bottom: var(--space-md); max-width: 68ch; }
+
+/* ---- Homepage FAQ ----
+   Only the two-column shell is new; the rows themselves are the .svc-faq /
+   .svc-faq-item pattern above, reused verbatim from the service pages. The
+   right column is given the larger share because the questions are the thing
+   the visitor came to read - the left column is a signpost, not a peer. */
+.faq-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: var(--space-2xl);
+  align-items: start;
+}
+/* the service-page cap would leave the column short inside this grid */
+.faq-grid .svc-faq { max-width: none; }
+.faq-grid .section-head { margin-bottom: var(--space-sm); }
+/* Same job as .section-lead, kept separate for the tighter measure and the
+   bottom margin this column needs above its button - beside a full column of
+   rows a bare heading reads as an orphan, so the left side gets a sentence and
+   a route to Contact. */
+.faq-lead { color: var(--mid-grey); max-width: 46ch; margin-bottom: var(--space-md); }
+.faq-intro .btn-outline-dark { margin-top: 0; }
+
+.svc-cta { background: var(--near-black); color: var(--white); text-align: center; }
+.svc-cta h2 { color: var(--white); margin-bottom: var(--space-sm); }
+.svc-cta p { color: var(--text-on-dark); max-width: 52ch; margin: 0 auto var(--space-lg); }
 
 @keyframes dot-breathe { 0%, 100% { opacity: 0.75; } 50% { opacity: 0.3; } }
 .noise-word::after { animation: dot-breathe 3.2s ease-in-out infinite; }
@@ -1005,10 +1482,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
    mobile drawer nav" tier — this is the widest point at which a
    six-link horizontal nav plus a CTA reliably fits without wrapping) ---- */
 @media (max-width: 1024px) {
-  /* .hero-pattern { display: none; } */
-
-  .mobile-call-btn { display: flex; }
+  /* One call affordance per breakpoint: the round icon button replaces the
+     inline number, which would otherwise be buried inside the closed drawer.
+     margin-left:auto pushes it and the burger after it to the right edge -
+     .main-nav is position:fixed at this tier, so it contributes no width and
+     without this everything packs against the logo. */
+  .mobile-call-btn { display: flex; margin-left: auto; }
+  .nav-phone { display: none; }
   .nav-toggle-label { display: block; }
+
+  /* The FAQ's left column stops being a column and becomes a heading block. */
+  .faq-grid { grid-template-columns: 1fr; gap: var(--space-lg); }
   .main-nav {
     position: fixed; top: var(--header-h, 81px); left: 0; right: 0; bottom: 0;
     background: var(--black); flex-direction: column; align-items: stretch;
@@ -1021,12 +1505,36 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     opacity: 1; visibility: visible; transform: translateY(0);
     transition: opacity var(--transition), transform var(--transition), visibility 0s linear 0s;
   }
-  .main-nav ul { flex-direction: column; gap: 0; width: 100%; }
-  .main-nav ul li { border-bottom: 1px solid rgba(255,255,255,0.12); }
-  .main-nav ul a { display: block; padding: 1.15rem 1.75rem; }
+  .main-nav > ul { flex-direction: column; gap: 0; width: 100%; }
+  .main-nav > ul > li { border-bottom: 1px solid rgba(255,255,255,0.12); }
+  .main-nav > ul > li > a { display: block; padding: 1.15rem 1.75rem; }
   .nav-cta { margin: 1.5rem 1.75rem 0; justify-content: center; }
 
-  .five-col { grid-template-columns: repeat(3, 1fr); }
+  /* Inside the drawer the panel is a plain accordion, and it re-themes
+     dark so it reads as part of the drawer rather than a floating sheet. */
+  .has-mega { display: block; position: relative; }
+  .mega-toggle-label {
+    pointer-events: auto;
+    position: absolute; top: 0; right: 0;
+    width: 56px; height: 54px; justify-content: center;
+    font-size: 0.8rem;
+  }
+  .mega-panel {
+    position: static; opacity: 1; visibility: visible; transform: none;
+    display: none; transition: none;
+    /* Undo the desktop shrink-to-fit: in the drawer this is a full-width
+       accordion panel, not a floating menu. */
+    left: auto; width: auto; max-width: none; border-radius: 0;
+    background: var(--near-black); border-top: 0; box-shadow: none;
+  }
+  .mega-panel .container { padding-inline: 0; }
+  .mega-toggle:checked ~ .mega-panel { display: block; }
+  .mega-grid { grid-template-columns: 1fr; gap: var(--space-md); padding: var(--space-md) 1.75rem; }
+  .mega-col-head { color: var(--gold-soft); font-size: 0.72rem; }
+  .mega-col-icon { background: rgba(217,187,120,0.1); color: var(--gold-soft); }
+  .mega-col a { color: var(--text-on-dark); }
+  .mega-col a:hover { color: var(--gold-soft); }
+
   .four-col { grid-template-columns: repeat(2, 1fr); }
   .process-track { grid-template-columns: repeat(3, 1fr); row-gap: 2.5rem; }
   .process-track::before { display: none; }
@@ -1035,15 +1543,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .who-media { order: -1; }
   .contact-grid { grid-template-columns: 1fr; }
   /* .vm-grid, .contact-grid { grid-template-columns: 1fr; } */
-  .check-grid { grid-template-columns: 1fr; }
+  .check-grid, .svc-benefit-grid { grid-template-columns: 1fr; }
 
-  .services-grid{
+  .svc-include-grid { grid-template-columns: repeat(2, 1fr); }
 
-    grid-template-columns:repeat(2,384px);
+  .services-grid { grid-template-columns: repeat(2, minmax(0, 384px)); }
 
-    justify-content:center;
-
-}
 }
 
 /* ---- Tablet portrait ---- */
@@ -1053,37 +1558,31 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* ---- Large phones ---- */
 @media (max-width: 640px) {
-  .five-col { grid-template-columns: repeat(2, 1fr); }
   .process-track { grid-template-columns: 1fr; }
   .hero-actions { flex-direction: column; align-items: flex-start; }
   .noise-word::after { display: none; }
   .hero-title { font-size: clamp(1.9rem, 1.3rem + 4.5vw, 2.6rem); }
 
-  .services-grid{
-  
+  .services-grid { grid-template-columns: 1fr; }
+  .svc-include-grid { grid-template-columns: 1fr; }
+
   .vm-grid { gap: var(--space-sm); }
   .vm-card { padding: var(--space-sm); }
   .vm-card-head { gap: 0.5rem; margin-bottom: 0.5rem; }
   .vm-card i { font-size: 1.15rem; }
   .vm-card h3 { font-size: 1rem; }
-  .vm-card p { font-size: 0.85rem; }  
-  grid-template-columns:1fr;
+  .vm-card p { font-size: 0.85rem; }
 
-}
-
-.service-card{
-
-    width:100%;
-
-    min-height:auto;
-
-}
+  .service-card {
+    width: 100%;
+    min-height: auto;
+  }
 }
 
 /* ---- Small phones ---- */
 @media (max-width: 480px) {
-  .five-col, .four-col { grid-template-columns: 1fr; }
-  .container { padding-inline: 1.15rem; }
+  .four-col { grid-template-columns: 1fr; }
+  :root { --gutter: 1.15rem; } /* .container and the expertise row both follow */
   .contact-form { padding: 1.5rem; }
   .social-icons a, .footer-social a { width: 40px; height: 40px; }
   .btn { padding: 0.85rem 1.4rem; font-size: 0.84rem; }
@@ -1099,7 +1598,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
    WHY RAYLA
 ======================================================= */
 
-.why-rayla-layout{
+.why-rayla-layout,
+.svc-why-layout{
     display:grid;
     grid-template-columns:.9fr 1.1fr;
     gap:4rem;
@@ -1231,7 +1731,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 @media (max-width:1024px){
 
-    .why-rayla-layout{
+    .why-rayla-layout,
+    .svc-why-layout{
 
         grid-template-columns:1fr;
 

@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
   var header    = document.querySelector('.site-header');
   var navToggle = document.getElementById('nav-toggle');
   var navLinks  = document.querySelectorAll('.main-nav a');
+  var megaToggle = document.getElementById('mega-toggle');
+  var megaItem   = document.querySelector('.has-mega');
+  var megaTrigger = megaItem && megaItem.querySelector('.mega-trigger');
 
   if (!header || !navToggle) return; // defensive: don't error if markup changes later
 
@@ -38,6 +41,10 @@ document.addEventListener('DOMContentLoaded', function () {
       navToggle.checked = false;
       document.body.classList.remove('nav-open');
     }
+    // Collapse the Services accordion too, otherwise it stays expanded
+    // behind a closed drawer and reappears pre-opened on the next tap.
+    if (megaToggle) megaToggle.checked = false;
+    if (megaItem) megaItem.classList.remove('is-open');
   }
 
   // Keep <body> in sync with the checkbox so we can lock scrolling
@@ -51,7 +58,12 @@ document.addEventListener('DOMContentLoaded', function () {
   // without this, the checkbox stays "checked" after an anchor jump
   // and the menu is left covering the page it just navigated to.
   navLinks.forEach(function (link) {
-    link.addEventListener('click', closeMenu);
+    link.addEventListener('click', function () {
+      // The Services trigger manages its own open state (section 1b);
+      // letting closeMenu run here would cancel the click that opened it.
+      if (link.classList.contains('mega-trigger')) return;
+      closeMenu();
+    });
   });
 
   // Close on Escape, for keyboard users.
@@ -70,6 +82,29 @@ document.addEventListener('DOMContentLoaded', function () {
     desktopQuery.addEventListener('change', handleViewportChange);
   } else if (desktopQuery.addListener) {
     desktopQuery.addListener(handleViewportChange); // older Safari fallback
+  }
+
+  /* ---------------------------------------------------------------
+     1b. Services mega-menu: click to keep it open
+     Hover alone dismissed the panel as soon as the pointer left the
+     trigger, which made the links inside hard to reach. Clicking now
+     latches it open until you click away, press Escape, or click the
+     trigger again. Hover still opens it, and with JS off the trigger
+     stays an ordinary link to the services section.
+     --------------------------------------------------------------- */
+  if (megaItem && megaTrigger) {
+    megaTrigger.addEventListener('click', function (e) {
+      // Below 1025px the panel is the checkbox accordion, so leave the
+      // link alone and let it navigate.
+      if (!desktopQuery.matches) return;
+      e.preventDefault();
+      megaItem.classList.toggle('is-open');
+    });
+
+    // Any click outside the menu dismisses it.
+    document.addEventListener('click', function (e) {
+      if (!megaItem.contains(e.target)) megaItem.classList.remove('is-open');
+    });
   }
 
   /* ---------------------------------------------------------------
@@ -97,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-  var groupSelectors = '.card-grid, .pillars, .process-track, .vm-grid, .check-grid, .contact-grid';
+  var groupSelectors = '.card-grid, .pillars, .process-track, .vm-grid, .check-grid, .svc-benefit-grid, .contact-grid, .svc-faq';
   var soloSelectors   = '.section-head, .who-text, .who-media, .about-grid, .statement, .pill-cloud, .brand-logos';
 
   document.querySelectorAll(groupSelectors).forEach(function (group) {
@@ -296,93 +331,123 @@ if (form) {
 }
 });
 
+/* =================================================================
+   RAYLA DIGITAL AGENCY — Carousels
+   There are two on the page now (Areas of Expertise, Our Values), so
+   this binds per .carousel-track-wrap instead of reaching for the
+   first one on the page — with a single shared handler the second
+   carousel's arrows would have driven the first one's track.
+   Auto-advance is opt-in via data-autoplay on the track: the values
+   carousel cycles itself, the expertise row only moves when the
+   reader moves it.
+   ================================================================= */
 document.addEventListener('DOMContentLoaded', function () {
-  var wrap = document.querySelector('.carousel-track-wrap');
-  var track = document.getElementById('why-rayla-carousel');
-  var dotsWrap = document.getElementById('why-rayla-dots');
-  if (!track || !wrap) return;
 
-  var slides = Array.prototype.slice.call(track.querySelectorAll('.carousel-slide'));
-  var prevBtn = wrap.querySelector('.carousel-arrow-prev');
-  var nextBtn = wrap.querySelector('.carousel-arrow-next');
+  function initCarousel(wrap) {
+    var track = wrap.querySelector('.carousel-track');
+    if (!track) return; // defensive: a wrap with no track is markup mid-edit
 
-  var paused = false;
-  var direction = 1;
-  track.addEventListener('mouseenter', function () { paused = true; });
-  track.addEventListener('mouseleave', function () { paused = false; });
-  track.addEventListener('touchstart', function () { paused = true; }, { passive: true });
-  track.addEventListener('touchend', function () {
-    window.setTimeout(function () { paused = false; }, 2000);
-  }, { passive: true });
+    // The dots sit outside .carousel-track-wrap, so they cannot be found by
+    // descending from it. The track names its own dots container instead of the
+    // id being derived from the track's - deriving it is the kind of link that
+    // breaks silently the first time an id is renamed.
+    var dotsId = track.getAttribute('data-dots');
+    var dotsWrap = dotsId ? document.getElementById(dotsId) : null;
+    var slides = Array.prototype.slice.call(track.children);
+    // Arrows normally overlay the track and live inside the wrap. The expertise
+    // row lifts them into its section head instead, so the track can name the
+    // container holding them - same hook as data-dots above, for the same
+    // reason: an id derived from the track's would break silently on rename.
+    var navId = track.getAttribute('data-nav');
+    var navWrap = (navId && document.getElementById(navId)) || wrap;
+    var prevBtn = navWrap.querySelector('.carousel-arrow-prev');
+    var nextBtn = navWrap.querySelector('.carousel-arrow-next');
 
-  function stepWidth() {
-    var slide = track.querySelector('.carousel-slide');
-    if (!slide) return 0;
-    var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-    return slide.getBoundingClientRect().width + gap;
-  }
+    var paused = false;
+    var direction = 1;
+    track.addEventListener('mouseenter', function () { paused = true; });
+    track.addEventListener('mouseleave', function () { paused = false; });
+    track.addEventListener('touchstart', function () { paused = true; }, { passive: true });
+    track.addEventListener('touchend', function () {
+      window.setTimeout(function () { paused = false; }, 2000);
+    }, { passive: true });
 
-  var resumeTimer;
-  function pauseThenResume() {
-    paused = true;
-    window.clearTimeout(resumeTimer);
-    resumeTimer = window.setTimeout(function () { paused = false; }, 2500);
-  }
+    function stepWidth() {
+      var slide = track.children[0];
+      if (!slide) return 0;
+      var gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      return slide.getBoundingClientRect().width + gap;
+    }
 
-  if (nextBtn) {
-    nextBtn.addEventListener('click', function () {
-      track.scrollBy({ left: stepWidth(), behavior: 'smooth' });
-      pauseThenResume();
-    });
-  }
-  if (prevBtn) {
-    prevBtn.addEventListener('click', function () {
-      track.scrollBy({ left: -stepWidth(), behavior: 'smooth' });
-      pauseThenResume();
-    });
-  }
+    var resumeTimer;
+    function pauseThenResume() {
+      paused = true;
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(function () { paused = false; }, 2500);
+    }
 
-  var dots = [];
-  if (dotsWrap && slides.length) {
-    slides.forEach(function (_, i) {
-      var dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'carousel-dot';
-      dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-      dot.addEventListener('click', function () {
-        track.scrollTo({ left: stepWidth() * i, behavior: 'smooth' });
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function () {
+        track.scrollBy({ left: stepWidth(), behavior: 'smooth' });
         pauseThenResume();
       });
-      dotsWrap.appendChild(dot);
-      dots.push(dot);
-    });
-
-    if ('IntersectionObserver' in window) {
-      var dotObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
-            var index = slides.indexOf(entry.target);
-            dots.forEach(function (d, i) { d.classList.toggle('is-active', i === index); });
-          }
-        });
-      }, { root: track, threshold: [0.6] });
-      slides.forEach(function (s) { dotObserver.observe(s); });
-    } else {z
-      dots[0].classList.add('is-active');
     }
+    if (prevBtn) {
+      prevBtn.addEventListener('click', function () {
+        track.scrollBy({ left: -stepWidth(), behavior: 'smooth' });
+        pauseThenResume();
+      });
+    }
+
+    var dots = [];
+    if (dotsWrap && slides.length) {
+      slides.forEach(function (_, i) {
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'carousel-dot';
+        dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+        dot.addEventListener('click', function () {
+          track.scrollTo({ left: stepWidth() * i, behavior: 'smooth' });
+          pauseThenResume();
+        });
+        dotsWrap.appendChild(dot);
+        dots.push(dot);
+      });
+
+      if ('IntersectionObserver' in window) {
+        var dotObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
+              var index = slides.indexOf(entry.target);
+              dots.forEach(function (d, i) { d.classList.toggle('is-active', i === index); });
+            }
+          });
+        }, { root: track, threshold: [0.6] });
+        slides.forEach(function (s) { dotObserver.observe(s); });
+      } else {
+        dots[0].classList.add('is-active');
+      }
+    }
+
+    // Everything above is manual control and stays on regardless. Only the
+    // self-advancing part is opt-in, and it is skipped outright for anyone who
+    // has asked for less motion.
+    if (!track.hasAttribute('data-autoplay')) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    window.setInterval(function () {
+      if (paused) return;
+      var step = stepWidth();
+      if (!step) return;
+      var max = track.scrollWidth - track.clientWidth;
+      if (track.scrollLeft >= max - 10) direction = -1;
+      if (track.scrollLeft <= 10) direction = 1;
+      track.scrollTo({ left: track.scrollLeft + step * direction, behavior: 'smooth' });
+    }, 3500);
   }
 
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) return;
-
-  window.setInterval(function () {
-  if (paused) return;
-  var slideEl = track.querySelector('.carousel-slide');
-  if (!slideEl) return;
-  var step = slideEl.getBoundingClientRect().width + 24;
-  var max = track.scrollWidth - track.clientWidth;
-  if (track.scrollLeft >= max - 10) direction = -1;
-  if (track.scrollLeft <= 10) direction = 1;
-  track.scrollTo({ left: track.scrollLeft + step * direction, behavior: 'smooth' });
-}, 3500);
+  Array.prototype.forEach.call(
+    document.querySelectorAll('.carousel-track-wrap'),
+    initCarousel
+  );
 });
