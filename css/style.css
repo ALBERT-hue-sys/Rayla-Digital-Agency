@@ -257,12 +257,15 @@ body.modal-open { overflow: hidden; }
 .nav-toggle-label span,
 .nav-toggle-label span::before,
 .nav-toggle-label span::after {
-  content: ''; position: absolute; left: 9px; width: 26px; height: 2px;
+  content: ''; position: absolute; width: 26px; height: 2px;
   background: var(--white); transition: var(--transition);
 }
-.nav-toggle-label span { top: 21px; }
-.nav-toggle-label span::before { top: -8px; }
-.nav-toggle-label span::after { top: 8px; }
+.nav-toggle-label span { left: 9px; top: 21px; }
+/* left:0, not the span's own 9px: the pseudo-elements are positioned against
+   the span rather than the label, so a shared left:9px indented them a second
+   time and staggered the three bars by exactly that much. */
+.nav-toggle-label span::before { left: 0; top: -8px; }
+.nav-toggle-label span::after { left: 0; top: 8px; }
 .nav-toggle:checked ~ .nav-toggle-label span { background: transparent; }
 .nav-toggle:checked ~ .nav-toggle-label span::before { transform: rotate(45deg) translate(5px, 6px); }
 .nav-toggle:checked ~ .nav-toggle-label span::after { transform: rotate(-45deg) translate(5px, -6px); }
@@ -370,6 +373,11 @@ body.modal-open { overflow: hidden; }
   color: var(--dark-grey); padding: 0.3rem 0;
   transition: color var(--transition);
 }
+/* Mobile only. On desktop the "Services" trigger is itself the link to the
+   overview; in the drawer that row becomes the accordion toggle, so the
+   overview needs an entry of its own inside the panel. A display:none grid
+   child takes no track, so the three columns above are unaffected. */
+.mega-all { display: none; }
 .mega-col a i { color: var(--gold); font-size: 0.62rem; transition: transform var(--transition); }
 .mega-col a:hover { color: var(--gold); }
 .mega-col a:hover i { transform: translateX(3px); }
@@ -1484,10 +1492,16 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 @media (max-width: 1024px) {
   /* One call affordance per breakpoint: the round icon button replaces the
      inline number, which would otherwise be buried inside the closed drawer.
-     margin-left:auto pushes it and the burger after it to the right edge -
-     .main-nav is position:fixed at this tier, so it contributes no width and
-     without this everything packs against the logo. */
-  .mobile-call-btn { display: flex; margin-left: auto; }
+     .main-nav is position:fixed at this tier and contributes no width, so
+     something has to take up the slack or the bar packs against the logo.
+     The logo does it, which means everything after it - the call button where
+     a page has one, the burger always - clusters right in DOM order. This
+     used to hang off .mobile-call-btn's own margin-left:auto, but that element
+     exists only on the homepage, so every service page had its burger stuck
+     beside the logo. Only one auto margin can do the pushing: two would split
+     the free space and strand the call button mid-bar. */
+  .logo { margin-right: auto; }
+  .mobile-call-btn { display: flex; }
   .nav-phone { display: none; }
   .nav-toggle-label { display: block; }
 
@@ -1513,12 +1527,31 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   /* Inside the drawer the panel is a plain accordion, and it re-themes
      dark so it reads as part of the drawer rather than a floating sheet. */
   .has-mega { display: block; position: relative; }
+  /* The whole row is the toggle here, not just the chevron - tapping the word
+     "Services" used to follow the link and leave the page, which is why the
+     submenu looked like it did nothing. The inset has to stop at the row's own
+     height: .has-mega is the positioning parent and also holds the open panel,
+     so a full inset:0 would cover the links inside it. */
   .mega-toggle-label {
     pointer-events: auto;
-    position: absolute; top: 0; right: 0;
-    width: 56px; height: 54px; justify-content: center;
+    position: absolute; inset: 0 0 auto 0;
+    width: auto; height: 54px;
+    justify-content: flex-end;
+    padding-right: 1.75rem;
     font-size: 0.8rem;
   }
+  /* Belt and braces: even if that overlay ever came up short, a tap meant to
+     expand the panel must never navigate away from the page. */
+  .has-mega > .mega-trigger { pointer-events: none; }
+  /* The overview link the row gave up, reinstated inside the panel. */
+  .mega-all {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: var(--font-display); font-weight: 700; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--gold-soft); padding-bottom: var(--space-sm);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .mega-all i { font-size: 0.62rem; color: var(--gold); }
   .mega-panel {
     position: static; opacity: 1; visibility: visible; transform: none;
     display: none; transition: none;
