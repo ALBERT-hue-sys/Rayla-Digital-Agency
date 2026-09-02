@@ -373,6 +373,11 @@ body.modal-open { overflow: hidden; }
   color: var(--dark-grey); padding: 0.3rem 0;
   transition: color var(--transition);
 }
+/* The per-category accordion is a drawer-only affordance: on desktop all three
+   columns are open side by side, so the checkbox and its caret stay inert. */
+.mega-col-toggle { display: none; }
+.mega-col-caret { display: none; }
+
 /* Mobile only. On desktop the "Services" trigger is itself the link to the
    overview; in the drawer that row becomes the accordion toggle, so the
    overview needs an entry of its own inside the panel. A display:none grid
@@ -1548,8 +1553,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     display: flex; align-items: center; gap: 0.5rem;
     font-family: var(--font-display); font-weight: 700; font-size: 0.78rem;
     text-transform: uppercase; letter-spacing: 0.06em;
-    color: var(--gold-soft); padding-bottom: var(--space-sm);
-    border-bottom: 1px solid rgba(255,255,255,0.12);
+    color: var(--gold-soft); padding: 0.85rem 1.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
   }
   .mega-all i { font-size: 0.62rem; color: var(--gold); }
   .mega-panel {
@@ -1562,11 +1567,40 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   }
   .mega-panel .container { padding-inline: 0; }
   .mega-toggle:checked ~ .mega-panel { display: block; }
-  .mega-grid { grid-template-columns: 1fr; gap: var(--space-md); padding: var(--space-md) 1.75rem; }
-  .mega-col-head { color: var(--gold-soft); font-size: 0.72rem; }
+  /* Fully expanded, the three categories put 21 links between "Services" and
+     "Process", burying the rest of the nav a screen and a half down. Each
+     category becomes its own accordion instead, so the drawer stays the length
+     of the menu rather than the length of the service list. Rows carry their
+     own padding now, so the grid gives up its own. */
+  .mega-grid { grid-template-columns: 1fr; gap: 0; padding: 0; }
+  .mega-col-head {
+    display: flex; align-items: center; gap: 0.7rem;
+    color: var(--gold-soft); font-size: 0.72rem;
+    margin-bottom: 0; padding: 0.85rem 1.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
   .mega-col-icon { background: rgba(217,187,120,0.1); color: var(--gold-soft); }
-  .mega-col a { color: var(--text-on-dark); }
+  /* Right-aligned with the Services caret above it, so the whole drawer has one
+     column of carets to scan rather than one per label width. */
+  .mega-col-caret {
+    display: inline-flex; margin-left: auto;
+    font-size: 0.7rem; color: var(--gold);
+    transition: transform var(--transition);
+  }
+  .mega-col-toggle:checked ~ .mega-col-head .mega-col-caret { transform: rotate(180deg); }
+  .mega-col-toggle:checked ~ .mega-col-head { color: var(--gold); }
+
+  .mega-col ul { display: none; padding: var(--space-2xs) 0 var(--space-sm); }
+  .mega-col-toggle:checked ~ ul { display: grid; }
+  /* Indented to the icon's right edge, so a link reads as belonging to the
+     category above it rather than as another top-level row. */
+  .mega-col a { color: var(--text-on-dark); padding: 0.45rem 1.75rem 0.45rem 3.45rem; }
   .mega-col a:hover { color: var(--gold-soft); }
+
+  /* The open row gets a ground of its own, so it is obvious which parent the
+     expanded list belongs to once you have scrolled down it. */
+  .mega-toggle:checked ~ .mega-trigger { background: rgba(184,146,58,0.14); color: var(--gold-soft); }
 
   .four-col { grid-template-columns: repeat(2, 1fr); }
   .process-track { grid-template-columns: repeat(3, 1fr); row-gap: 2.5rem; }

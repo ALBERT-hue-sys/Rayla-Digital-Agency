@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var navToggle = document.getElementById('nav-toggle');
   var navLinks  = document.querySelectorAll('.main-nav a');
   var megaToggle = document.getElementById('mega-toggle');
+  var megaColToggles = document.querySelectorAll('.mega-col-toggle');
   var megaItem   = document.querySelector('.has-mega');
   var megaTrigger = megaItem && megaItem.querySelector('.mega-trigger');
 
@@ -44,6 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Collapse the Services accordion too, otherwise it stays expanded
     // behind a closed drawer and reappears pre-opened on the next tap.
     if (megaToggle) megaToggle.checked = false;
+    // Same for the per-category accordions nested inside it.
+    Array.prototype.forEach.call(megaColToggles, function (t) { t.checked = false; });
     if (megaItem) megaItem.classList.remove('is-open');
   }
 
