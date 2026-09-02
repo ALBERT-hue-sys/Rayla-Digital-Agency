@@ -1545,6 +1545,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     padding-right: 1.75rem;
     font-size: 0.8rem;
   }
+  /* On desktop .mega-toggle-label is a small inline chevron, so rotating the
+     whole label flips it in place. Here the label IS the row, so that same
+     0-3-0 rule spins the chevron from the right edge all the way across to the
+     left and drops it on top of the word "Services". Rotate the icon inside it
+     instead - the same way the category carets below do it. */
+  .has-mega:hover .mega-toggle-label,
+  .has-mega:focus-within .mega-toggle-label,
+  .has-mega.is-open .mega-toggle-label { transform: none; }
+  .mega-toggle-label i { transition: transform var(--transition); }
+  .mega-toggle:checked ~ .mega-toggle-label i { transform: rotate(180deg); }
+
   /* Belt and braces: even if that overlay ever came up short, a tap meant to
      expand the panel must never navigate away from the page. */
   .has-mega > .mega-trigger { pointer-events: none; }
