@@ -1140,7 +1140,7 @@ body.modal-open { overflow: hidden; }
 /* Placeholder copy the client still owes us. Marked so it is impossible to
    mistake for finished text - remove the class with the real words. */
 .case-todo {
-  color: var(--gold-soft);
+  color: var(--gold-soft); font-style: normal;
   border-bottom: 1px dashed rgba(217,187,120,0.55);
 }
 
@@ -1634,6 +1634,17 @@ dialog.case-modal {
   color: var(--gold-soft); margin-bottom: 0.3rem;
 }
 .case-story-block p { font-size: 0.92rem; line-height: 1.65; color: var(--text-on-dark); max-width: 46ch; }
+
+/* The result block. Values are em dashes, not stand-in figures: this page is
+   public, and a placeholder number reads as a claim the moment it is live. The
+   row exists so the client can see exactly which three numbers to send. */
+.case-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-sm); margin-top: 0.2rem; }
+.case-metric { border-top: 1px solid rgba(255,255,255,0.16); padding-top: 0.6rem; }
+.case-metric b { display: block; font-family: var(--font-display); font-size: 1.6rem; line-height: 1; color: var(--gold-soft); }
+.case-metric span { display: block; font-size: 0.72rem; color: var(--mid-grey); margin-top: 0.35rem; }
+/* .case-todo is a dashed gold underline on the dark panel; inside the metric
+   label it also drops the italic, which at this size just reads as noise. */
+.case-metric .case-todo { display: block; font-style: normal; }
 
 @media (max-width: 860px) {
   /* Stacked: video first at a height that still leaves the story visible
