@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brand Consulting in Kampala, Uganda | Rayla Digital Agency</title>
-<meta name="description" content="Brand positioning, business strategy and marketing consultation for founders and teams, from Rayla Digital Agency.">
-<link rel="canonical" href="https://www.rayladigitalagency.com/pages/brand-consulting">
+<title>Our Work — Video Case Studies | Rayla Digital Agency</title>
+<meta name="description" content="Video case studies from Rayla Digital Agency: product films, campaign reels and event coverage shot and edited for brands in Kampala, Uganda.">
+<link rel="canonical" href="https://www.rayladigitalagency.com/pages/work">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Rayla Digital Agency">
-<meta property="og:title" content="Brand Consulting in Kampala, Uganda | Rayla Digital Agency">
-<meta property="og:description" content="Brand positioning, business strategy and marketing consultation for founders and teams, from Rayla Digital Agency.">
-<meta property="og:url" content="https://www.rayladigitalagency.com/pages/brand-consulting">
+<meta property="og:title" content="Our Work — Video Case Studies | Rayla Digital Agency">
+<meta property="og:description" content="Video case studies from Rayla Digital Agency: product films, campaign reels and event coverage shot and edited for brands in Kampala, Uganda.">
+<meta property="og:url" content="https://www.rayladigitalagency.com/pages/work">
 <meta property="og:image" content="https://www.rayladigitalagency.com/assests/images/og-cover.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -20,8 +20,8 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Brand Consulting in Kampala, Uganda | Rayla Digital Agency">
-<meta name="twitter:description" content="Brand positioning, business strategy and marketing consultation for founders and teams, from Rayla Digital Agency.">
+<meta name="twitter:title" content="Our Work — Video Case Studies | Rayla Digital Agency">
+<meta name="twitter:description" content="Video case studies from Rayla Digital Agency: product films, campaign reels and event coverage shot and edited for brands in Kampala, Uganda.">
 <meta name="twitter:image" content="https://www.rayladigitalagency.com/assests/images/og-cover.png">
 
 <!-- Favicons. Deliberately relative, not root-absolute: an href of
@@ -41,13 +41,12 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Service",
-  "name": "Brand Consulting",
-  "description": "Brand positioning, business strategy and marketing consultation for founders and teams, from Rayla Digital Agency.",
-  "url": "https://www.rayladigitalagency.com/pages/brand-consulting",
-  "areaServed": { "@type": "Country", "name": "Uganda" },
-  "serviceType": "Brand Consulting",
-  "provider": {
+  "@type": "CollectionPage",
+  "name": "Our Work",
+  "description": "Video case studies from Rayla Digital Agency: product films, campaign reels and event coverage shot and edited for brands in Kampala, Uganda.",
+  "url": "https://www.rayladigitalagency.com/pages/work",
+  "isPartOf": { "@id": "https://www.rayladigitalagency.com/#website" },
+  "about": {
     "@type": "AdvertisingAgency",
     "@id": "https://www.rayladigitalagency.com/#organization",
     "name": "Rayla Digital Agency",
@@ -117,9 +116,9 @@
               <li><a href="graphic-design#marketing-materials"><i class="fa-solid fa-chevron-right"></i> Marketing Materials</a></li>
               <li><a href="graphic-design#social-graphics"><i class="fa-solid fa-chevron-right"></i> Social Media Graphics</a></li>
               <li><a href="graphic-design#event-branding"><i class="fa-solid fa-chevron-right"></i> Event Branding</a></li>
-              <li><a href="#brand-positioning"><i class="fa-solid fa-chevron-right"></i> Brand Positioning</a></li>
-              <li><a href="#business-strategy"><i class="fa-solid fa-chevron-right"></i> Business Strategy</a></li>
-              <li><a href="#marketing-consultation"><i class="fa-solid fa-chevron-right"></i> Marketing Consultation</a></li>
+              <li><a href="brand-consulting#brand-positioning"><i class="fa-solid fa-chevron-right"></i> Brand Positioning</a></li>
+              <li><a href="brand-consulting#business-strategy"><i class="fa-solid fa-chevron-right"></i> Business Strategy</a></li>
+              <li><a href="brand-consulting#marketing-consultation"><i class="fa-solid fa-chevron-right"></i> Marketing Consultation</a></li>
             </ul>
           </div>
           <div class="mega-col">
@@ -150,194 +149,164 @@
 
 <main id="main">
 
-<!-- ============================= SERVICE HERO ============================= -->
-<!-- The homepage's split hero, reused: the copy holds a black column and the
-     photo runs full-bleed off the right edge, dissolving into the black rather
-     than butting against it. Everything structural comes from .svc-hero-split
-     and the shared .hero-* layer classes in style.css - this page only supplies
-     its own picture. The header carries .over-hero for the same reason it does
-     on the homepage: a solid bar would draw a line across the photo. -->
-<section class="svc-hero svc-hero-split">
-  <!-- Decorative: the h1 carries the meaning, so the layer is aria-hidden
-       with an empty alt. A working session across a table - the subject of
-       this page, shown rather than described. The focal point sits right of
-       centre because the panel's left edge is where the picture dissolves
-       into the black. -->
-  <div class="hero-media" style="--hero-focus: 60% 55%" aria-hidden="true">
-    <img src="../assests/images/hero-brand-consulting.webp" alt="" class="hero-media-img">
-    <div class="hero-media-overlay"></div>
-  </div>
-
-  <div class="hero-layout">
-    <div class="hero-inner">
-      <p class="svc-crumb"><a href="../">Home</a> &nbsp;/&nbsp; <a href="../#services">Services</a> &nbsp;/&nbsp; Brand Consulting</p>
-      <h1>Get clear before you spend.</h1>
-      <p>Brand consulting is the conversation that should happen before any money goes into advertising. What does this business actually stand for, who is it for, and why would someone choose it over the alternative?</p>
-      <button type="button" class="btn btn-gold" data-open-modal="discovery-modal">Book a Consultation</button>
-    </div>
+<!-- ============================= WORK HERO ============================= -->
+<!-- Type on black, no picture. The obvious hero for this page was the aerial
+     city clip that came with the footage, but it carries another company's
+     watermark and is not even the right city - putting it above real client
+     work would have undercut the whole page. A stock photo would have done the
+     same more quietly. The case posters below are the imagery. -->
+<section class="work-hero">
+  <div class="container">
+    <p class="svc-crumb"><a href="../">Home</a> &nbsp;/&nbsp; Work</p>
+    <h1>The work, not the promises.</h1>
+    <p>Product films, campaign reels and event coverage we shot, edited and published for brands across Uganda. Open any one to watch it in full.</p>
   </div>
 </section>
 
-<!-- ============================= OVERVIEW ============================= -->
+<!-- ============================= CASE STUDY GRID ============================= -->
+<!-- Posters only - no <video> element exists in this grid, so the page weighs
+     six WebP images on load regardless of how many cases are listed. Opening a
+     card is what fetches its reel, and closing it aborts the download.
+
+     TO DO (client): every .case-todo span is placeholder copy. Replace with the
+     real client name, brief, deliverables and result, then drop the class. Two
+     of these clips already name their client on screen (the conference film
+     carries the event's logo, the travel reel names the brand in its titles),
+     so those two are worth attributing first. -->
 <section class="section">
   <div class="container">
     <div class="section-head">
-      <p class="eyebrow">Overview</p>
-      <h2>What brand consulting means here.</h2>
+      <p class="eyebrow">Case Studies</p>
+      <h2>Six pieces, start to finish.</h2>
+      <p class="section-lead">Each of these was briefed, shot, edited and delivered by our team. Where a result is listed, it is the client's own reported number.</p>
     </div>
-    <div class="svc-overview">
-        <p>Brand consulting is the conversation that should happen before any money goes into advertising. What does this business actually stand for, who is it for, and why would someone choose it over the alternative?</p>
-        <p>Businesses that cannot answer those questions clearly end up paying to broadcast a vague message, then concluding that marketing does not work. It usually did work &mdash; it just amplified something that was not sharp enough to land.</p>
-        <p>This is advisory work, run as structured sessions with the people who make the decisions. The output is clarity you can act on: a position, a message, and a view on what to do next.</p>
-    </div>
-  </div>
-</section>
+    <div class="case-grid">
+      <div class="case-item">
+        <button type="button" class="case-card" data-open-case
+                data-client="Conference film"
+                data-tag="Event coverage and edit"
+                data-video="../assests/videos/case-feia-conference.mp4">
+          <img src="../assests/images/case-feia-conference-poster.webp" alt="Presenter speaking to camera outside a conference venue" width="720" height="1280" loading="lazy">
+          <span class="case-card-play" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span class="case-card-foot">
+            <span class="case-card-client">Conference film</span>
+            <span class="case-card-line">Event coverage and edit</span>
+          </span>
+        </button>
+        <!-- Read into the lightbox on open. Kept beside the button rather than
+             inside it because a <button> may only contain phrasing content. -->
+        <div class="case-story" hidden>
+          <div class="case-story-block"><h3>The brief</h3><p><span class="case-todo">Client brief to be confirmed.</span></p></div>
+          <div class="case-story-block"><h3>What we made</h3><p><span class="case-todo">Client and deliverables to be confirmed</span> — filming, editing and captioning for the conference's social channels.</p></div>
+          <div class="case-story-block"><h3>The result</h3><p><span class="case-todo">Result and numbers to be confirmed.</span></p></div>
+        </div>
+      </div>
 
-<!-- ============================= WHY IT MATTERS ============================= -->
-<!-- The argument for the service, with the business outcomes beside it. The
-     two-column shell is the homepage's .why-rayla-layout, shared by selector
-     rather than copied, so the two cannot drift apart. -->
-<section class="section" id="why">
-  <div class="container">
-    <div class="svc-why-layout">
-      <div class="svc-why-content">
-        <p class="eyebrow">Why It Matters</p>
-        <h2>Advertising amplifies whatever you give it.</h2>
-        <p>If the message is vague, paid media makes the vagueness reach more people. That is usually what a business means when it says marketing did not work.</p>
-        <p>The questions are simple and uncomfortable: what does this business stand for, who is it for, and why would someone choose it over the alternative? Most teams have three different answers internally.</p>
-        <p>Settling that before you spend is the highest-leverage work available. Everything downstream &mdash; design, content, advertising &mdash; gets sharper and cheaper once the answer is fixed.</p>
-        <button type="button" class="btn btn-gold" data-open-modal="discovery-modal">Book a Consultation</button>
+      <div class="case-item">
+        <button type="button" class="case-card" data-open-case
+                data-client="Product campaign"
+                data-tag="Product video and styling"
+                data-video="../assests/videos/case-red-handbag.mp4">
+          <img src="../assests/images/case-red-handbag-poster.webp" alt="Model holding a red leather handbag against an office window" width="720" height="1280" loading="lazy">
+          <span class="case-card-play" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span class="case-card-foot">
+            <span class="case-card-client">Product campaign</span>
+            <span class="case-card-line">Product video and styling</span>
+          </span>
+        </button>
+        <!-- Read into the lightbox on open. Kept beside the button rather than
+             inside it because a <button> may only contain phrasing content. -->
+        <div class="case-story" hidden>
+          <div class="case-story-block"><h3>The brief</h3><p><span class="case-todo">Client brief to be confirmed.</span></p></div>
+          <div class="case-story-block"><h3>What we made</h3><p><span class="case-todo">Client and deliverables to be confirmed</span> — a vertical product film cut for Instagram and TikTok.</p></div>
+          <div class="case-story-block"><h3>The result</h3><p><span class="case-todo">Result and numbers to be confirmed.</span></p></div>
+        </div>
       </div>
-      <div class="svc-benefit-grid">
-        <article class="svc-benefit">
-          <h3>Spend against something specific</h3>
-          <p>Advertising works far harder once there is a clear message underneath it to amplify.</p>
-        </article>
-        <article class="svc-benefit">
-          <h3>One answer, not three</h3>
-          <p>The team stops describing the business differently depending on who is asked.</p>
-        </article>
-        <article class="svc-benefit">
-          <h3>A reason to be chosen</h3>
-          <p>A position states plainly why someone should pick you over the obvious alternative.</p>
-        </article>
-        <article class="svc-benefit">
-          <h3>Faster decisions</h3>
-          <p>With the position settled, most day-to-day marketing questions answer themselves.</p>
-        </article>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ============================= WHAT'S INCLUDED ============================= -->
-<!-- Each card carries the id the header mega-menu links land on -->
-<section class="section svc-band" id="included">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">What&rsquo;s Included</p>
-      <h2>The work, broken down.</h2>
-    </div>
-    <div class="svc-include-grid">
-        <article class="svc-include" id="brand-positioning">
-          <h3>Brand Positioning</h3>
-          <p>Defining where you sit in your market and what you want to be known for, in language your team can repeat.</p>
-        </article>
-        <article class="svc-include" id="business-strategy">
-          <h3>Business Strategy</h3>
-          <p>Working through the commercial side &mdash; offer, pricing, audience and growth priorities &mdash; so marketing is pointed at real objectives.</p>
-        </article>
-        <article class="svc-include" id="marketing-consultation">
-          <h3>Marketing Consultation</h3>
-          <p>Advisory sessions on your current marketing: what to keep, what to stop, and where the budget is being wasted.</p>
-        </article>
-        <article class="svc-include" id="communication">
-          <h3>Communication</h3>
-          <p>How the brand speaks: tone, key messages and the wording of the things you say most often.</p>
-        </article>
-        <article class="svc-include" id="naming">
-          <h3>Naming &amp; Identity Direction</h3>
-          <p>Support on naming a business, product or campaign, and setting the creative direction before design starts.</p>
-        </article>
-        <article class="svc-include" id="workshops">
-          <h3>Team Workshops</h3>
-          <p>Facilitated sessions that get everyone internally saying the same thing about the business.</p>
-        </article>
-    </div>
-  </div>
-</section>
+      <div class="case-item">
+        <button type="button" class="case-card" data-open-case
+                data-client="Product reel"
+                data-tag="Filming, edit and motion graphics"
+                data-video="../assests/videos/case-reo-travel.mp4">
+          <img src="../assests/images/case-reo-travel-poster.webp" alt="Tan leather travel bag being packed, with an animated title card" width="720" height="1280" loading="lazy">
+          <span class="case-card-play" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span class="case-card-foot">
+            <span class="case-card-client">Product reel</span>
+            <span class="case-card-line">Filming, edit and motion graphics</span>
+          </span>
+        </button>
+        <!-- Read into the lightbox on open. Kept beside the button rather than
+             inside it because a <button> may only contain phrasing content. -->
+        <div class="case-story" hidden>
+          <div class="case-story-block"><h3>The brief</h3><p><span class="case-todo">Client brief to be confirmed.</span></p></div>
+          <div class="case-story-block"><h3>What we made</h3><p><span class="case-todo">Client and deliverables to be confirmed</span> — a short travel-themed reel with animated titles.</p></div>
+          <div class="case-story-block"><h3>The result</h3><p><span class="case-todo">Result and numbers to be confirmed.</span></p></div>
+        </div>
+      </div>
 
-<!-- ============================= HOW WE WORK ============================= -->
-<!-- Numbered because this genuinely is a sequence, the same reasoning the
-     homepage track carries. It is the same component too - only the ground is
-     inverted, via .svc-process in style.css. id is "approach", not "process":
-     the nav already points at ../index.html#process and one name for two
-     things invites a wrong link later. -->
-<section class="section svc-process" id="approach">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">How We Work</p>
-      <h2>How a consulting engagement runs.</h2>
-    </div>
-    <div class="process-track">
-      <div class="process-step">
-        <span class="step-num">01</span>
-        <h3>Audit</h3>
-        <p>We read everything you currently say about yourself, and note where it contradicts itself.</p>
+      <div class="case-item">
+        <button type="button" class="case-card" data-open-case
+                data-client="Brand shoot"
+                data-tag="Product video and photography"
+                data-video="../assests/videos/case-briefcase-office.mp4">
+          <img src="../assests/images/case-briefcase-office-poster.webp" alt="Seated model presenting a brown leather briefcase in a bright office" width="720" height="1280" loading="lazy">
+          <span class="case-card-play" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span class="case-card-foot">
+            <span class="case-card-client">Brand shoot</span>
+            <span class="case-card-line">Product video and photography</span>
+          </span>
+        </button>
+        <!-- Read into the lightbox on open. Kept beside the button rather than
+             inside it because a <button> may only contain phrasing content. -->
+        <div class="case-story" hidden>
+          <div class="case-story-block"><h3>The brief</h3><p><span class="case-todo">Client brief to be confirmed.</span></p></div>
+          <div class="case-story-block"><h3>What we made</h3><p><span class="case-todo">Client and deliverables to be confirmed</span> — product video and stills from a single half-day shoot.</p></div>
+          <div class="case-story-block"><h3>The result</h3><p><span class="case-todo">Result and numbers to be confirmed.</span></p></div>
+        </div>
       </div>
-      <div class="process-step">
-        <span class="step-num">02</span>
-        <h3>Interviews</h3>
-        <p>Structured sessions with the people who make the decisions, and where useful, with customers.</p>
-      </div>
-      <div class="process-step">
-        <span class="step-num">03</span>
-        <h3>Positioning</h3>
-        <p>The choice of who you are for and what you stand against &mdash; argued, not asserted.</p>
-      </div>
-      <div class="process-step">
-        <span class="step-num">04</span>
-        <h3>Articulation</h3>
-        <p>The position written down as language your team can actually use out loud.</p>
-      </div>
-      <div class="process-step">
-        <span class="step-num">05</span>
-        <h3>Rollout plan</h3>
-        <p>A view on what to change first, and what it means for design, content and spend.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ============================= FAQ ============================= -->
-<!-- <details>/<summary> so the answers still open with JS disabled -->
-<section class="section">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow">Questions</p>
-      <h2>Before you get in touch.</h2>
-    </div>
-    <div class="svc-faq">
-      <details class="svc-faq-item">
-        <summary>Who should be in these sessions?</summary>
-        <p>Whoever actually decides. Consulting works badly when the person who can change direction is not in the room.</p>
-      </details>
-      <details class="svc-faq-item">
-        <summary>Is this useful for a small business?</summary>
-        <p>Especially for a small business. Smaller budgets punish unclear positioning hardest, because there is no room to waste spend.</p>
-      </details>
-      <details class="svc-faq-item">
-        <summary>What do we walk away with?</summary>
-        <p>A written summary of the positioning, messaging and recommended next steps &mdash; not just a conversation.</p>
-      </details>
-      <details class="svc-faq-item">
-        <summary>Do you then execute the recommendations?</summary>
-        <p>We can, through the other services, but there is no obligation. The advice stands on its own.</p>
-      </details>
-      <details class="svc-faq-item">
-        <summary>How long is an engagement?</summary>
-        <p>Anything from a single focused session to a series over several weeks, depending on how much is unresolved.</p>
-      </details>
+      <div class="case-item">
+        <button type="button" class="case-card" data-open-case
+                data-client="Fashion editorial"
+                data-tag="Styling and direction"
+                data-video="../assests/videos/case-street-editorial.mp4">
+          <img src="../assests/images/case-street-editorial-poster.webp" alt="Styled model on a street holding a black structured tote bag" width="720" height="1280" loading="lazy">
+          <span class="case-card-play" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span class="case-card-foot">
+            <span class="case-card-client">Fashion editorial</span>
+            <span class="case-card-line">Styling and direction</span>
+          </span>
+        </button>
+        <!-- Read into the lightbox on open. Kept beside the button rather than
+             inside it because a <button> may only contain phrasing content. -->
+        <div class="case-story" hidden>
+          <div class="case-story-block"><h3>The brief</h3><p><span class="case-todo">Client brief to be confirmed.</span></p></div>
+          <div class="case-story-block"><h3>What we made</h3><p><span class="case-todo">Client and deliverables to be confirmed</span> — an editorial-styled reel shot on location.</p></div>
+          <div class="case-story-block"><h3>The result</h3><p><span class="case-todo">Result and numbers to be confirmed.</span></p></div>
+        </div>
+      </div>
+
+      <div class="case-item">
+        <button type="button" class="case-card" data-open-case
+                data-client="On-location brand film"
+                data-tag="Location filming and edit"
+                data-video="../assests/videos/case-brand-activation.mp4">
+          <img src="../assests/images/case-brand-activation-poster.webp" alt="Guest arriving at a branded venue holding a tan handbag" width="720" height="1280" loading="lazy">
+          <span class="case-card-play" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span class="case-card-foot">
+            <span class="case-card-client">On-location brand film</span>
+            <span class="case-card-line">Location filming and edit</span>
+          </span>
+        </button>
+        <!-- Read into the lightbox on open. Kept beside the button rather than
+             inside it because a <button> may only contain phrasing content. -->
+        <div class="case-story" hidden>
+          <div class="case-story-block"><h3>The brief</h3><p><span class="case-todo">Client brief to be confirmed.</span></p></div>
+          <div class="case-story-block"><h3>What we made</h3><p><span class="case-todo">Client and deliverables to be confirmed</span> — an on-location brand film cut for social.</p></div>
+          <div class="case-story-block"><h3>The result</h3><p><span class="case-todo">Result and numbers to be confirmed.</span></p></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -345,7 +314,7 @@
 <!-- ============================= CTA ============================= -->
 <section class="section svc-cta">
   <div class="container">
-    <h2>Let&rsquo;s talk about your brand consulting.</h2>
+    <h2>Want work like this for your brand?</h2>
     <p>A consultation is free and there is no obligation. Tell us what you are trying to achieve and we will tell you honestly whether we are the right fit.</p>
     <button type="button" class="btn btn-gold" data-open-modal="discovery-modal">Book a Consultation</button>
   </div>
@@ -382,6 +351,30 @@
     <p>&copy; Rayla Digital Agency. All rights reserved.</p>
   </div>
 </footer>
+
+<!-- ============================= CASE STUDY LIGHTBOX ============================= -->
+<!-- One dialog serves every card on the page; opening a card copies its story
+     into here. It carries .modal as well as .case-modal so it inherits the
+     frame, entrance and backdrop the discovery modal already defines - there is
+     one modal look on this site, not two. -->
+  <div class="modal-backdrop" id="case-modal-backdrop"></div>
+<dialog class="modal case-modal" id="case-modal" aria-modal="true" aria-labelledby="case-modal-title">
+  <button type="button" class="modal-close" data-close-modal aria-label="Close">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+  <div class="case-modal-inner">
+    <div class="case-video-wrap">
+      <!-- No src: script.js attaches one on open and strips it on close, so a
+           reel is only ever downloaded for someone who asked to watch it. -->
+      <video class="case-video" controls playsinline preload="none"></video>
+    </div>
+    <div class="case-copy">
+      <h2 class="case-modal-title" id="case-modal-title"></h2>
+      <p class="case-tag"></p>
+      <div class="case-story-out"></div>
+    </div>
+  </div>
+</dialog>
 
 <!-- ============================= DISCOVERY CALL MODAL ============================= -->
   <div class="modal-backdrop" id="discovery-modal-backdrop"></div>

@@ -229,6 +229,7 @@
             </div>
           </div>
         </li>
+        <li><a href="pages/work">Work</a></li>
         <li><a href="#process">Process</a></li>
         <li><a href="#team">Team</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -624,6 +625,8 @@
 </section>
 
 
+
+
 <!-- ============================= INDUSTRIES ============================= -->
 <section class="section" id="work">
   <div class="work-overlay" aria-hidden="true"></div>
@@ -647,6 +650,104 @@
   </div>
 </section>
 </div>
+<!-- ============================= SELECTED WORK ============================= -->
+<!-- Sits after the Process/Industries band and before "Why Rayla", so the page
+     reads: how we work, who we work with, proof, why us. It cannot go inside
+     that band - .work-bg wraps both of those sections in one photo background,
+     and this section needs the white ground its cards were designed against.
+
+     Posters only - there is no <video> element in this strip, so the section
+     costs three WebP images on load however many case studies exist. The video
+     itself is fetched only when a card is opened.
+
+     TO DO (client): every .case-todo span is placeholder copy. Replace with the
+     real client name, brief, deliverables and result, then drop the class. -->
+<section class="section case-studies" id="case-studies">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Selected Work</p>
+      <h2>Work we're proud to show.</h2>
+      <p class="section-lead">Campaigns, product films and event coverage shot, edited and published by our team. Open one to watch it.</p>
+    </div>
+  </div>
+
+  <!-- The values carousel's track markup, but with no arrows and no dots: three
+       cards fit a desktop viewport, so both controls would sit there doing
+       nothing. Below that width the track scrolls by swipe, and a card is 70vw
+       so the next one always peeks in as the affordance. -->
+  <div class="carousel-track-wrap">
+    <div class="carousel-track" id="case-carousel">
+      <div class="case-item">
+        <button type="button" class="case-card" data-open-case
+                data-client="Conference film"
+                data-tag="Event coverage and edit"
+                data-video="assests/videos/case-feia-conference.mp4">
+          <img src="assests/images/case-feia-conference-poster.webp" alt="Presenter speaking to camera outside a conference venue" width="720" height="1280" loading="lazy">
+          <span class="case-card-play" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span class="case-card-foot">
+            <span class="case-card-client">Conference film</span>
+            <span class="case-card-line">Event coverage and edit</span>
+          </span>
+        </button>
+        <!-- Read into the lightbox on open. Kept beside the button rather than
+             inside it because a <button> may only contain phrasing content. -->
+        <div class="case-story" hidden>
+          <div class="case-story-block"><h3>The brief</h3><p><span class="case-todo">Client brief to be confirmed.</span></p></div>
+          <div class="case-story-block"><h3>What we made</h3><p><span class="case-todo">Client and deliverables to be confirmed</span> — filming, editing and captioning for the conference's social channels.</p></div>
+          <div class="case-story-block"><h3>The result</h3><p><span class="case-todo">Result and numbers to be confirmed.</span></p></div>
+        </div>
+      </div>
+
+      <div class="case-item">
+        <button type="button" class="case-card" data-open-case
+                data-client="Product campaign"
+                data-tag="Product video and styling"
+                data-video="assests/videos/case-red-handbag.mp4">
+          <img src="assests/images/case-red-handbag-poster.webp" alt="Model holding a red leather handbag against an office window" width="720" height="1280" loading="lazy">
+          <span class="case-card-play" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span class="case-card-foot">
+            <span class="case-card-client">Product campaign</span>
+            <span class="case-card-line">Product video and styling</span>
+          </span>
+        </button>
+        <!-- Read into the lightbox on open. Kept beside the button rather than
+             inside it because a <button> may only contain phrasing content. -->
+        <div class="case-story" hidden>
+          <div class="case-story-block"><h3>The brief</h3><p><span class="case-todo">Client brief to be confirmed.</span></p></div>
+          <div class="case-story-block"><h3>What we made</h3><p><span class="case-todo">Client and deliverables to be confirmed</span> — a vertical product film cut for Instagram and TikTok.</p></div>
+          <div class="case-story-block"><h3>The result</h3><p><span class="case-todo">Result and numbers to be confirmed.</span></p></div>
+        </div>
+      </div>
+
+      <div class="case-item">
+        <button type="button" class="case-card" data-open-case
+                data-client="Product reel"
+                data-tag="Filming, edit and motion graphics"
+                data-video="assests/videos/case-reo-travel.mp4">
+          <img src="assests/images/case-reo-travel-poster.webp" alt="Tan leather travel bag being packed, with an animated title card" width="720" height="1280" loading="lazy">
+          <span class="case-card-play" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span class="case-card-foot">
+            <span class="case-card-client">Product reel</span>
+            <span class="case-card-line">Filming, edit and motion graphics</span>
+          </span>
+        </button>
+        <!-- Read into the lightbox on open. Kept beside the button rather than
+             inside it because a <button> may only contain phrasing content. -->
+        <div class="case-story" hidden>
+          <div class="case-story-block"><h3>The brief</h3><p><span class="case-todo">Client brief to be confirmed.</span></p></div>
+          <div class="case-story-block"><h3>What we made</h3><p><span class="case-todo">Client and deliverables to be confirmed</span> — a short travel-themed reel with animated titles.</p></div>
+          <div class="case-story-block"><h3>The result</h3><p><span class="case-todo">Result and numbers to be confirmed.</span></p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="container case-studies-cta">
+    <a href="pages/work" class="btn btn-gold">See all work</a>
+  </div>
+</section>
+
 <!-- ============================= WHY CLIENTS CHOOSE US ============================= -->
 <section class="why-rayla section">
 
@@ -886,6 +987,7 @@
       <a href="#home">Home</a>
       <a href="#about">About</a>
       <a href="#services">Services</a>
+      <a href="pages/work">Work</a>
       <a href="#team">Team</a>
       <a href="#faq">FAQ</a>
       <a href="#contact">Contact</a>
@@ -901,6 +1003,30 @@
     <p>&copy; Rayla Digital Agency. All rights reserved.</p>
   </div>
 </footer>
+
+<!-- ============================= CASE STUDY LIGHTBOX ============================= -->
+<!-- One dialog serves every card on the page; opening a card copies its story
+     into here. It carries .modal as well as .case-modal so it inherits the
+     frame, entrance and backdrop the discovery modal already defines - there is
+     one modal look on this site, not two. -->
+  <div class="modal-backdrop" id="case-modal-backdrop"></div>
+<dialog class="modal case-modal" id="case-modal" aria-modal="true" aria-labelledby="case-modal-title">
+  <button type="button" class="modal-close" data-close-modal aria-label="Close">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+  <div class="case-modal-inner">
+    <div class="case-video-wrap">
+      <!-- No src: script.js attaches one on open and strips it on close, so a
+           reel is only ever downloaded for someone who asked to watch it. -->
+      <video class="case-video" controls playsinline preload="none"></video>
+    </div>
+    <div class="case-copy">
+      <h2 class="case-modal-title" id="case-modal-title"></h2>
+      <p class="case-tag"></p>
+      <div class="case-story-out"></div>
+    </div>
+  </div>
+</dialog>
 
 <!-- ============================= DISCOVERY CALL MODAL ============================= -->
   <div class="modal-backdrop" id="discovery-modal-backdrop"></div>

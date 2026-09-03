@@ -609,3 +609,112 @@ document.addEventListener('DOMContentLoaded', function () {
     initCarousel
   );
 });
+
+/* =================================================================
+   RAYLA DIGITAL AGENCY — Case study lightbox
+   Every card is a <button data-open-case> carrying its own poster,
+   video path and story markup. Opening one copies that into the
+   single dialog on the page.
+
+   This is a separate block from the discovery modal on purpose: that
+   one is wired to a form, its steps and the captcha, and none of that
+   applies here. What is shared is the behaviour a dialog owes a
+   keyboard user, which is reimplemented rather than borrowed so
+   neither block can break the other.
+
+   The video src is set on open and cleared on close. A vertical reel
+   is several megabytes, and leaving the src attached would keep an
+   abandoned download running in the background after the visitor has
+   moved on.
+   ================================================================= */
+document.addEventListener('DOMContentLoaded', function () {
+  var dialog = document.getElementById('case-modal');
+  var backdrop = document.getElementById('case-modal-backdrop');
+  var cards = document.querySelectorAll('[data-open-case]');
+  if (!dialog || !backdrop || !cards.length) return;
+
+  var video    = dialog.querySelector('.case-video');
+  var titleEl  = dialog.querySelector('.case-modal-title');
+  var tagEl    = dialog.querySelector('.case-tag');
+  var storyEl  = dialog.querySelector('.case-story-out');
+  var closeBtns = dialog.querySelectorAll('[data-close-modal]');
+  var lastFocused = null;
+
+  function focusableElements() {
+    var els = dialog.querySelectorAll('button, [href], video[controls], [tabindex]:not([tabindex="-1"])');
+    return Array.prototype.filter.call(els, function (el) { return el.offsetParent !== null; });
+  }
+
+  function trapFocus(e) {
+    if (e.key !== 'Tab') return;
+    var els = focusableElements();
+    if (!els.length) return;
+    var first = els[0];
+    var last = els[els.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  }
+
+  function handleKeydown(e) {
+    if (e.key === 'Escape') { e.preventDefault(); closeCase(); }
+    else trapFocus(e);
+  }
+
+  function openCase(card) {
+    // The story is the button's sibling, not its child - see .case-item.
+    var story = card.parentNode.querySelector('.case-story');
+    var poster = card.querySelector('img');
+
+    titleEl.textContent = card.getAttribute('data-client') || '';
+    tagEl.textContent = card.getAttribute('data-tag') || '';
+    storyEl.innerHTML = story ? story.innerHTML : '';
+
+    // Poster first so the box never opens on a black rectangle while the
+    // first frame is still on the wire.
+    if (poster) video.setAttribute('poster', poster.getAttribute('src'));
+    video.setAttribute('src', card.getAttribute('data-video'));
+
+    lastFocused = document.activeElement;
+    dialog.show();
+    document.body.classList.add('modal-open');
+    document.addEventListener('keydown', handleKeydown);
+    requestAnimationFrame(function () {
+      dialog.classList.add('is-visible');
+      backdrop.classList.add('is-visible');
+      // play() rejects if the browser blocks it or the load is cancelled;
+      // the controls are right there, so a failure needs no handling beyond
+      // not throwing.
+      var attempt = video.play();
+      if (attempt && attempt.catch) attempt.catch(function () {});
+      var els = focusableElements();
+      if (els.length) els[0].focus();
+    });
+  }
+
+  function closeCase() {
+    dialog.classList.remove('is-visible');
+    backdrop.classList.remove('is-visible');
+    document.body.classList.remove('modal-open');
+    document.removeEventListener('keydown', handleKeydown);
+    video.pause();
+    window.setTimeout(function () {
+      // Dropping the attribute and calling load() is what actually aborts an
+      // in-flight request; pause() on its own leaves it downloading.
+      video.removeAttribute('src');
+      video.load();
+      dialog.close();
+      if (lastFocused) lastFocused.focus();
+    }, 250);
+  }
+
+  Array.prototype.forEach.call(cards, function (card) {
+    card.addEventListener('click', function () { openCase(card); });
+  });
+  Array.prototype.forEach.call(closeBtns, function (btn) {
+    btn.addEventListener('click', closeCase);
+  });
+  backdrop.addEventListener('click', closeCase);
+});
