@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var note   = document.getElementById('dc-verify-note');
   if (!verify || !btn) return;
 
-  var FAIL_NOTE = 'We could not load the security check. Email rayladigitalagency@gmail.com and we will pick it up from there.';
+  var FAIL_NOTE = 'We could not load the security check. Email hello@rayladigitalagency.com and we will pick it up from there.';
   var timer = null;
 
   // The note carries every state change, so it is what a screen reader should
