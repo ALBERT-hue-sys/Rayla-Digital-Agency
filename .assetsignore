@@ -1,0 +1,15 @@
+# The Worker's asset directory is the repository root, so every committed file
+# is published unless it is listed here. These were all publicly fetchable and
+# crawlable on the live domain until this file existed.
+#
+# Anything internal added to this repository in future needs a line here.
+
+.git
+.claude
+docs
+CLAUDE.md
+README.md
+googlefile.md
+wrangler.jsonc
+.assetsignore
+serve.py

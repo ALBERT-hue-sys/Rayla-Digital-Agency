@@ -1,0 +1,29 @@
+{
+  // Deployment config for the Cloudflare Worker that serves this site.
+  //
+  // Cloudflare's build was generating this file itself (it is what
+  // `npx wrangler deploy` reads, and with assets.directory "." it was even
+  // being served publicly at /wrangler.jsonc). Committing it puts the two
+  // settings below under version control instead of leaving them at their
+  // defaults. Name and compatibility_date reproduce the generated file exactly
+  // — the name in particular MUST stay "rayla-digital-agency", or a deploy
+  // creates a second Worker and the custom domain keeps serving the old one.
+  "name": "rayla-digital-agency",
+  "compatibility_date": "2026-08-31",
+  "observability": { "enabled": true },
+
+  // Turns off rayla-digital-agency.albertkunihira8.workers.dev, which was
+  // serving a second fully crawlable copy of the whole site. The custom
+  // domains are unaffected.
+  "workers_dev": false,
+
+  "assets": {
+    // The repository root is the web root. Anything committed here is public
+    // unless .assetsignore excludes it.
+    "directory": ".",
+
+    // Without this, not_found_handling defaults to "none" and a missing URL
+    // returns a 404 with an empty body — 404.html was never being served.
+    "not_found_handling": "404-page"
+  }
+}
