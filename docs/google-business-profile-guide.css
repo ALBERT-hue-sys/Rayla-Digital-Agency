@@ -310,3 +310,80 @@ ul.check li::before {
   color: var(--dark-grey);
 }
 .signoff b { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--black); }
+
+/* ---- Answers -------------------------------------------------------
+   The questions Ednar raised before setup day. Deliberately NOT set on
+   the numbered rail the steps use: steps are a sequence you must follow
+   in order, these are decisions that can be settled in any order. A gold
+   rule opens each one instead, and the verdict is printed above the
+   reasoning so the answer can be found without reading the argument. */
+.qa { margin-bottom: 7mm; }
+.qa .q {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 13pt;
+  line-height: 1.18;
+  letter-spacing: -0.018em;
+  color: var(--black);
+  border-top: 1.6pt solid var(--gold);
+  padding-top: 2.6mm;
+  margin: 0 0 2mm;
+  break-after: avoid;
+}
+.qa .verdict {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 9.8pt;
+  line-height: 1.4;
+  color: var(--gold-dark);
+  margin: 0 0 3mm;
+  break-after: avoid;
+}
+
+/* Sub-heads inside a long answer. Quieter than h3 so the question stays
+   the loudest thing in the block. */
+h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 9.2pt;
+  letter-spacing: -0.005em;
+  color: var(--dark-grey);
+  margin: 3.6mm 0 1.5mm;
+  break-after: avoid;
+}
+
+/* ---- Decisions table ------------------------------------------------
+   Genuinely tabular: a field on the profile, and the exact thing to type
+   into it. Hairlines only — a bordered grid would fight the page. */
+table.decisions {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 6mm;
+  font-size: 9pt;
+}
+table.decisions th,
+table.decisions td {
+  text-align: left;
+  vertical-align: top;
+  padding: 2.4mm 0;
+  border-bottom: 0.5pt solid #d9d5c9;
+}
+table.decisions tr:first-child th,
+table.decisions tr:first-child td { border-top: 1.6pt solid var(--gold); }
+table.decisions th {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 8.8pt;
+  color: var(--black);
+  width: 42mm;
+  padding-right: 6mm;
+}
+table.decisions td { color: var(--dark-grey); }
+table.decisions td b { font-weight: 600; color: var(--black); }
+table.decisions .n {
+  display: block;
+  color: var(--mid-grey);
+  font-size: 7.8pt;
+  line-height: 1.4;
+  margin-top: 0.7mm;
+}
