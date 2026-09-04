@@ -1143,57 +1143,6 @@ body.modal-open { overflow: hidden; }
   color: var(--gold-soft); font-style: normal;
   border-bottom: 1px dashed rgba(217,187,120,0.55);
 }
-
-/* ---- Work page hero ---- */
-/* A photo behind the type. The picture is bright and reads pink-on-blond-wood,
-   which is a long way from the black/white/gold the rest of the site runs on,
-   so it sits under a heavy scrim and a light desaturation: enough colour left
-   to be the photo the client chose, muted enough that the gold rule and white
-   headline still lead. */
-.work-hero {
-  position: relative; overflow: hidden;
-  display: flex; align-items: center;
-  background: var(--near-black); color: var(--white);
-
-  /* Same pull-up as .svc-hero above, for the same reason: the header carries
-     .over-hero on this page, so the section has to start at the very top of
-     the window and pay the transparent bar back as padding. Change one of
-     these two and change the other. */
-  margin-top: calc(-1 * var(--header-h-base));
-  padding-top: calc(var(--header-h-base) + clamp(2.75rem, 4.5vw, 4.75rem));
-  padding-bottom: clamp(2.75rem, 4.5vw, 4.75rem);
-  min-height: clamp(420px, 56vh, 620px);
-}
-.work-hero-media { position: absolute; inset: 0; }
-.work-hero-media img {
-  width: 100%; height: 100%; object-fit: cover;
-  /* The written note sits centre-right in the frame and the headline sits
-     left, so bias the crop right and the two never fight. */
-  object-position: 64% 50%;
-  filter: saturate(0.72);
-}
-/* The scrim. Darkest at the foot, where the lead paragraph sits over the
-   brightest part of the photo. */
-.work-hero-media::after {
-  content: ""; position: absolute; inset: 0;
-  background:
-    linear-gradient(180deg, rgba(11,11,10,0.78) 0%, rgba(11,11,10,0.72) 45%, rgba(11,11,10,0.9) 100%),
-    linear-gradient(90deg, rgba(11,11,10,0.72) 0%, rgba(11,11,10,0.28) 62%, rgba(11,11,10,0.5) 100%);
-}
-
-/* A single gold hairline along the foot, picking up the rule under the client
-   name in the lightbox. It is the only ornament the hero gets. */
-.work-hero::after {
-  content: ""; position: absolute; inset: auto 0 0 0; height: 2px;
-  background: linear-gradient(90deg, var(--gold) 0%, rgba(184,146,58,0) 55%);
-}
-.work-hero > .container { position: relative; z-index: 1; }
-.work-hero h1 { color: var(--white); max-width: 16ch; }
-.work-hero p { color: var(--text-on-dark); max-width: 52ch; margin-top: var(--space-sm); }
-/* --mid-grey is the crumb's colour on a white service page; it is too dim
-   on this black one. */
-.work-hero .svc-crumb { color: var(--text-on-dark); }
-
 .pill-cloud { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .pill-cloud span {
   border: 1.5px solid var(--dark-grey); border-radius: var(--radius-full);

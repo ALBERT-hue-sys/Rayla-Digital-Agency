@@ -150,28 +150,40 @@
 <main id="main">
 
 <!-- ============================= WORK HERO ============================= -->
-<!-- Photo: Eden Constantino via Unsplash, supplied by the client. Decorative,
-     so the <img> is aria-hidden with an empty alt - the h1 carries the meaning.
-     Three widths rather than one 5465px original; the browser picks by
-     viewport, and the mobile file is 32KB.
+<!-- The homepage/service-page split hero, reused: the copy holds a black
+     column on the left and the photo runs full-bleed off the right edge,
+     dissolving into the black rather than butting against it. Everything
+     structural comes from .svc-hero-split and the shared .hero-* layer classes
+     in style.css - this page only supplies its own picture, the same way
+     pages/graphic-design.html does. Below 1024px those shared rules put the
+     photo full-bleed behind the copy under a flat scrim.
 
-     Not lazy-loaded and marked high priority: it is the largest paint on the
-     page and sits above the fold, so deferring it would leave the hero blank
-     on the slowest connections. The scrim over it is heavy on purpose - the
-     photo's pink is bright enough to swallow white type without it. -->
-<section class="work-hero">
-  <div class="work-hero-media" aria-hidden="true">
+     Photo: Eden Constantino via Unsplash, supplied by the client. Decorative,
+     so the layer is aria-hidden with an empty alt - the h1 carries the meaning.
+     Three widths rather than one 5465px original; the panel is 58vw on desktop
+     and full width below that, which is what `sizes` tells the browser. -->
+<section class="svc-hero svc-hero-split">
+  <!-- The written note sits centre-right in the frame, and the panel crops a
+       landscape shot hard on the horizontal, so the focal point is biased
+       right of centre to keep it. -->
+  <div class="hero-media" style="--hero-focus: 62% 50%" aria-hidden="true">
     <img src="../assests/images/work-hero-desktop.webp"
          srcset="../assests/images/work-hero-mobile.webp 800w,
                  ../assests/images/work-hero-tablet.webp 1200w,
                  ../assests/images/work-hero-desktop.webp 1800w"
-         sizes="100vw" alt="" width="1800" height="1197"
-         fetchpriority="high" decoding="async">
+         sizes="(min-width: 1025px) 58vw, 100vw"
+         alt="" class="hero-media-img"
+         width="1800" height="1197" fetchpriority="high" decoding="async">
+    <div class="hero-media-overlay"></div>
   </div>
-  <div class="container">
-    <p class="svc-crumb"><a href="../">Home</a> &nbsp;/&nbsp; Work</p>
-    <h1>The work, not the promises.</h1>
-    <p>Product films, campaign reels and event coverage we shot, edited and published for brands across Uganda. Open any one to watch it in full.</p>
+
+  <div class="hero-layout">
+    <div class="hero-inner">
+      <p class="svc-crumb"><a href="../">Home</a> &nbsp;/&nbsp; Work</p>
+      <h1>The work, not the promises.</h1>
+      <p>Product films, campaign reels and event coverage we shot, edited and published for brands across Uganda. Open any one to watch it in full.</p>
+      <button type="button" class="btn btn-gold" data-open-modal="discovery-modal">Book a Consultation</button>
+    </div>
   </div>
 </section>
 
