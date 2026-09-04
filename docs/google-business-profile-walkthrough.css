@@ -1,0 +1,346 @@
+/* ===== Google Business Profile walkthrough — print stylesheet =====
+   A4, WeasyPrint. Deliberately a different kind of document from
+   google-business-profile-guide.css: that one is read once, this one is
+   worked through with the laptop open, so it opens straight into step one
+   instead of a cover page and every step carries a tick box.
+
+   Same tokens and the same two families, so the two still read as a pair. */
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap");
+
+:root {
+  --black:      #0b0b0a;
+  --near-black: #171613;
+  --dark-grey:  #2b2a26;
+  --mid-grey:   #858175;
+  --light-grey: #f1efe9;
+  --off-white:  #faf9f6;
+  --gold:       #b8923a;
+  --gold-dark:  #8a6a24;
+  --gold-soft:  #d9bb78;
+  --gold-wash:  #f7f1e2;   /* pale gold ground for the literal-text blocks */
+}
+
+@page {
+  size: A4;
+  margin: 17mm 20mm 16mm 20mm;
+  background: var(--off-white);
+
+  @bottom-left {
+    content: "Rayla Digital Agency — Google Business Profile, step by step";
+    font-family: 'Poppins', sans-serif;
+    font-size: 6.8pt;
+    color: var(--mid-grey);
+    padding-top: 4mm;
+  }
+  @bottom-right {
+    content: "Step sheet " counter(page) " of " counter(pages);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 8pt;
+    color: var(--near-black);
+    padding-top: 4mm;
+  }
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  font-size: 9.5pt;
+  line-height: 1.5;
+  color: var(--near-black);
+  margin: 0;
+  hyphens: none;
+}
+p { margin: 0 0 2.6mm; }
+strong { font-weight: 600; color: var(--black); }
+em { font-style: italic; }
+
+/* ---- Masthead ------------------------------------------------------
+   Bled to the page edges with negative margins. There is no cover page:
+   this is a working sheet, and a whole sheet of paper spent on a title
+   is a sheet she has to turn before she can start. */
+.masthead {
+  background: var(--black);
+  color: var(--off-white);
+  margin: -17mm -20mm 7mm;
+  padding: 12mm 20mm 10mm;
+}
+.masthead img { width: 30mm; margin-bottom: 7mm; }
+.masthead h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 26pt;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: #fff;
+  margin: 0 0 3mm;
+}
+.masthead p {
+  font-size: 9.5pt;
+  color: #c8c5bc;
+  max-width: 130mm;
+  margin: 0;
+}
+.masthead .for {
+  border-top: 0.5pt solid #3a3833;
+  margin-top: 6mm;
+  padding-top: 3.5mm;
+  font-size: 8.4pt;
+  color: #9d998f;
+}
+
+/* ---- Parts ---------------------------------------------------------- */
+h2.part {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 15pt;
+  letter-spacing: -0.022em;
+  color: var(--black);
+  border-top: 1.8pt solid var(--gold);
+  padding-top: 3mm;
+  margin: 9mm 0 1.2mm;
+  break-after: avoid;
+}
+h2.part .n {
+  display: block;
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--gold-dark);
+  margin-bottom: 1.5mm;
+}
+.part-note {
+  color: var(--mid-grey);
+  font-size: 8.6pt;
+  margin: 0 0 5mm;
+  break-after: avoid;
+}
+
+/* ---- Steps ---------------------------------------------------------
+   Numbered because this genuinely is a sequence, and boxed because she
+   will be ticking them off as she goes. The number and the box sit in
+   the left rail so a half-finished sheet reads at a glance. */
+.st {
+  position: relative;
+  padding-left: 24mm;
+  margin-bottom: 5mm;
+  break-inside: avoid;
+}
+.st-n {
+  position: absolute;
+  left: 0;
+  top: -1.8mm;
+  width: 11mm;
+  text-align: right;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 19pt;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--gold);
+}
+.st-box {
+  position: absolute;
+  left: 15.5mm;
+  top: 0.9mm;
+  width: 4.2mm;
+  height: 4.2mm;
+  border: 0.8pt solid var(--dark-grey);
+  background: #fff;
+}
+.st h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 10.4pt;
+  letter-spacing: -0.012em;
+  color: var(--black);
+  margin: 0 0 1.6mm;
+  break-after: avoid;
+}
+.st > :last-child { margin-bottom: 0; }
+
+/* ---- The literal-text block ----------------------------------------
+   The one place this document raises its voice. Everything that must be
+   typed character for character is set here and nowhere else, so there is
+   never a question about which words on the page are instructions and
+   which are the answer. */
+.type-this {
+  border-left: 2.6pt solid var(--gold);
+  background: var(--gold-wash);
+  padding: 3mm 4.5mm;
+  margin: 2.6mm 0;
+  break-inside: avoid;
+}
+.type-this .lbl {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 7.4pt;
+  color: var(--gold-dark);
+  margin: 0 0 1.2mm;
+}
+.type-this .val {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 12pt;
+  line-height: 1.35;
+  letter-spacing: -0.012em;
+  color: var(--black);
+  margin: 0;
+}
+.type-this .val + .val { margin-top: 1mm; }
+.type-this .after {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 8.4pt;
+  color: var(--dark-grey);
+  margin: 1.6mm 0 0;
+}
+
+/* ---- Stop ----------------------------------------------------------
+   Used four times in the whole document. If it appeared more often it
+   would stop meaning stop. */
+.stop {
+  background: var(--near-black);
+  color: #dad8d1;
+  padding: 4.5mm 5.5mm;
+  margin: 4mm 0;
+  font-size: 9pt;
+  break-inside: avoid;
+}
+.stop b {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 10pt;
+  color: #fff;
+  margin-bottom: 1.4mm;
+}
+.stop strong { color: #fff; }
+.stop > :last-child { margin-bottom: 0; }
+
+/* ---- Note: the quieter aside ---------------------------------------- */
+.note {
+  border-left: 2pt solid var(--gold);
+  padding: 0.5mm 0 0.5mm 4mm;
+  margin: 3mm 0;
+  font-size: 8.8pt;
+  line-height: 1.5;
+  color: var(--dark-grey);
+  break-inside: avoid;
+}
+.note b {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: var(--gold-dark);
+  margin-right: 1.4mm;
+}
+
+/* ---- Branches: "if this, do that" ----------------------------------
+   Two outcomes side by side rather than buried in a paragraph, because
+   the wrong branch taken quietly is how this goes wrong. */
+.branch { margin: 2.6mm 0; }
+.branch dt {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 9pt;
+  color: var(--gold-dark);
+  margin-bottom: 0.8mm;
+}
+.branch dd { margin: 0 0 3mm; }
+.branch dd:last-child { margin-bottom: 0; }
+
+/* ---- Lists ---------------------------------------------------------- */
+ul, ol { margin: 0 0 2.8mm; padding-left: 5mm; }
+li { margin-bottom: 1.3mm; }
+
+ul.check { list-style: none; padding-left: 0; margin-bottom: 4mm; }
+ul.check li {
+  position: relative;
+  padding-left: 7mm;
+  margin-bottom: 2mm;
+  break-inside: avoid;
+}
+ul.check li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1mm;
+  width: 4.2mm;
+  height: 4.2mm;
+  border: 0.8pt solid var(--dark-grey);
+  background: #fff;
+}
+
+/* ---- Write-in line, for the two things she has to decide ------------ */
+.fill {
+  border-bottom: 0.6pt solid #bfbab0;
+  height: 5.4mm;
+  margin: 1.5mm 0 0;
+}
+
+/* ---- Close ---------------------------------------------------------- */
+.signoff {
+  margin-top: 7mm;
+  border-top: 1.6pt solid var(--gold);
+  padding-top: 4mm;
+  font-size: 8.8pt;
+  color: var(--dark-grey);
+}
+.signoff b { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--black); }
+
+/* ---- Forbidden list, inside a stop block ---------------------------
+   One per line rather than run together: these are four separate wrong
+   answers, and run together they read as one long string nobody parses. */
+.stop ul { list-style: none; padding-left: 0; margin: 0 0 2.8mm; }
+.stop ul li {
+  position: relative;
+  padding-left: 5.5mm;
+  margin-bottom: 1.3mm;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 9.4pt;
+  color: #fff;
+}
+.stop ul li::before {
+  content: "\00d7";
+  position: absolute;
+  left: 0;
+  top: -0.2mm;
+  font-size: 10.5pt;
+  font-weight: 700;
+  color: var(--gold-soft);
+}
+
+/* ---- Write-in box ---------------------------------------------------
+   The two things she has to settle away from the laptop, with somewhere
+   to write the answer so it is on the sheet when step 20 asks for it. */
+.writein {
+  border: 0.7pt solid #cfc9bd;
+  background: #fff;
+  padding: 4.5mm 5.5mm 5mm;
+  margin: 5mm 0 0;
+  break-inside: avoid;
+}
+.writein .wl {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 8.8pt;
+  color: var(--black);
+  margin: 0 0 0.6mm;
+}
+.writein .wh { font-size: 7.8pt; color: var(--mid-grey); margin: 0; }
+.writein .fill { margin-bottom: 4.5mm; }
+.writein > :last-child { margin-bottom: 0; }
+
+/* ---- Closing rules: not steps, so no number and no tick box --------- */
+.rule-item { margin-bottom: 4mm; break-inside: avoid; }
+.rule-item h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 10.4pt;
+  letter-spacing: -0.012em;
+  color: var(--black);
+  margin: 0 0 1.6mm;
+  break-after: avoid;
+}
+.rule-item > :last-child { margin-bottom: 0; }
