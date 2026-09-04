@@ -150,12 +150,24 @@
 <main id="main">
 
 <!-- ============================= WORK HERO ============================= -->
-<!-- Type on black, no picture. The obvious hero for this page was the aerial
-     city clip that came with the footage, but it carries another company's
-     watermark and is not even the right city - putting it above real client
-     work would have undercut the whole page. A stock photo would have done the
-     same more quietly. The case posters below are the imagery. -->
+<!-- Photo: Eden Constantino via Unsplash, supplied by the client. Decorative,
+     so the <img> is aria-hidden with an empty alt - the h1 carries the meaning.
+     Three widths rather than one 5465px original; the browser picks by
+     viewport, and the mobile file is 32KB.
+
+     Not lazy-loaded and marked high priority: it is the largest paint on the
+     page and sits above the fold, so deferring it would leave the hero blank
+     on the slowest connections. The scrim over it is heavy on purpose - the
+     photo's pink is bright enough to swallow white type without it. -->
 <section class="work-hero">
+  <div class="work-hero-media" aria-hidden="true">
+    <img src="../assests/images/work-hero-desktop.webp"
+         srcset="../assests/images/work-hero-mobile.webp 800w,
+                 ../assests/images/work-hero-tablet.webp 1200w,
+                 ../assests/images/work-hero-desktop.webp 1800w"
+         sizes="100vw" alt="" width="1800" height="1197"
+         fetchpriority="high" decoding="async">
+  </div>
   <div class="container">
     <p class="svc-crumb"><a href="../">Home</a> &nbsp;/&nbsp; Work</p>
     <h1>The work, not the promises.</h1>
