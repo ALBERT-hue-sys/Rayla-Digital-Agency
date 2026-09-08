@@ -1,0 +1,250 @@
+/* ===== Google Business Profile requirements sheet — print stylesheet =====
+   A4, WeasyPrint. Third document in the set, so the brand tokens, the two
+   families and the page furniture match google-business-profile-guide.css
+   and -walkthrough.css exactly. What differs is the structure: the guide
+   argues, the walkthrough counts, and this one is an inventory. It gets
+   hanging side-headings and tick boxes rather than a numbered rail, because
+   nothing on this list happens in an order. */
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap");
+
+:root {
+  --black:      #0b0b0a;
+  --near-black: #171613;
+  --dark-grey:  #2b2a26;
+  --mid-grey:   #858175;
+  --light-grey: #f1efe9;
+  --off-white:  #faf9f6;
+  --gold:       #b8923a;
+  --gold-dark:  #8a6a24;   /* gold that still passes on light paper */
+  --gold-soft:  #d9bb78;   /* gold that still reads on the black band */
+}
+
+/* ---- Page geometry -------------------------------------------------
+   Same margins as the other two documents so the three sit together in a
+   folder without one looking cropped. No cover page: this is two or three
+   sheets, and a cover would cost a third of the document. */
+@page {
+  size: A4;
+  margin: 17mm 20mm 16mm 20mm;
+  background: var(--off-white);
+
+  @bottom-left {
+    content: "What to have ready — Google Business Profile, Rayla Digital Agency";
+    font-family: 'Poppins', sans-serif;
+    font-size: 6.8pt;
+    color: var(--mid-grey);
+    padding-top: 4mm;
+  }
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 8pt;
+    color: var(--near-black);
+    padding-top: 4mm;
+  }
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  font-size: 9.6pt;
+  line-height: 1.55;
+  color: var(--near-black);
+  margin: 0;
+  hyphens: none;
+}
+
+p { margin: 0 0 3mm; }
+strong { font-weight: 600; color: var(--black); }
+em { font-style: italic; }
+
+/* ---- Masthead -------------------------------------------------------
+   Full-bleed black band, the walkthrough's pattern. Negative margins pull it
+   out to the trimmed edge and the padding puts the type back on the text
+   column. It has to be black: the only logo file is white artwork, which
+   disappears entirely on off-white paper. */
+.masthead {
+  background: var(--black);
+  color: #cfccc3;
+  margin: -17mm -20mm 8mm;
+  padding: 13mm 20mm 8mm;
+}
+.masthead img { width: 30mm; display: block; margin-bottom: 6.5mm; }
+.masthead h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 28pt;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: #fff;
+  margin: 0 0 4mm;
+}
+.masthead .standfirst {
+  font-size: 10pt;
+  line-height: 1.5;
+  max-width: 122mm;
+  margin: 0 0 5mm;
+}
+.masthead .for {
+  border-top: 0.5pt solid #3a3833;
+  padding-top: 3.5mm;
+  font-size: 8pt;
+  color: #9d998f;
+  margin: 0;
+}
+
+/* ---- The three decisions -------------------------------------------
+   These are the only items on the sheet that cannot be fetched from a
+   drawer, so they are set apart from the gathering lists rather than listed
+   among them. A panel on paper rather than a second black slab — the band
+   above is the document's one loud moment, and two would cancel out.
+   Deliberately breakable: forcing it whole leaves two-thirds of page one
+   empty, which reads as a mistake rather than as emphasis. */
+.settle {
+  background: var(--light-grey);
+  border-top: 2.2pt solid var(--black);
+  padding: 6mm 7mm 5.5mm;
+  margin-bottom: 9mm;
+}
+.settle > h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 13pt;
+  letter-spacing: -0.012em;
+  color: var(--black);
+  margin: 0 0 1.5mm;
+}
+.settle > .lede {
+  font-size: 9pt;
+  color: var(--dark-grey);
+  margin: 0 0 5.5mm;
+  max-width: 122mm;
+}
+.settle .s { break-inside: avoid; }
+.settle .s + .s {
+  border-top: 0.5pt solid #d5d0c4;
+  margin-top: 4.5mm;
+  padding-top: 4.5mm;
+}
+.settle .s h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 10pt;
+  color: var(--black);
+  margin: 0 0 2mm;
+}
+.settle .s p { margin: 0 0 2.5mm; font-size: 9.2pt; }
+/* The resolution, not the problem: gold marks the sentence that says what
+   "answered" looks like, so it can be found without reading the paragraph. */
+.settle .when {
+  font-size: 9.2pt;
+  color: var(--gold-dark);
+  margin: 0;
+  padding-left: 4mm;
+  border-left: 1.4pt solid var(--gold);
+}
+
+/* ---- Requirement groups --------------------------------------------
+   Hanging side-heading. The group name sits in its own column so the eye can
+   run down the left edge and find "the pictures" without reading the items,
+   which is how a gathering list is actually used. A table rather than flex:
+   WeasyPrint will not fragment a flex container, so a long group jumped whole
+   to the next page and left half a sheet empty. Table cells do split. */
+.group {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  margin-bottom: 7mm;
+}
+.group > .g-name {
+  display: table-cell;
+  width: 33mm;
+  padding-right: 9mm;
+  vertical-align: top;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 11pt;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--black);
+  border-top: 1.6pt solid var(--gold);
+  padding-top: 2.5mm;
+}
+.group > .g-name span {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 7.8pt;
+  line-height: 1.4;
+  color: var(--mid-grey);
+  margin-top: 1.5mm;
+}
+.group > .g-items { display: table-cell; vertical-align: top; padding-top: 1.4mm; }
+
+/* ---- The tick boxes -------------------------------------------------
+   An outlined square, drawn rather than a bullet, because the list is worked
+   through over several days and the point is to see what is still missing.
+   Absolute positioning keeps the box on the first line of a wrapped item. */
+ul.check {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+ul.check li {
+  position: relative;
+  padding-left: 7.5mm;
+  margin-bottom: 3.2mm;
+  break-inside: avoid;
+}
+ul.check li:last-child { margin-bottom: 0; }
+ul.check li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.1mm;
+  width: 3.2mm;
+  height: 3.2mm;
+  border: 0.7pt solid var(--gold-dark);
+  background: #fff;
+}
+ul.check li .n {
+  display: block;
+  font-size: 8.4pt;
+  line-height: 1.45;
+  color: var(--dark-grey);
+  margin-top: 0.6mm;
+}
+
+/* ---- Closing note ---------------------------------------------------
+   Quieter than everything above it, so the document ends on what happens
+   next rather than on another warning. */
+.close {
+  border-left: 2pt solid var(--gold);
+  padding: 1mm 0 1mm 6mm;
+  margin-top: 1mm;
+  break-inside: avoid;
+}
+.close h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 10.5pt;
+  color: var(--black);
+  margin: 0 0 2mm;
+}
+.close p:last-child { margin-bottom: 0; }
+
+/* ---- Sign-off -------------------------------------------------------
+   The site's contact line, same as the other two documents. */
+.signoff {
+  border-top: 0.5pt solid #cfcabf;
+  margin-top: 7mm;
+  padding-top: 4mm;
+  font-size: 8pt;
+  color: var(--mid-grey);
+}
+.signoff b {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: var(--black);
+}
